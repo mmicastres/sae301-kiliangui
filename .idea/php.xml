@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MessDetectorOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCSFixerOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCodeSnifferOptionsConfiguration">
+    <option name="highlightLevel" value="WARNING" />
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/twig/vendor/phpdocumentor/reflection-docblock" />
+      <path value="$PROJECT_DIR$/twig/vendor/phpdocumentor/reflection" />
+      <path value="$PROJECT_DIR$/twig/vendor/phpdocumentor/graphviz" />
+      <path value="$PROJECT_DIR$/twig/vendor/psr/cache" />
+      <path value="$PROJECT_DIR$/twig/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/twig/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/twig/vendor/phpdocumentor/fileset" />
+      <path value="$PROJECT_DIR$/twig/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/twig/vendor/phpdocumentor/phpdocumentor" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-cache" />
+      <path value="$PROJECT_DIR$/twig/vendor/seld/jsonlint" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-config" />
+      <path value="$PROJECT_DIR$/twig/vendor/cilex/cilex" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-eventmanager" />
+      <path value="$PROJECT_DIR$/twig/vendor/cilex/console-service-provider" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-filter" />
+      <path value="$PROJECT_DIR$/twig/vendor/nikic/php-parser" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-hydrator" />
+      <path value="$PROJECT_DIR$/twig/vendor/erusev/parsedown" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-i18n" />
+      <path value="$PROJECT_DIR$/twig/vendor/phpoption/phpoption" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-json" />
+      <path value="$PROJECT_DIR$/twig/vendor/phpcollection/phpcollection" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-serializer" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-servicemanager" />
+      <path value="$PROJECT_DIR$/twig/vendor/zetacomponents/document" />
+      <path value="$PROJECT_DIR$/twig/vendor/zendframework/zend-stdlib" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/validator" />
+      <path value="$PROJECT_DIR$/twig/vendor/zetacomponents/base" />
+      <path value="$PROJECT_DIR$/twig/vendor/composer" />
+      <path value="$PROJECT_DIR$/twig/vendor/kherge/version" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/translation" />
+      <path value="$PROJECT_DIR$/twig/vendor/justinrainbow/json-schema" />
+      <path value="$PROJECT_DIR$/twig/vendor/container-interop/container-interop" />
+      <path value="$PROJECT_DIR$/twig/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/twig/vendor/doctrine/annotations" />
+      <path value="$PROJECT_DIR$/twig/vendor/pimple/pimple" />
+      <path value="$PROJECT_DIR$/twig/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/twig/vendor/doctrine/lexer" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/process" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/event-dispatcher" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/debug" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/config" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/stopwatch" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/filesystem" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/finder" />
+      <path value="$PROJECT_DIR$/twig/vendor/jms/metadata" />
+      <path value="$PROJECT_DIR$/twig/vendor/jms/parser-lib" />
+      <path value="$PROJECT_DIR$/twig/vendor/jms/serializer" />
+      <path value="$PROJECT_DIR$/twig/vendor/herrera-io/json" />
+      <path value="$PROJECT_DIR$/twig/vendor/herrera-io/phar-update" />
+      <path value="$PROJECT_DIR$/twig/vendor/twig/twig" />
+      <path value="$PROJECT_DIR$/twig/vendor/symfony/polyfill-mbstring" />
+    </include_path>
+  </component>
+  <component name="PhpProjectSharedConfiguration" php_language_level="7.4">
+    <option name="suggestChangeDefaultLanguageLevel" value="false" />
+  </component>
+  <component name="PhpStanOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PhpUnit">
+    <phpunit_settings>
+      <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/twig/vendor/autoload.php" />
+    </phpunit_settings>
+  </component>
+  <component name="PsalmOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+</project>

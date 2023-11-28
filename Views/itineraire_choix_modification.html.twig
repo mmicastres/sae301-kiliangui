@@ -1,0 +1,14 @@
+{% extends "index.html.twig" %}
+
+{% block section %}
+<form method="post" action="index.php" class="well">
+<fieldset><legend>Choix de l'itineraire à modifier</legend>
+    <select name="iditi" class="form-control form-control-sm">
+    {% for iti in itis %}
+      <option value="{{iti.idIti}}">{{iti.lieuDepart}} - {{iti.lieuArrivee}} - {{iti.dateDepart}}</option>
+    {% endfor %}
+    </select>
+    <input type="submit"  name="saisie_modif" value="valider" />
+</fieldset>
+</form>
+{% endblock %}

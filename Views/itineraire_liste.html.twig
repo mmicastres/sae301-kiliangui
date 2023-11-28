@@ -1,0 +1,12 @@
+{% extends "index.html.twig" %}
+
+{% block section %}
+<table class="table table-hover table-sm"><thead>
+<tr><th>Id</th><th>Départ</th><th>Arrivée</th><th>Date</th></tr>
+</thead><tbody>
+{% for iti in itis %}
+      <tr><td>{{iti.idIti}}</td><td>{{iti.lieuDepart}}</td><td>{{iti.lieuArrivee}}</td><td>{{iti.dateDepart}}</td></tr>
+{% endfor %}
+</tbody></table>
+{% endblock %}
+

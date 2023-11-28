@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="75cc7439-a4a0-4ab9-aa5e-576567d6de0d" name="sftp://webmmi.iut-tlse3.fr" url="https://webmmi.iut-tlse3.fr/~glk4599a/siteListeProjet/index.php">
+        <fileTransfer rootFolder="/data/public_html/siteListeProjet" accessType="SFTP" host="webmmi.iut-tlse3.fr" port="2281" sshConfigId="fa641ee7-407f-486d-9ccf-cfd3cda9cbce" sshConfig="glk4599a@webmmi.iut-tlse3.fr:2281 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
