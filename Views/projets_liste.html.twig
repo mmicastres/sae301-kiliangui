@@ -1,0 +1,22 @@
+{% extends "index.html.twig" %}
+
+{% block section %}
+<table class="table table-hover table-sm"><thead>
+<tr><th>Id</th><th>Nom</th><th>Source</th><th>Demo</th><th>Image</th><th>Utilisateurs</th><th>Tags</th></tr>
+</thead><tbody>
+{% for projet in projets %}
+      <tr><td>{{projet.id}} aaaa</td><td>{{projet.nomProjet}}</td><td>{{ projet.urlSources }}</td><td>{{ projet.urlDemo }}</td><td>{{ projet.imgUrl }}</td><td>
+                  {% for user in projet.idmembre %}
+                        {{ user.nom }}<br>
+                    {% endfor %}
+            </td>
+            <td>
+                    {% for tag in projet.tags %}
+                            {{ tag }}<br>
+                        {% endfor %}
+            </td>
+      </tr>
+{% endfor %}
+</tbody></table>
+{% endblock %}
+

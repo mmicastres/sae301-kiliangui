@@ -7,7 +7,9 @@ include "connect.php";
 
 include "Controllers/itinerairesController.php";
 include "Controllers/membresController.php";
+include "Controllers/projetsController.php";
 $itiController = new ItineraireController($bdd,$twig);
+$projetController = new ProjetController($bdd,$twig);
 $memController = new MembreController($bdd,$twig);
 
 
@@ -21,8 +23,12 @@ if (!isset($_SESSION['acces'])) {
    $_SESSION['acces']="non";
 }
 // click sur le bouton connexion
-if (isset($_POST["connexion"]))  {  
+if (isset($_POST["connexion"]))  {
   $message = $memController->membreConnexion($_POST);  
+}
+
+if (isset($_POST["inscription"]))  {
+  $message = $memController->membreInscription($_POST);
 }
 
 // deconnexion : click sur le bouton deconnexion
@@ -32,7 +38,12 @@ if (isset($_GET["action"]) && $_GET['action']=="logout") {
 
 // formulaire de connexion
 if (isset($_GET["action"])  && $_GET["action"]=="login") {
-  $memController->membreFormulaire(); 
+  $memController->membreLoginForm();
+}
+
+// formulaire de connexion
+if (isset($_GET["action"])  && $_GET["action"]=="register") {
+    $memController->membreRegisterForm();
 }
 
 // ============================== page d'accueil ==================
@@ -47,7 +58,7 @@ if (!isset($_GET["action"]) && empty($_POST)) {
 // liste des itinéraires dans un tableau HTML
 //  https://.../index/php?action=liste
 if (isset($_GET["action"]) && $_GET["action"]=="liste") {
-  $itiController->listeItineraires();
+  $projetController->listeProjets();
 }
 // liste de mes itinéraires dans un tableau HTML
 if (isset($_GET["action"]) && $_GET["action"]=="mesitis") { 

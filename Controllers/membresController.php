@@ -1,6 +1,6 @@
 <?php
 include "Modules/membre.php";
-include "Models/membreManager.php";
+include "Models/membresManager.php";
 /**
 * Définition d'une classe permettant de gérer les membres 
 *   en relation avec la base de données	
@@ -38,6 +38,25 @@ class MembreController {
     	} 
 	}
 
+    /**
+     * inscription
+     * @param aucun
+     * @return rien
+     */
+    function membreInscription($data){
+        $membre = $this->membreManager->InscriptionMembre($_POST["nom"],$_POST["prenom"],$_POST["id_iut"],$_POST["email"],$_POST["password"],0);
+        if ($membre != false){
+            $_SESSION["acces"] = "oui";
+            $_SESSION["idMembre"] = $membre->idMembre();
+            $message = "Bonjour ".$membre->prenom()." ".$membre->nom()."!";
+            echo $this->twig->render("index.html.twig", array('acces' => $_SESSION["acces"], 'message'=>$message));
+        }else { // acces non autorisé : variable de session acces = non
+            $message = "identification incorrecte";
+            $_SESSION['acces'] = "non";
+            echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+        }
+    }
+
 	/**
 	* deconnexion
 	* @param aucun
@@ -55,8 +74,16 @@ class MembreController {
 	* @param aucun
 	* @return rien
 	*/
-	function membreFormulaire() {
-		echo $this->twig->render('membre_connexion.html.twig',array('acces'=> $_SESSION['acces'])); 
+	function membreLoginForm() {
+		echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces']));
 	}
-	
+
+    /**
+     * formulaire d'inscription
+     * @param aucun
+     * @return rien
+     */
+    function membreRegisterForm() {
+        echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces']));
+    }
 }
