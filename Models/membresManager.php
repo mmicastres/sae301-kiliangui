@@ -51,6 +51,7 @@ class MembreManager
             $stmt = $this->_db->prepare($req);
             $stmt->execute(array(":email" => $email));
             $data = $stmt->fetch();
+            if ($data == false) return false;
             $hpassword = $data['password_hash'];
             if (password_verify($password, $hpassword)) {
                 $req = "SELECT idmembre, nom, prenom FROM pr_utilisateur WHERE `email`=:email";
