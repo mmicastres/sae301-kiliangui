@@ -5,9 +5,11 @@
 <form method="post" action="index.php" class="well">
 <fieldset>
   <legend>veuillez vous inscrire</legend>
+  {% if message is defined %}
   <div class="alert alert-danger" role="alert">
     {{ message }}
   </div>
+  {% endif %}
     <div class="form-group row">
       <label for="login" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
       <div class="col-sm-6">
