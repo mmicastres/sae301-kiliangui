@@ -80,7 +80,7 @@ class MembreController {
 	* @param aucun
 	* @return rien
 	*/
-	function membreLoginForm() {
+	public function membreLoginForm() {
 		echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces']));
 	}
 
@@ -89,7 +89,11 @@ class MembreController {
      * @param aucun
      * @return rien
      */
-    function membreRegisterForm() {
+    public function membreRegisterForm() {
         echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces']));
+    }
+
+    public function espaceMembre() {
+        echo $this->twig->render('membre_espace.html.twig',array('acces'=>$_SESSION["acces"]));
     }
 }

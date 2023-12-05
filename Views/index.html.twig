@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>MMI Castres - Cours de PHP</title>
+    {% block title %}
+        <title>MMI Castres - Cours de PHP</title>
+    {% endblock %}
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="design.css"> 
@@ -26,11 +28,16 @@
         <a class="nav-link" href="?action=mesitis">Mes itis</a>
         <a class="nav-link" href="?action=ajout">Ajouter</a>
         <a class="nav-link" href="?action=modif">Modifier</a>
+        <a class="nav-link" href="?action=espaceMembre">Espace membre</a>
         <a class="nav-link" href="?action=suppr">Supprimer</a>
         <a class="nav-link" href="?action=logout">Deconnexion</a>
+    {% if admin == "oui" %}
+        <a class="nav-link" href="?action=gestion">Gestion</a>
+    {% endif %}
 	{% else %}
-        <a class="nav-link" href="?action=login">Connexion</a>    
-	{% endif %}
+        <a class="nav-link" href="?action=login">Connexion</a>
+        <a class="nav-link" href="?action=register">Inscription</a>
+{% endif %}
       </div>
     </div>
   </div>

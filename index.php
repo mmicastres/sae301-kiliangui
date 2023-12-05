@@ -10,7 +10,7 @@ include "Controllers/membresController.php";
 include "Controllers/projetsController.php";
 $itiController = new ItineraireController($bdd,$twig);
 $projetController = new ProjetController($bdd,$twig);
-$memController = new MembreController($bdd,$twig);
+$membreController = new MembreController($bdd,$twig);
 
 
 // texte du message
@@ -24,26 +24,26 @@ if (!isset($_SESSION['acces'])) {
 }
 // click sur le bouton connexion
 if (isset($_POST["connexion"]))  {
-  $message = $memController->membreConnexion($_POST);  
+  $message = $membreController->membreConnexion($_POST);
 }
 
 if (isset($_POST["inscription"]))  {
-  $message = $memController->membreInscription($_POST);
+  $message = $membreController->membreInscription($_POST);
 }
 
 // deconnexion : click sur le bouton deconnexion
 if (isset($_GET["action"]) && $_GET['action']=="logout") { 
-    $message = $memController->membreDeconnexion(); 
+    $message = $membreController->membreDeconnexion();
  } 
 
 // formulaire de connexion
 if (isset($_GET["action"])  && $_GET["action"]=="login") {
-  $memController->membreLoginForm();
+  $membreController->membreLoginForm();
 }
 
 // formulaire de connexion
 if (isset($_GET["action"])  && $_GET["action"]=="register") {
-    $memController->membreRegisterForm();
+    $membreController->membreRegisterForm();
 }
 
 // ============================== page d'accueil ==================
@@ -123,6 +123,15 @@ if (isset($_GET["action"]) && $_GET["action"]=="recher") {
 // --> au clic sur le bouton "valider_recher" du form précédent
 if (isset($_POST["valider_recher"])) { 
   $itiController->rechercheItineraire();
+}
+
+
+// Gestion des espaces :
+//Espace utilisateur
+
+if (isset($_GET["action"]) && $_GET["action"] == "espaceMembre"){
+    $membreController->espaceMembre();
+
 }
 
 ?>
