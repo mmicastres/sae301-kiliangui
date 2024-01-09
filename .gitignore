@@ -1,3 +1,5 @@
 config.inc.php
 twig
 /node_modules
+images/*
+!images/.htaccess

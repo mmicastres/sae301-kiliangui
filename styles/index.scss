@@ -42,6 +42,11 @@ nav .navbar-nav{
   }
 }
 
+mark, .mark{
+    background-color: inherit !important;
+    color: $primary !important;
+}
+
 a{
   transition: color 4s ease-in-out;
   :hover{
