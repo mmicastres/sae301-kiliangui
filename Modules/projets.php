@@ -39,17 +39,14 @@ class Projet{
                     foreach ($donnees["participants"] as $participant) {
                         $user = ["idMembre" => $participant];
                         $user = new Membre($user);
-                        echo $user->idMembre();
                         array_push($this->_participants, $user);
                     }
                     $this->_participants = $donnees['participants'];
                 }
             }
             else{
-                echo "oui, oui. Baguette";
             }
             #explode(',', $donnees['participants'])
-            var_dump($this->participants());
         }
         if (isset($donnees['tags'])) {
             if (is_array($donnees['tags'])) {
@@ -58,7 +55,7 @@ class Projet{
                 $this->_tags = explode(',', $donnees['tags']);
             }
         }
-        if (isset($_SESSION['idMembre'])) { $this->_proprietaire = $donnees['idMembre']; }
+        if (isset($_SESSION['proprietaire'])) { $this->_proprietaire = $donnees['proprietaire']; }
     }
 
     // GETTERS //
@@ -71,7 +68,7 @@ class Projet{
     public function publier() { return $this->_publier;}
     public function idContexte() { return $this->_idContexte;}
     public function idCategorie() { return $this->_idCategorie;}
-    public function participants() { return $this->_participants;}
+    public function participants() { return isset($this->_participants) ? $this->_participants : [];}
     public function tags() { return $this->_tags;}
     public function proprietaire() { return $this->_proprietaire;}
 
@@ -85,7 +82,7 @@ class Projet{
     public function setPublier(bool $publier) { $this->_publier = $publier; }
     public function setIdContexte(int $idcontexte) { $this->_idcontexte = $idcontexte; }
     public function setIdCategorie(int $idcategorie) { $this->idCategorie = $idcategorie; }
-    public function setIdMembre(array $idmembre) { $this->_idMembre = $idmembre; }
+    public function setParticipants(array $idmembre) { $this->_participants = $idmembre; }
     public function setTags(array $tags) { $this->_tags = $tags; }
     public function setProprietaire(int $proprietaire) { $this->_proprietaire = $proprietaire; }
 }

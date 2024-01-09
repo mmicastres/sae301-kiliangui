@@ -82,6 +82,7 @@ class ProjetController{
 
     public function choixModProjet($idMembre){
         $projets = $this->projetManager->getListMembre($idMembre);
+
         echo $this->twig->render('projet_choix_modification.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces']));
     }
 

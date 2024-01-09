@@ -28,7 +28,7 @@ class MembreManager
         }
 
         public function get_participants($idProjet){
-            $req = "SELECT * FROM pr_membre WHERE idmembre IN (SELECT idmembre FROM pr_participer WHERE idProjet=:idProjet)";
+            $req = "SELECT * FROM pr_membre WHERE idMembre IN (SELECT idMembre FROM pr_participer WHERE idProjet=:idProjet)";
             $stmt = $this->_db->prepare($req);
             $stmt->execute(array(":idProjet" => $idProjet));
             $participants = array();

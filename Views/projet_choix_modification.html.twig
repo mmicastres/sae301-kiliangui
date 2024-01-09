@@ -5,7 +5,7 @@
 <fieldset><legend>Choix de l'itineraire à modifier</legend>
     <select name="iditi" class="form-control form-control-sm">
     {% for projet in projets %}
-      <option value="{{projet.idProjet}}"> {{ projet.titre}} </option>
+      <option value="{{projet.idProjet}}"> #{{ projet.idProjet }} - {{ projet.nomProjet}} </option>
     {% endfor %}
     </select>
     <input type="submit"  name="saisie_modif" value="valider" />

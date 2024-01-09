@@ -35,8 +35,6 @@ class ProjetManager
             // requete d'ajout dans la BD
             $req = "INSERT INTO pr_projet (idProjet,proprietaire,titre,description,publier,idContexte,idCategorie) VALUES (?,?,?,?,?,?,?)";
             $stmt = $this->_db->prepare($req);
-            echo("idCOntexte : ");
-            var_dump($projet->idContexte());
             $res = $stmt->execute(array($projet->idProjet(), $projet->proprietaire() , $projet->nomProjet(),$projet->description(),$projet->publier(),$projet->idContexte(),$projet->idCategorie()));
 
             //
@@ -108,11 +106,10 @@ return $res;
             $data['participants'] = $this->_membresManage->get_participants($data['idProjet']);
             // get tags
             $data['tags'] = $this->get_Tag($data['idProjet']);
-
-            $projets[] = new Projet($data);
+            $uncomplete = new Projet($data);
+            $projets[] = $this->completeProjet($uncomplete);
 
         }
-        echo count($projets);
 
         return $projets;
     }
@@ -150,7 +147,7 @@ return $res;
         $projet->setImgsUrls($imgs);
         $projet->setUrlsDemos($demos);
         $projet->setUrlsSources($sources);
-        $projet->setIdMembre($this->_membresManage->get_participants($projet->idProjet()));
+        $projet->setParticipants($this->_membresManage->get_participants($projet->idProjet()));
         $projet->setTags($this->get_Tag($projet->idProjet()));
         return $projet;
 
@@ -169,7 +166,6 @@ return $res;
         $stmt = $this->_db->prepare('SELECT DISTINCT * FROM pr_projet WHERE publier=1');
         $stmt->execute();
         $projets = [];
-
         while ($data = $stmt->fetch()) {
 // get a list of users
             $projet = new Projet($data);
