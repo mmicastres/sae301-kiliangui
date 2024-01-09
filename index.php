@@ -24,31 +24,31 @@ if (!isset($_SESSION['acces']) ) {
 }
 
 // click sur le bouton connexion
-if (isset($_POST["connexion"]))  {
+elseif (isset($_POST["connexion"]))  {
   $message = $membreController->membreConnexion($_POST);
 }
 
-if (isset($_POST["inscription"]))  {
+elseif (isset($_POST["inscription"]))  {
   $message = $membreController->membreInscription($_POST);
 }
 
 // deconnexion : click sur le bouton deconnexion
-if (isset($_GET["action"]) && $_GET['action']=="logout") { 
+elseif (isset($_GET["action"]) && $_GET['action']=="logout") {
     $message = $membreController->membreDeconnexion();
  } 
 
 // formulaire de connexion
-if (isset($_GET["action"])  && $_GET["action"]=="login") {
+elseif (isset($_GET["action"])  && $_GET["action"]=="login") {
   $membreController->membreLoginForm();
 }
 
 // formulaire de connexion
-if (isset($_GET["action"])  && $_GET["action"]=="register") {
+elseif (isset($_GET["action"])  && $_GET["action"]=="register") {
     $membreController->membreRegisterForm();
 }
 
 // Recherche d'utilisateur
-if (isset($_GET["action"])  && $_GET["action"]=="searchUser") {
+elseif (isset($_GET["action"])  && $_GET["action"]=="searchUser") {
     # CORS
     header("Access-Control-Allow-Origin: *");
     $membreController->searchUser();
@@ -57,7 +57,7 @@ if (isset($_GET["action"])  && $_GET["action"]=="searchUser") {
 // ============================== page d'accueil ==================
 
 // cas par défaut = page d'accueil
-if (!isset($_GET["action"]) && empty($_POST)) {
+elseif (!isset($_GET["action"]) && empty($_POST)) {
   echo $twig->render('index.html.twig',array('acces'=> $_SESSION['acces'])); 
 }
 
@@ -65,11 +65,11 @@ if (!isset($_GET["action"]) && empty($_POST)) {
 
 // liste des itinéraires dans un tableau HTML
 //  https://.../index/php?action=liste
-if (isset($_GET["action"]) && $_GET["action"]=="liste") {
+elseif (isset($_GET["action"]) && $_GET["action"]=="liste") {
   $projetController->listeProjets();
 }
 // liste de mes itinéraires dans un tableau HTML
-if (isset($_GET["action"]) && $_GET["action"]=="mesitis") { 
+elseif (isset($_GET["action"]) && $_GET["action"]=="mesitis") {
   $itiController->listeMesItineraires($_SESSION['idMembre']);
 }
 
@@ -79,7 +79,7 @@ if (isset($_GET["action"]) && $_GET["action"]=="mesitis") {
 //  https://.../index/php?action=ajout
 // version 0 : l'itineraire est rattaché automatiquement à un membre déjà présent dans la BD
 //              l'idmembre est en champ caché dans le formulaire
-if (isset($_GET["action"]) && $_GET["action"]=="ajout") {
+elseif (isset($_GET["action"]) && $_GET["action"]=="ajout") {
   $itiController->formAjoutItineraire();
  }
 
@@ -87,46 +87,46 @@ if (isset($_GET["action"]) && $_GET["action"]=="ajout") {
 
 // suppression d'un itineraire : choix de l'itineraire
 //  https://.../index/php?action=suppr
-if (isset($_GET["action"]) && $_GET["action"]=="suppr") { 
+elseif (isset($_GET["action"]) && $_GET["action"]=="suppr") {
   $itiController->choixSuppItineraire($_SESSION['idmembre']);
 }
 
 // supression d'un itineraire dans la base
 // --> au clic sur le bouton "valider_supp" du form précédent
-if (isset($_POST["valider_supp"])) { 
+elseif (isset($_POST["valider_supp"])) {
   $itiController->suppItineraire();
 }
 
 // modification d'un itineraire : choix de l'itineraire
 //  https://.../index/php?action=modif
-if (isset($_GET["action"]) && $_GET["action"]=="modif") { 
+elseif (isset($_GET["action"]) && $_GET["action"]=="modif") {
   $projetController->choixModProjet($_SESSION['idMembre']);
 }
 
 // modification d'un itineraire : saisie des nouvelles valeurs
 // --> au clic sur le bouton "saisie modif" du form précédent
 //  ==> version 0 : pas modif de l'iditi ni de l'idmembre
-if (isset($_POST["saisie_modif"])) {   
+elseif (isset($_POST["saisie_modif"])) {
   $itiController->saisieModItineraire();
 }
 
 //modification d'un itineraire : enregistrement dans la bd
 // --> au clic sur le bouton "valider_modif" du form précédent
-if (isset($_POST["valider_modif"])) {
+elseif (isset($_POST["valider_modif"])) {
   $itiController->modItineraire();
 }
 
 
 // recherche d'itineraire : saisie des critres de recherche dans un formulaire
 //  https://.../index/php?action=recherc
-if (isset($_GET["action"]) && $_GET["action"]=="recher") {
+elseif (isset($_GET["action"]) && $_GET["action"]=="recher") {
   $itiController->formRechercheItineraire();
 }
 
 // recherche des itineraires : construction de la requete SQL en fonction des critères 
 // de recherche et affichage du résultat dans un tableau HTML 
 // --> au clic sur le bouton "valider_recher" du form précédent
-if (isset($_POST["valider_recher"])) { 
+elseif (isset($_POST["valider_recher"])) {
   $itiController->rechercheItineraire();
 }
 
@@ -136,17 +136,20 @@ if (isset($_POST["valider_recher"])) {
 
 
 //Espace utilisateur
-if (isset($_GET["action"]) && $_GET["action"] == "espaceMembre"){
+elseif (isset($_GET["action"]) && $_GET["action"] == "espaceMembre"){
     $membreController->espaceMembre();
 }
-if (isset($_GET["action"]) && $_GET["action"] == "mesProjets"){
+elseif (isset($_GET["action"]) && $_GET["action"] == "mesProjets"){
     $projetController->listeMesProjets();
 }
-if (isset($_GET["action"]) && $_GET["action"] == "ajoutProjet"){
+elseif (isset($_GET["action"]) && $_GET["action"] == "ajoutProjet"){
     $projetController->formAjoutProjet();
 }
-if (isset($_POST["valider_ajout_projet"])) {
+elseif (isset($_POST["valider_ajout_projet"])) {
     $projetController->ajoutProjet();
+}
+else{
+    echo $twig->render('index.html.twig',array('acces'=> $_SESSION['acces'], 'message'=>"404"));
 }
 
 ?>
