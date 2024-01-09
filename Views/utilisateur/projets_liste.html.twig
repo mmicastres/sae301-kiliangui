@@ -2,25 +2,20 @@
 
 {% block section %}
       <h1>Vos projets</h1>
-<table class="table table-hover table-sm"><thead>
-<tr><th>Id</th><th>Nom</th><th>Source</th><th>Demo</th><th>Image</th><th>Utilisateurs</th><th>Tags</th><th>Publier</th></tr>
-</thead><tbody>
-{% for projet in projets %}
-      <tr><td>{{projet.id}} aaaa</td><td>{{projet.nomProjet}}</td><td>{% for source in projet.urlsSources %}{{ source.url }}{% endfor %}</td><td>{% for demo in projet.urlsDemos %}{{ demo.url }}{% endfor %}</td><td>{% for img in projet.imgsUrls %} <img width="100" src="{{ img.url }}"/>{% endfor %}</td><td>
-                  {% for user in projet.participants %}
-                        {{ user.nom }}<br>
-                  {% endfor %}
-            </td>
-            <td>
-                  {% for tag in projet.tags %}
-                        {{ tag }}<br>
-                  {% endfor %}
-            </td>
-            <td>
-                  {{ projet.publier }}
-            </td>
-      </tr>
-{% endfor %}
-</tbody></table>
+      <ul class="row row-cols-1 row-cols-md-3  row-cols-lg-4  ">
+            {% for projet in projets %}
+                  <li class="card mb-3 col">
+                        <a href="?action=projet&id={{ projet.idProjet }}">
+
+                              <img src="{{ projet.thumbnail.url }}" class="card-img-top" alt="...">
+                              <div class="card-body">
+                                    <h2 class="card-title h5 a ">{{ projet.nomProjet }}</h2>
+                                    <p class="card-text">{{ projet.courte }}</p>
+                                    <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                              </div>
+                        </a>
+                  </li>
+            {% endfor %}
+      </ul>
 {% endblock %}
 

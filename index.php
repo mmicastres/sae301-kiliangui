@@ -141,6 +141,10 @@ elseif (isset($_GET["action"]) && $_GET["action"] == "mesProjets"){
 elseif (isset($_GET["action"]) && $_GET["action"] == "ajoutProjet"){
     $projetController->formAjoutProjet();
 }
+elseif (isset($_GET["action"]) && $_GET["action"] == "projet"){
+    $projetController->projet($_SESSION['idMembre']);
+}
+
 elseif (isset($_POST["valider_ajout_projet"])) {
     $projetController->ajoutProjet();
 }

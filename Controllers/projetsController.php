@@ -100,5 +100,21 @@ class ProjetController{
     }
 
 
+    function projet($idMembre){
+        $idProjet = $_GET["id"];
+        $projet = $this->projetManager->get($idProjet);
+        if ($projet == false){
+            $message = "Ce projet n'existe pas";
+            echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+            return;
+        }
+        $proprietaire = $projet->proprietaire();
+        if ($proprietaire == $idMembre){
+            $message = "Vous etes le propriétaire";
+        }
+        $this->projetManager->completeProjet($projet);
+        echo $this->twig->render('projet.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces']));
+    }
+
 }
 

@@ -55,14 +55,17 @@ class Projet{
                 $this->_tags = explode(',', $donnees['tags']);
             }
         }
-        if (isset($_SESSION['proprietaire'])) { $this->_proprietaire = $donnees['proprietaire']; }
+        if (isset($donnees['proprietaire'])) {
+            $this->_proprietaire = intval($donnees['proprietaire']); }
     }
 
     // GETTERS //
     public function idProjet() { return $this->_idProjet;}
     public function nomProjet() { return $this->_titre;}
     public function description() { return $this->_description;}
+    public function courte() { return substr($this->_description, 0, 100)."[...]";}
     public function imgsUrls() { return isset($this->_imgsUrls) ? $this->_imgsUrls : [];}
+    public function thumbnail() { return isset($this->_imgsUrls) ? $this->_imgsUrls[0] : "";}
     public function urlsDemos() { return isset($this->_urlsDemos) ? $this->_urlsDemos : [];}
     public function urlsSources() { return isset($this->_urlsSources) ? $this->_urlsSources : [] ;}
     public function publier() { return $this->_publier;}
@@ -70,7 +73,7 @@ class Projet{
     public function idCategorie() { return $this->_idCategorie;}
     public function participants() { return isset($this->_participants) ? $this->_participants : [];}
     public function tags() { return $this->_tags;}
-    public function proprietaire() { return $this->_proprietaire;}
+    public function proprietaire() { return   $this->_proprietaire;}
 
     // SETTERS //
     public function setIdProjet(int $idProjet) { $this->_idProjet = $idProjet; }

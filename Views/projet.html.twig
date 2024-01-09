@@ -1,0 +1,31 @@
+{% extends "index.html.twig" %}
+
+{% block section %}
+      <h1>{{ projet.nomProjet }}</h1>
+        <p>{{ projet.description }}</p>
+      <h2>Participants</h2>
+        <ul>
+            {% for participant in projet.participants %}
+            <li>{{ participant.nom }} {{ participant.prenom }}</li>
+            {% endfor %}
+        </ul>
+        <h2>Urls</h2>
+      <h3>Images</h3>
+        <ul>
+            {% for image in projet.imgsUrls %}
+            <li><img src="{{ image.url }}" /></li>
+            {% endfor %}
+        </ul>
+      <h3>Sources</h3>
+        <ul>
+            {% for source in projet.urlsSources %}
+            <li>{{ source.url }}</li>
+            {% endfor %}
+        </ul>
+        <h3>Demo</h3>
+        <ul>
+            {% for demo in projet.urlsDemos %}
+            <li>{{ demo.url }}</li>
+            {% endfor %}
+{% endblock %}
+

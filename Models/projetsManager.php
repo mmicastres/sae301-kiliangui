@@ -80,7 +80,7 @@ return $res;
      */
     public function get(int $idProjet) : Projet
     {
-        $req = 'SELECT idProjet,nomProjet,description,imgUrl,urlDemo,urlSources,publier,idcontexte,idcategorie,idmembre FROM pr_projet WHERE idProjet=?';
+        $req = 'SELECT * FROM pr_projet WHERE idProjet=?';
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($idProjet));
         // pour debuguer les requêtes SQL
@@ -88,7 +88,8 @@ return $res;
         if ($errorInfo[0] != 0) {
             print_r($errorInfo);
         }
-        return new Projet($stmt->fetch());
+        $data = $stmt->fetch();
+        return new Projet($data);
     }
 
     /**
