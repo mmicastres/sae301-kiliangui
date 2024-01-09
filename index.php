@@ -19,9 +19,10 @@ $message = "";
 // ============================== connexion / deconnexion - sessions ==================
 
 // si la variable de session n'existe pas, on la crée
-if (!isset($_SESSION['acces'])) {
+if (!isset($_SESSION['acces']) ) {
    $_SESSION['acces']="non";
 }
+
 // click sur le bouton connexion
 if (isset($_POST["connexion"]))  {
   $message = $membreController->membreConnexion($_POST);
@@ -46,6 +47,13 @@ if (isset($_GET["action"])  && $_GET["action"]=="register") {
     $membreController->membreRegisterForm();
 }
 
+// Recherche d'utilisateur
+if (isset($_GET["action"])  && $_GET["action"]=="searchUser") {
+    # CORS
+    header("Access-Control-Allow-Origin: *");
+    $membreController->searchUser();
+}
+
 // ============================== page d'accueil ==================
 
 // cas par défaut = page d'accueil
@@ -62,8 +70,10 @@ if (isset($_GET["action"]) && $_GET["action"]=="liste") {
 }
 // liste de mes itinéraires dans un tableau HTML
 if (isset($_GET["action"]) && $_GET["action"]=="mesitis") { 
-  $itiController->listeMesItineraires($_SESSION['idmembre']);
+  $itiController->listeMesItineraires($_SESSION['idMembre']);
 }
+
+
 
 // formulaire ajout d'un itineraire : saisie des caractéristiques à ajouter dans la BD
 //  https://.../index/php?action=ajout
@@ -73,11 +83,6 @@ if (isset($_GET["action"]) && $_GET["action"]=="ajout") {
   $itiController->formAjoutItineraire();
  }
 
-// ajout de l'itineraire dans la base
-// --> au clic sur le bouton "valider_ajout" du form précédent
-if (isset($_POST["valider_ajout"])) {
-  $itiController->ajoutItineraire();
-}
 
 
 // suppression d'un itineraire : choix de l'itineraire
@@ -95,7 +100,7 @@ if (isset($_POST["valider_supp"])) {
 // modification d'un itineraire : choix de l'itineraire
 //  https://.../index/php?action=modif
 if (isset($_GET["action"]) && $_GET["action"]=="modif") { 
-  $itiController->choixModItineraire($_SESSION['idmembre']);
+  $projetController->choixModProjet($_SESSION['idMembre']);
 }
 
 // modification d'un itineraire : saisie des nouvelles valeurs
@@ -127,11 +132,21 @@ if (isset($_POST["valider_recher"])) {
 
 
 // Gestion des espaces :
-//Espace utilisateur
 
+
+
+//Espace utilisateur
 if (isset($_GET["action"]) && $_GET["action"] == "espaceMembre"){
     $membreController->espaceMembre();
-
+}
+if (isset($_GET["action"]) && $_GET["action"] == "mesProjets"){
+    $projetController->listeMesProjets();
+}
+if (isset($_GET["action"]) && $_GET["action"] == "ajoutProjet"){
+    $projetController->formAjoutProjet();
+}
+if (isset($_POST["valider_ajout_projet"])) {
+    $projetController->ajoutProjet();
 }
 
 ?>

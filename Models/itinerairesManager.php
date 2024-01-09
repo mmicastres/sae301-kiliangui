@@ -107,7 +107,7 @@ class ItineraireManager {
 	public function getListMembre(int $idmembre) {
 		$itis = array();
 		$req = "SELECT iditi, lieudepart, lieuarrivee, heuredepart, date_format(datedepart,'%d/%c/%Y') as datedepart,"
-		. "tarif, nbplaces, bagagesautorises, details FROM itineraire WHERE idmembre=?";
+		. "tarif, nbplaces, bagagesautorises, details FROM itineraire WHERE proprietaire=?";
 		$stmt = $this->_db->prepare($req);
 		$stmt->execute(array($idmembre));
 		// pour debuguer les requêtes SQL

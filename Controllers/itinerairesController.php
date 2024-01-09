@@ -8,6 +8,7 @@ include "Models/itinerairesManager.php";
 class ItineraireController {
     
 	private $itiManager; // instance du manager
+    private $projetManager;
 	private $twig;
         
 	/**
@@ -15,6 +16,7 @@ class ItineraireController {
 	*/
 	public function __construct($db, $twig) {
 		$this->itiManager = new ItineraireManager($db);
+        $this->projetManager = new ProjetManager($db);
 		$this->twig = $twig;
 	}
         
@@ -53,7 +55,7 @@ class ItineraireController {
 	*/
 	public function ajoutItineraire() {
 		$iti = new Itineraire($_POST);
-		$ok = $this->itiManager->add($iti);
+		$ok = $this->proje->add($iti);
 		$message = $ok ? "Itinéraire ajouté" : "probleme lors de l'ajout";
 		echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'])); 
 
@@ -85,7 +87,7 @@ class ItineraireController {
 	*/
 	public function choixModItineraire($idMembre) {
 		$itineraires = $this->itiManager->getListMembre($idMembre);
-		echo $this->twig->render('itineraire_choix_modification.html.twig',array('itis'=>$itineraires,'acces'=> $_SESSION['acces'])); 
+		echo $this->twig->render('projet_choix_modification.html.twig',array('itis'=>$itineraires,'acces'=> $_SESSION['acces']));
 	}
 	/**
 	* form de saisi des nouvelles valeurs de l'iti à modifier
@@ -94,7 +96,7 @@ class ItineraireController {
 	*/
 	public function saisieModItineraire() {
 		$iti =  $this->itiManager->get($_POST["iditi"]);
-		echo $this->twig->render('itineraire_modification.html.twig',array('iti'=>$iti,'acces'=> $_SESSION['acces'])); 
+		echo $this->twig->render('projet_modification.html.twig',array('iti'=>$iti,'acces'=> $_SESSION['acces']));
 	}
 
 	/**

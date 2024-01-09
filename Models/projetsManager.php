@@ -1,8 +1,13 @@
 <?php
 require_once "Models/membresManager.php";
+require_once "Modules/contexts.php";
+require_once "Modules/urls.php";
+require_once "Models/urlsManager.php";
 class ProjetManager
 {
     private $_membresManage;
+    private $_urlsManage;
+
     private $_db; // Instance de PDO - objet de connexion au SGBD
 
     /**
@@ -13,6 +18,7 @@ class ProjetManager
     public function __construct($db)
     {
         $this->_db = $db;
+        $this->_urlsManage = new UrlsManager($db);
         $this->_membresManage = new MembreManager($db);
     }
 
@@ -22,15 +28,18 @@ class ProjetManager
      * @return int true si l'ajout a bien eu lieu, false sinon
      */
     public function add(Projet $projet){
-
             $stmt = $this->_db->prepare("SELECT max(idProjet) AS maximum FROM pr_projet");
             $stmt->execute();
             $projet->setIdProjet($stmt->fetchColumn()+1);
 
             // requete d'ajout dans la BD
-            $req = "INSERT INTO pr_projet (idProjet,nomProjet,description,imgUrl,urlDemo,urlSources,publier,idcontexte,idcategorie) VALUES (?,?,?,?,?,?,?,?,?)";
+            $req = "INSERT INTO pr_projet (idProjet,proprietaire,titre,description,publier,idContexte,idCategorie) VALUES (?,?,?,?,?,?,?)";
             $stmt = $this->_db->prepare($req);
-            $res  = $stmt->execute(array($projet->idProjet(), $projet->nomProjet(), $projet->description(), $projet->imgUrl(), $projet->urlDemo(), $projet->urlSources(), $projet->publier(), $projet->idcontexte(), $projet->idcategorie(), $projet->idmembre()));
+            echo("idCOntexte : ");
+            var_dump($projet->idContexte());
+            $res = $stmt->execute(array($projet->idProjet(), $projet->proprietaire() , $projet->nomProjet(),$projet->description(),$projet->publier(),$projet->idContexte(),$projet->idCategorie()));
+
+            //
             // pour debuguer les requêtes SQL
             $errorInfo = $stmt->errorInfo();
             if ($errorInfo[0] != 0) {
@@ -91,15 +100,60 @@ return $res;
      */
     public function getListMembre(int $idmembre):array
     {
-        $stmt = $this->_db->prepare('SELECT * FROM pr_projet WHERE idmembre=?');
+        $stmt = $this->_db->prepare('SELECT * FROM pr_projet inner join pr_participer WHERE pr_participer.idProjet = pr_projet.idProjet AND  proprietaire=?');
         $stmt->execute(array($idmembre));
         $projets = [];
         while ($data = $stmt->fetch()) {
-
+// get a list of users
+            $data['participants'] = $this->_membresManage->get_participants($data['idProjet']);
+            // get tags
+            $data['tags'] = $this->get_Tag($data['idProjet']);
 
             $projets[] = new Projet($data);
+
         }
+        echo count($projets);
+
         return $projets;
+    }
+
+
+    public function addParticipant(int $idProjet, int $idMembre):bool
+    {
+        $req = "INSERT INTO pr_participer (idProjet,idMembre) VALUES (?,?)";
+        $stmt = $this->_db->prepare($req);
+        return $stmt->execute(array($idProjet,$idMembre));
+    }
+
+    /**
+     * Retourne le projet completer de sont nombre de like, tags, et urls
+     * @param Projet $projet
+     * @return Projet
+     */
+    public function completeProjet(Projet $projet){
+
+        // get list of urls
+        $urls = $this->_urlsManage->listUrl($projet);
+        $imgs = array();
+        $demos = array();
+        $sources = array();
+        foreach ($urls as $url) {
+            if ($url->type() == "img") {
+                $imgs[] = $url;
+            } else if ($url->type() == "demo") {
+                $demos[] = $url;
+            } else if ($url->type() == "source") {
+
+                $sources[] = $url;
+            }
+        }
+        $projet->setImgsUrls($imgs);
+        $projet->setUrlsDemos($demos);
+        $projet->setUrlsSources($sources);
+        $projet->setIdMembre($this->_membresManage->get_participants($projet->idProjet()));
+        $projet->setTags($this->get_Tag($projet->idProjet()));
+        return $projet;
+
     }
 
 
@@ -115,13 +169,12 @@ return $res;
         $stmt = $this->_db->prepare('SELECT DISTINCT * FROM pr_projet WHERE publier=1');
         $stmt->execute();
         $projets = [];
+
         while ($data = $stmt->fetch()) {
 // get a list of users
-            $data['idmembre'] = $this->_membresManage->get_participants($data['idProjet']);
-            // get tags
-            $data['tags'] = $this->get_Tag($data['idProjet']);
-
-            $projets[] = new Projet($data);
+            $projet = new Projet($data);
+            $projet = $this->completeProjet($projet);
+            $projets[] = $projet;
 
         }
 
