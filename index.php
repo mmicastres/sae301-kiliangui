@@ -68,10 +68,6 @@ elseif (!isset($_GET["action"]) && empty($_POST)) {
 elseif (isset($_GET["action"]) && $_GET["action"]=="liste") {
   $projetController->listeProjets();
 }
-// liste de mes itinéraires dans un tableau HTML
-elseif (isset($_GET["action"]) && $_GET["action"]=="mesitis") {
-  $itiController->listeMesItineraires($_SESSION['idMembre']);
-}
 
 
 
