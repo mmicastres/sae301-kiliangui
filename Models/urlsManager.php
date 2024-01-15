@@ -32,6 +32,12 @@ class UrlsManager
         return $urls;
     }
 
+    public function deleteAll($idProjet){
+        $req = "DELETE FROM pr_url WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($idProjet));
+    }
+
     /**
      * Ajoute une url dans la base de données
      * @param String $url

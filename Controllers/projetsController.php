@@ -7,6 +7,7 @@ include "Models/categoriesManager.php";
 include "Models/projetsManager.php";
 include "Models/contextsManager.php";
 
+
 class ProjetController{
 
     private $projetManager;
@@ -16,6 +17,9 @@ class ProjetController{
     private $urlsManager;
     private $twig;
 
+    //DEBUG
+    private $_db;
+
     public function __construct($db, $twig){
         $this->projetManager = new ProjetManager($db);
         $this->membreManager = new MembreManager($db);
@@ -23,6 +27,9 @@ class ProjetController{
         $this->categorieManager = new CategorieManager($db);
         $this->urlsManager = new UrlsManager($db);
         $this->twig = $twig;
+
+        //DEBUG ONLY
+        $this->_db = $db;
     }
 
     public function listeProjets(){
@@ -88,9 +95,53 @@ class ProjetController{
     public function saisieModProjet(){
         $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
+        $this->projetManager->completeProjet($projet);
         $contexts = $this->contextManager->listContext();
         $categories = $this->categorieManager->getList();
+
         echo $this->twig->render('projet_ajout.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'contexts'=>$contexts,'categories'=>$categories));
+    }
+    public function validerModProjet(){
+$idProjet = $_POST["idProjet"];
+        $projet = $this->projetManager->get($idProjet);
+        $titre = $_POST['titre'];
+        $description = $_POST['description'];
+        $publier = $projet->publier();
+        $idContexte = $_POST['idContexte'];
+        $idCategorie = $_POST['idCategorie'];
+        $req = "UPDATE pr_projet SET titre = ?, description = ?, publier = ?, idContexte = ?, idCategorie = ? WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($titre,$description,$publier,$idContexte,$idCategorie,$idProjet));
+        // Mise a jour des urls
+        $this->_urlsManage->deleteAll($idProjet);
+        $imgsUrls = json_decode($_POST["imgsUrls"]);
+        $demosUrls = json_decode($_POST["demosUrls"]);
+        $sourcesUrls = json_decode($_POST["sourcesUrls"]);
+        foreach ($imgsUrls as $url) {
+            $url = new Url(array("idProjet"=>$idProjet,"type"=>"img","url"=>$url));
+            $this->_urlsManage->addUrl($url);
+        }
+        foreach ($demosUrls as $url) {
+            $url = new Url(array("idProjet"=>$idProjet,"type"=>"demo","url"=>$url));
+            $this->_urlsManage->addUrl($url);
+        }
+        foreach ($sourcesUrls as $url) {
+            $url = new Url(array("idProjet"=>$idProjet,"type"=>"source","url"=>$url));
+            $this->_urlsManage->addUrl($url);
+        }
+        // Mise a jour des tags
+        //$this->deleteAllTags($idProjet);
+        //$tags = json_decode($_POST["tags"]);
+        //foreach ($tags as $tag) {
+        //    $this->addTag($idProjet,$tag);
+        //}
+        // Mise a jour des participants
+        $this->deleteAllParticipants($idProjet);
+        $participants = json_decode($_POST["participants"]);
+        foreach ($participants as $participant) {
+            $this->addParticipant($idProjet,$participant);
+        }
+
     }
 
     public function selectSuppr(){

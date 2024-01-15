@@ -109,8 +109,8 @@ elseif (isset($_POST["saisie_modif"])) {
 
 //modification d'un itineraire : enregistrement dans la bd
 // --> au clic sur le bouton "valider_modif" du form précédent
-elseif (isset($_POST["valider_modif"])) {
-  $itiController->modItineraire();
+elseif (isset($_POST["valider_mod_projet"])) {
+  $projetController->validerModProjet();
 }
 
 elseif (isset($_POST["select_supprimer_projet"])){
