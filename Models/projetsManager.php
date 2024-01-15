@@ -67,7 +67,26 @@ return $res;
      */
     public function delete(Projet $projet) : bool
     {
-        $req = "DELETE FROM projet WHERE idProjet = ?";
+        // delete urls
+        $req = "DELETE FROM pr_url WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($projet->idProjet()));
+        // delete participants
+        $req = "DELETE FROM pr_participer WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($projet->idProjet()));
+        // delete tags
+        $req = "DELETE FROM pr_caracterise WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($projet->idProjet()));
+        // delete aime
+        $req = "DELETE FROM pr_aime WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($projet->idProjet()));
+
+        // delete projet
+
+        $req = "DELETE FROM pr_projet WHERE idProjet = ?";
         $stmt = $this->_db->prepare($req);
         return $stmt->execute(array($projet->idProjet()));
     }
@@ -89,7 +108,8 @@ return $res;
             print_r($errorInfo);
         }
         $data = $stmt->fetch();
-        return new Projet($data);
+        $projet = new Projet($data);
+        return $this->completeProjet($projet);
     }
 
     /**

@@ -85,6 +85,27 @@ class ProjetController{
 
         echo $this->twig->render('projet_choix_modification.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces']));
     }
+    public function saisieModProjet(){
+        $idProjet = $_POST["idProjet"];
+        $projet = $this->projetManager->get($idProjet);
+        $contexts = $this->contextManager->listContext();
+        $categories = $this->categorieManager->getList();
+        echo $this->twig->render('projet_ajout.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'contexts'=>$contexts,'categories'=>$categories));
+    }
+
+    public function selectSuppr(){
+        $idProjet = $_POST["idProjet"];
+        $projet = $this->projetManager->get($idProjet);
+        echo $this->twig->render('suppr_confirm.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces']));
+    }
+
+    public function supprimerProjet(){
+        $idProjet = $_POST["idProjet"];
+        $projet = new Projet(array("idProjet"=>$idProjet));
+        $ok = $this->projetManager->delete($projet);
+        $message = $ok ? "Projet supprimé" : "probleme lors de la suppression";
+        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces']));
+    }
 
 
     public function listeMesProjets(){

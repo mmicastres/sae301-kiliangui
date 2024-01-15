@@ -3,7 +3,7 @@
 {% block section %}
 <form method="post" action="index.php" class="well">
 <fieldset><legend>Choix de l'itineraire à modifier</legend>
-    <select name="iditi" class="form-control form-control-sm">
+    <select name="idProjet" class="form-control form-control-sm">
     {% for projet in projets %}
       <option value="{{projet.idProjet}}"> #{{ projet.idProjet }} - {{ projet.nomProjet}} </option>
     {% endfor %}

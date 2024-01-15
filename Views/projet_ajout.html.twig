@@ -4,23 +4,32 @@
 
 {% block section %}
 
-    <h1>Ajout d'un projet</h1>
+    <h1>{% if projet %} {{ projet.nomProjet}} {% else %} Ajout d'un projet {% endif %}</h1>
     <form action="" method="POST" class="mt-4">
+        {% if projet %}
+            <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
+        {% endif %}
         <div class="mb-3">
             <label for="titre" class="form-label">Titre du projet</label>
-            <input type="text" name="titre" id="titre" class="form-control" required>
+            <input type="text" name="titre" id="titre" class="form-control" required {% if projet %}value="{{ projet.nomProjet }}" {% endif%} >
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Description du projet</label>
-            <textarea name="description" id="description" class="form-control" rows="5" required></textarea>
+            <textarea name="description" id="description" class="form-control" rows="5" required  >{% if projet %}{{ projet.description }} {% endif%}</textarea>
         </div>
         <div class="mb-3">
             <label for="sourceUrlInput" class="form-label">Url de vos sources:</label>
             <div class="d-flex">
-                <input type="text" class="form-control" id="sourceUrlInput" required>
+                <input type="text" class="form-control" id="sourceUrlInput">
                 <button class="btn btn-primary" type="button" onclick="addUrl('sourceUrlInput','sourceUrlList','sourceHiddenUrls' )">Add URL</button>
             </div>
-            <ul id="sourceUrlList"></ul>
+            <ul id="sourceUrlList">
+                {% if projet %}
+                    {% for url in projet.urlsSources %}
+                        <li>{{ url.url }}</li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
             <!--Create a hidden input to store the urls-->
             <input type="hidden" name="sourcesUrls" id="sourceHiddenUrls">
         </div>
@@ -28,10 +37,16 @@
         <div class="mb-3">
             <label for="demoUrlInput" class="form-label">Urls de vos demos:</label>
             <div class="d-flex">
-                <input type="text" class="form-control" id="demoUrlInput" required>
+                <input type="text" class="form-control" id="demoUrlInput">
                 <button class="btn btn-primary" type="button" onclick="addUrl('demoUrlInput','demoUrlList','demoHiddenUrls' )">Add URL</button>
             </div>
-            <ul id="demoUrlList"></ul>
+            <ul id="demoUrlList">
+                {% if projet %}
+                    {% for url in projet.urlsDemos %}
+                        <li>{{ url.url }}</li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
             <!--Create a hidden input to store the urls-->
             <input type="hidden" name="demosUrls" id="demoHiddenUrls">
         </div>
@@ -39,10 +54,16 @@
         <div class="mb-3">
             <label for="imgUrlInput" class="form-label">Urls de vos images:</label>
             <div class="d-flex">
-                <input type="text" class="form-control" id="imgUrlInput" required>
+                <input type="text" class="form-control" id="imgUrlInput">
                 <button class="btn btn-primary" type="button" onclick="addUrl('imgUrlInput','imgUrlList','imgHiddenUrls' )">Add URL</button>
             </div>
-            <ul id="imgUrlList"></ul>
+            <ul id="imgUrlList">
+                {% if projet %}
+                    {% for url in projet.imgsUrls %}
+                        <li>{{ url.url }}</li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
             <!--Create a hidden input to store the urls-->
             <input type="hidden" name="imgsUrls" id="imgHiddenUrls">
         </div>
@@ -52,7 +73,7 @@
             <select name="idContexte" id="context" class="form-select" required>
                 <option value="0">Choisir un context</option>
                 {% for context in contexts %}
-                    <option value="{{ context.idContexte }}">{{ context.identifiant }} - {{ context.intitule }} - {{ context.semestre }}</option>
+                    <option {% if projet %} {% if projet.idContexte == context.idContexte %}selected{% endif %}{% endif %} value="{{ context.idContexte }}">{{ context.identifiant }} - {{ context.intitule }} - {{ context.semestre }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -62,7 +83,7 @@
             <select name="idCategorie" id="categorie" class="form-select" required>
                 <option value="0">Choisir une categorie</option>
                 {% for categorie in categories %}
-                    <option value="{{ categorie.idCategorie }}">{{ categorie.intitule }}</option>
+                    <option  {% if projet %}{% if projet.idCategorie == categorie.idCategorie%}selected{% endif %}{% endif %}  value="{{ categorie.idCategorie }}">{{ categorie.intitule }}</option>
                 {% endfor %}
             </select>
 
@@ -70,13 +91,25 @@
         <!--SELECT THE Participants-->
         <div class="mb-3">
             <label for="participants" class="form-label">Participants</label>
-            <input type="text" id="search" class="form-control" required>
+            <input type="text" id="search" class="form-control" >
             <!--list of the participants as checkbox-->
             <ul id="participants">
+                {% if projet %}
+                    {% for participant in projet.participants %}
+                        <li id="{{ participant.idMembre }}">
+                            <input type="checkbox" name="participants[]"  value="{{ participant.idMembre }}" onclick="console.log(this.checked);" checked>
+                            {{ participant.nom }} {{ participant.prenom }}
+                        </li>
+                    {% endfor %}
+                {% endif %}
             </ul>
-        <button type="submit" class="btn btn-primary" name="valider_ajout_projet" value="true">
-            Ajouter
+        </div>
+        <button type="submit" class="btn btn-primary" name="{% if projet %}valider_mod_projet{% else %}valider_ajout_projet{% endif %}" value="true">
+            {% if projet %}Modifier{% else %}Ajouter{% endif %}
         </button>
+        {%if projet %}
+            <button type="submit" class="btn btn-danger" name="select_supprimer_projet" value="true">Supprimer</button>
+        {% endif %}
     </form>
 
     <script>
@@ -147,7 +180,11 @@
 
             hiddenUrls.value =  JSON.stringify(hiddenUrlst);
         }
-
+        {% if projet %}
+        updateHiddenUrls(document.getElementById("sourceUrlList"),document.getElementById("sourceHiddenUrls"));
+        updateHiddenUrls(document.getElementById("demoUrlList"),document.getElementById("demoHiddenUrls"));
+        updateHiddenUrls(document.getElementById("imgUrlList"),document.getElementById("imgHiddenUrls"));
+        {% endif %}
         function deleteUrl(item){
             const urlListID = item.parentNode.id;
             const hiddenUrlsID = item.parentNode.nextElementSibling.id;
