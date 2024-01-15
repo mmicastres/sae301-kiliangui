@@ -109,11 +109,13 @@ class ProjetController{
             return;
         }
         $proprietaire = $projet->proprietaire();
+        $is_proprietaire = false;
         if ($proprietaire == $idMembre){
             $message = "Vous etes le propriétaire";
+            $is_proprietaire = true;
         }
         $this->projetManager->completeProjet($projet);
-        echo $this->twig->render('projet.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces']));
+        echo $this->twig->render('projet.html.twig',array('projet'=>$projet,'is_proprietaire'=>$is_proprietaire,'acces'=> $_SESSION['acces']));
     }
 
 }

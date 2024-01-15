@@ -1,31 +1,60 @@
 {% extends "index.html.twig" %}
 
 {% block section %}
-      <h1>{{ projet.nomProjet }}</h1>
-        <p>{{ projet.description }}</p>
-      <h2>Participants</h2>
-        <ul>
-            {% for participant in projet.participants %}
-            <li>{{ participant.nom }} {{ participant.prenom }}</li>
-            {% endfor %}
+    <div class="card p-2">
+        <div class="d-flex flex-row align-items-center justify-content-between">
+            <a href="?action=liste">back</a>
+            <h1>{{ projet.nomProjet }}</h1>
+            <div>
+                {% if is_proprietaire %}
+                    <a href="?action=edit&id={{ projet.id }}">edit</a>
+                {% endif %}
+            </div>
+        </div>
+        <ul class="list-unstyled flex">
+                <li><img class="w-100" src="{{ projet.thumbnail.url }}" /></li>
         </ul>
-        <h2>Urls</h2>
-      <h3>Images</h3>
-        <ul>
+        <ul class="list-unstyled flex">
             {% for image in projet.imgsUrls %}
-            <li><img src="{{ image.url }}" /></li>
+                <li class="w-25"><img class="w-100" src="{{ image.url }}" /></li>
             {% endfor %}
         </ul>
-      <h3>Sources</h3>
-        <ul>
-            {% for source in projet.urlsSources %}
-            <li>{{ source.url }}</li>
-            {% endfor %}
-        </ul>
-        <h3>Demo</h3>
-        <ul>
-            {% for demo in projet.urlsDemos %}
-            <li>{{ demo.url }}</li>
-            {% endfor %}
+    </div>
+
+    <div class=" m-0 card p-2 mt-3 flex-row row row-cols-1 row-cols-md-3 ">
+        <div class="col flex-grow-1">
+            <h2>Description</h2>
+            <p>{{ projet.description }}</p>
+
+        </div>
+        <div class="col">
+            <h2>Créateur :</h2>
+
+
+            <h2>Participants</h2>
+            <ul>
+                {% for participant in projet.participants %}
+                    <li>{{ participant.nom }} {{ participant.prenom }}</li>
+                {% endfor %}
+            </ul>
+            <h2>Urls</h2>
+
+            <h3>Sources</h3>
+            <ul>
+                {% for source in projet.urlsSources %}
+                    <li><a href="{{ source.url }}">{{ source.titre }}</a></li>
+                {% endfor %}
+            </ul>
+            <h3>Demo</h3>
+            <ul>
+                {% for demo in projet.urlsDemos %}
+                    <li>{{ demo.url }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+
+    </div>
+
 {% endblock %}
 

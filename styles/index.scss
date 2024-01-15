@@ -10,6 +10,7 @@ $dark: #343a40;
 $body:#ffffff;
 $body-bg: #131312;
 $body-color:#ffffff;
+$card-bg : #6b6b64;
 
 $table-color : $body-color;
 
@@ -32,6 +33,12 @@ nav .navbar-nav{
 .card a{
   color: white !important;
   text-decoration: none !important;
+  &:has(img:hover){
+    .a {
+      color: $primary !important;
+    }
+  }
+
   :hover{
     .a{
       color: $primary
