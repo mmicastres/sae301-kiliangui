@@ -1,8 +1,50 @@
-
 {% extends "index.html.twig" %}
 
 {% block section %}
 
-    ESPACE MEMBRE
+    <h1>Espace Membre</h1>
+    <div class="d-flex">
+        <h2>Vous avez participer</h2>
+        <section>
+            <ul class="row row-cols-1 row-cols-md-3  row-cols-lg-4  ">
+                {% for projet in projets %}
+                    <li class="card mb-3 col ">
+                        <a href="?action=projet&id={{ projet.idProjet }}">
+                            <img src="{{ projet.thumbnail.url }}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h2 class="card-title h5 a ">{{ projet.nomProjet }}</h2>
+                                <p class="card-text">{{ projet.courte }}</p>
+                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section class="card">
+            <h2> Vos info</h2>
+            <ul class="infos">
+                <li>
+                    <label for="nom">Nom :</label>
+                    <input class="form-control" disabled id="nom" name="nom" value="{{ membre.nom }}">
+                </li>
+                <li>
+                    <label for="prenom">Prenom :</label>
+                    <input class="form-control" disabled id="prenom" name="prenom" value="{{ membre.prenom }}">
+                </li>
+                <li>
+                   <label for="email">Email :</label>
+                    <input class="form-control" disabled id="email" name="email" value="{{ membre.email }}">
+                </li>
+                <li>
+                    <label for="idIUT">Identifiant IUT :</label>
+                    <input class="form-control" disabled id="idIUT" name="idIUT" value="{{ membre.id_iut }}">
+                </li>
+
+            </ul>
+
+        </section>
+    </div>
 
 {% endblock %}
+

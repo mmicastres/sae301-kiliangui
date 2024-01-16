@@ -9,6 +9,7 @@ $light: #f8f9fa;
 $dark: #343a40;
 $body:#ffffff;
 $body-bg: #131312;
+$body-secondary-bg :#000000;
 $body-color:#ffffff;
 $card-bg : #6b6b64;
 
@@ -16,6 +17,24 @@ $table-color : $body-color;
 
 $navbar-light-brand-color: $body-color;
 
+input:disabled{
+  border : none;
+  background: unset;
+}
+
+.infos{
+  li{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    label{
+      flex:1;
+    }
+    input{
+      flex:2;
+    }
+  }
+}
 
 nav .navbar-nav{
   a.nav-link {

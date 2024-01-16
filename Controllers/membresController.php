@@ -112,14 +112,15 @@ class MembreController {
     }
 
     public function espaceMembre() {
-        $membre = $this->membreManager->get($_SESSION["idMembre"]);
-        if ($membre == false){
+        if (!isset($_SESSION["idMembre"])){
             $message = "Vous devez être connecté pour accéder à cette page";
             echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
             return;
         }
+        $membre = $this->membreManager->get($_SESSION["idMembre"]);
 
-        echo $this->twig->render('membre_espace.html.twig',array('acces'=>$_SESSION["acces"]));
+
+        echo $this->twig->render('membre_espace.html.twig',array('membre'=>$membre, 'acces'=>$_SESSION["acces"]));
     }
 
 
