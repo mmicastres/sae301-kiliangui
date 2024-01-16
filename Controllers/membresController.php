@@ -40,11 +40,11 @@ class MembreController {
             session_commit();
 
 			$message = "Bonjour ".$membre->prenom()." ".$membre->nom()."!";
-			echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'idMembre'=>$_SESSION["idMembre"],'message'=>$message));
+			echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'idMembre'=>$_SESSION["idMembre"],'message'=>$message));
 		} else { // acces non autorisé : variable de session acces = non
 			$message = "identification incorrecte";
 			$_SESSION['acces'] = "non";
-			echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'idMembre'=>$_SESSION["idMembre"],'message'=>$message));
+			echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'idMembre'=>$_SESSION["idMembre"],'message'=>$message));
     	} 
 	}
 
@@ -62,7 +62,7 @@ class MembreController {
         //echo $domain;
         if ($domain != "iut-tlse3.fr"){
             $message = "Vous devez utiliser votre adresse mail de l'IUT";
-            echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+            echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
             return;
         }
         $membre = $this->membreManager->InscriptionMembre($_POST["nom"],$_POST["prenom"],$_POST["id_iut"],$_POST["email"],$_POST["password"],0);
@@ -75,11 +75,11 @@ class MembreController {
             echo $this->twig->render("index.html.twig", array('acces' => $_SESSION["acces"], 'message'=>$message));
         } if ($membre != false && gettype($membre) == "string"){
             $message = $membre;
-            echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+            echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
         } else { // acces non autorisé : variable de session acces = non
             $message = "identification incorrecte";
             $_SESSION['acces'] = "non";
-            echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+            echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
         }
     }
 
@@ -93,7 +93,7 @@ class MembreController {
         unset($_SESSION["idMembre"]);
         unset($_SESSION["admin"]);
 		$message = "vous êtes déconnecté";
-		echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message)); 
+		echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message)); 
 	 
 	}
 
@@ -103,7 +103,7 @@ class MembreController {
 	* @return rien
 	*/
 	public function membreLoginForm() {
-		echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces']));
+		echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
 	}
 
     /**
@@ -112,13 +112,13 @@ class MembreController {
      * @return rien
      */
     public function membreRegisterForm() {
-        echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces']));
+        echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
     public function espaceMembre() {
         if (!isset($_SESSION["idMembre"])){
             $message = "Vous devez être connecté pour accéder à cette page";
-            echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+            echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
             return;
         }
         $membre = $this->membreManager->get($_SESSION["idMembre"]);
@@ -128,7 +128,7 @@ class MembreController {
     public function modifierMembre(){
         if (!isset($_SESSION["idMembre"])){
             $message = "Vous devez être connecté pour accéder à cette page";
-            echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+            echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
             return;
         }
         $membre = $this->membreManager->get($_SESSION["idMembre"]);

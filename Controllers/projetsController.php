@@ -38,7 +38,7 @@ class ProjetController{
 
     public function listeProjets(){
         $projets = $this->projetManager->getListPublier();
-        echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces']));
+        echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
 
@@ -46,7 +46,7 @@ class ProjetController{
     public function formAjoutProjet(){
         $contexts = $this->contextManager->listContext();
         $categories = $this->categorieManager->getList();
-        echo $this->twig->render('projet_ajout.html.twig',array('acces'=> $_SESSION['acces'],'idMembre'=>$_SESSION['idMembre'], 'contexts'=>$contexts,'categories'=>$categories));
+        echo $this->twig->render('projet_ajout.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'idMembre'=>$_SESSION['idMembre'], 'contexts'=>$contexts,'categories'=>$categories));
     }
     public function ajoutProjet(){
         if (! isset($_SESSION["idMembre"])) return
@@ -88,7 +88,7 @@ class ProjetController{
 
         }
         $message = $ok ? "Projet ajouté" : "probleme lors de l'ajout";
-        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces']));
+        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
     public function ajoutCommentaire(){
@@ -111,7 +111,7 @@ class ProjetController{
     public function choixModProjet($idMembre){
         $projets = $this->projetManager->getListMembre($idMembre);
 
-        echo $this->twig->render('projet_choix_modification.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces']));
+        echo $this->twig->render('projet_choix_modification.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
     public function saisieModProjet(){
         $idProjet = $_POST["idProjet"];
@@ -119,7 +119,7 @@ class ProjetController{
         $contexts = $this->contextManager->listContext();
         $categories = $this->categorieManager->getList();
 
-        echo $this->twig->render('projet_ajout.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'contexts'=>$contexts,'categories'=>$categories));
+        echo $this->twig->render('projet_ajout.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'contexts'=>$contexts,'categories'=>$categories));
     }
     public function validerModProjet(){
 $idProjet = $_POST["idProjet"];
@@ -170,7 +170,7 @@ $idProjet = $_POST["idProjet"];
     public function selectSuppr(){
         $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
-        echo $this->twig->render('suppr_confirm.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces']));
+        echo $this->twig->render('suppr_confirm.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
     public function supprimerProjet(){
@@ -178,7 +178,7 @@ $idProjet = $_POST["idProjet"];
         $projet = new Projet(array("idProjet"=>$idProjet));
         $ok = $this->projetManager->delete($projet);
         $message = $ok ? "Projet supprimé" : "probleme lors de la suppression";
-        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces']));
+        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
 
@@ -186,12 +186,12 @@ $idProjet = $_POST["idProjet"];
         $membre = $this->membreManager->get($_SESSION["idMembre"]);
         if ($membre == false){
             $message = "Vous devez être connecté pour accéder à cette page";
-            echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+            echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
             return;
         }
         $idMembre = $membre->idMembre();
         $projets = $this->projetManager->getListMembre($idMembre);
-        echo $this->twig->render('utilisateur/projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces']));
+        echo $this->twig->render('utilisateur/projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
 
@@ -200,7 +200,7 @@ $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
         if ($projet == false){
             $message = "Ce projet n'existe pas";
-            echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+            echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
             return;
         }
         $proprietaire = $projet->proprietaire();
@@ -210,7 +210,7 @@ $idProjet = $_POST["idProjet"];
             $is_proprietaire = true;
         }
         $this->projetManager->completeProjet($projet);
-        echo $this->twig->render('projet.html.twig',array('projet'=>$projet,'is_proprietaire'=>$is_proprietaire,'acces'=> $_SESSION['acces']));
+        echo $this->twig->render('projet.html.twig',array('projet'=>$projet,'is_proprietaire'=>$is_proprietaire,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
 }

@@ -31,7 +31,9 @@
         <a class="nav-link" href="?action=ajoutProjet">Ajouter</a>
         <a class="nav-link" href="?action=modif">Modifier</a>
         <a class="nav-link" href="?action=espaceMembre">Espace membre</a>
-        <a class="nav-link" href="?action=suppr">Supprimer</a>
+    {% if admin == "1" %}
+        <a class="nav-link" href="?action=admin">Admin</a>
+    {% endif %}
         <a class="nav-link" href="?action=logout">Deconnexion</a>
     {% if admin == "oui" %}
         <a class="nav-link" href="?action=gestion">Gestion</a>
