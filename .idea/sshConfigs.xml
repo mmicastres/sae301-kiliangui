@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="webmmi.iut-tlse3.fr" id="fa641ee7-407f-486d-9ccf-cfd3cda9cbce" port="2281" nameFormat="DESCRIPTIVE" username="glk4599a" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>
