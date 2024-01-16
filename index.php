@@ -69,30 +69,6 @@ elseif (isset($_GET["action"]) && $_GET["action"]=="liste") {
   $projetController->listeProjets();
 }
 
-
-
-// formulaire ajout d'un itineraire : saisie des caractéristiques à ajouter dans la BD
-//  https://.../index/php?action=ajout
-// version 0 : l'itineraire est rattaché automatiquement à un membre déjà présent dans la BD
-//              l'idmembre est en champ caché dans le formulaire
-elseif (isset($_GET["action"]) && $_GET["action"]=="ajout") {
-  $itiController->formAjoutItineraire();
- }
-
-
-
-// suppression d'un itineraire : choix de l'itineraire
-//  https://.../index/php?action=suppr
-elseif (isset($_GET["action"]) && $_GET["action"]=="suppr") {
-  $itiController->choixSuppItineraire($_SESSION['idmembre']);
-}
-
-// supression d'un itineraire dans la base
-// --> au clic sur le bouton "valider_supp" du form précédent
-elseif (isset($_POST["valider_supp"])) {
-  $itiController->suppItineraire();
-}
-
 // modification d'un itineraire : choix de l'itineraire
 //  https://.../index/php?action=modif
 elseif (isset($_GET["action"]) && $_GET["action"]=="modif") {
@@ -119,6 +95,10 @@ elseif (isset($_POST["select_supprimer_projet"])){
 elseif (isset($_POST["valider_supprimer_projet"])){
     echo "SUPPRI";
     $projetController->supprimerProjet();
+}
+
+elseif (isset($_POST["envoie_commentaire"])){
+    $projetController->ajoutCommentaire();
 }
 
 

@@ -6,6 +6,8 @@ include "Modules/urls.php";
 include "Models/categoriesManager.php";
 include "Models/projetsManager.php";
 include "Models/contextsManager.php";
+//commentaires
+include "Models/commentaireManager.php";
 
 
 class ProjetController{
@@ -15,6 +17,7 @@ class ProjetController{
     private $contextManager;
     private $categorieManager;
     private $urlsManager;
+    private $commentaireManager;
     private $twig;
 
     //DEBUG
@@ -26,6 +29,7 @@ class ProjetController{
         $this->contextManager = new ContextsManager($db);
         $this->categorieManager = new CategorieManager($db);
         $this->urlsManager = new UrlsManager($db);
+        $this->commentaireManager = new CommentaireManager($db);
         $this->twig = $twig;
 
         //DEBUG ONLY
@@ -85,6 +89,19 @@ class ProjetController{
         }
         $message = $ok ? "Projet ajouté" : "probleme lors de l'ajout";
         echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces']));
+    }
+
+    public function ajoutCommentaire(){
+        $idProjet = $_POST["idProjet"];
+        $idMembre = $_SESSION["idMembre"];
+        $contenu = $_POST["contenu"];
+        $commentaire = new Commentaire(array("idProjet"=>$idProjet,"idMembre"=>$idMembre,"contenu"=>$contenu));
+        $ok = $this->commentaireManager->add($commentaire);
+        $message = $ok ? "Commentaire ajouté" : "probleme lors de l'ajout";
+        $projet = $this->projetManager->get($idProjet);
+        $this->projetManager->completeProjet($projet);
+        $proprietaire = $projet->proprietaire() == $idMembre;
+        echo $this->twig->render('projet.html.twig', array('projet'=>$projet,'is_proprietaire'=>$proprietaire,'acces'=>$_SESSION['acces']));
     }
 
     public function choixModProjet($idMembre){

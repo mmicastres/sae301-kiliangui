@@ -3,11 +3,13 @@ require_once "Models/membresManager.php";
 require_once "Modules/contexts.php";
 require_once "Modules/urls.php";
 require_once "Models/urlsManager.php";
+//require_once  "Models/commentaireManager.php";
 class ProjetManager
 {
     private $_membresManage;
     private $_urlsManage;
 
+    private $_commentaireManage;
     private $_db; // Instance de PDO - objet de connexion au SGBD
 
     /**
@@ -20,6 +22,7 @@ class ProjetManager
         $this->_db = $db;
         $this->_urlsManage = new UrlsManager($db);
         $this->_membresManage = new MembreManager($db);
+        $this->_commentaireManage = new CommentaireManager($db);
     }
 
     /**
@@ -199,6 +202,7 @@ return $res;
 
         // get list of urls
         $urls = $this->_urlsManage->listUrl($projet);
+        $commantaires = $this->_commentaireManage->getList($projet);
         $imgs = array();
         $demos = array();
         $sources = array();
@@ -217,6 +221,8 @@ return $res;
         $projet->setUrlsSources($sources);
         $projet->setParticipants($this->_membresManage->get_participants($projet->idProjet()));
         $projet->setTags($this->get_Tag($projet->idProjet()));
+        $projet->setCommentaires($commantaires);
+
         return $projet;
 
     }

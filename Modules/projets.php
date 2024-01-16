@@ -16,7 +16,10 @@ class Projet{
     private int $_idCategorie;
     private array $_participants;
     private array $_tags;
+    private array $_commentaires;
     private int $_proprietaire;
+    private int $_likes;
+    private bool $_liked;
 
     public function __construct(array $donnees) {
         // initialisation d'un produit à partir d'un tableau de données*/
@@ -55,9 +58,15 @@ class Projet{
                 $this->_tags = explode(',', $donnees['tags']);
             }
         }
+        if (isset($donnees['commentaires'])) {
+            $this->_commentaires = $donnees['commentaires'];
+        }
         if (isset($donnees['proprietaire'])) {
             $this->_proprietaire = intval($donnees['proprietaire']); }
+        if (isset($donnees["likes"])){ $this->_likes = intval($donnees["likes"]);}
+        if (isset($donnees["liked"])){ $this->_liked = $donnees["liked"];}
     }
+
 
     // GETTERS //
     public function idProjet() { return $this->_idProjet;}
@@ -73,7 +82,10 @@ class Projet{
     public function idCategorie() { return $this->_idCategorie;}
     public function participants() { return isset($this->_participants) ? $this->_participants : [];}
     public function tags() { return $this->_tags;}
+    public function commentaires() { return isset($this->_commentaires) ? $this->_commentaires : [];}
     public function proprietaire() { return   $this->_proprietaire;}
+    public function likes() { return   $this->_likes;}
+    public function liked() { return   $this->_liked;}
 
     // SETTERS //
     public function setIdProjet(int $idProjet) { $this->_idProjet = $idProjet; }
@@ -87,5 +99,8 @@ class Projet{
     public function setIdCategorie(int $idcategorie) { $this->idCategorie = $idcategorie; }
     public function setParticipants(array $idmembre) { $this->_participants = $idmembre; }
     public function setTags(array $tags) { $this->_tags = $tags; }
+    public function setCommentaires(array $commentaires) { $this->_commentaires = $commentaires; }
     public function setProprietaire(int $proprietaire) { $this->_proprietaire = $proprietaire; }
+    public function setLikes(int $likes) { $this->_likes = $likes; }
+    public function setLiked(bool $liked) { $this->_liked = $liked; }
 }
