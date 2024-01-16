@@ -54,7 +54,7 @@ class MembreManager
             if ($data == false) return false;
             $hpassword = $data['passwordHash'];
             if (password_verify($password, $hpassword)) {
-                $req = "SELECT idMembre, nom, prenom FROM pr_membre WHERE `email`=:email";
+                $req = "SELECT idMembre, nom, prenom,admin FROM pr_membre WHERE `email`=:email";
                 $stmt = $this->_db->prepare($req);
                 $stmt->execute(array(":email" => $email));
                 if ($data = $stmt->fetch()) {
@@ -105,6 +105,12 @@ class MembreManager
                 $membres[] = new Membre($data);
             }
             return $membres;
+        }
+
+        public function modifier($membre){
+            $req = "UPDATE pr_membre SET nom = :nom, prenom = :prenom, idIut = :idIut, email = :email, passwordHash = :passwordHash, admin = :admin WHERE idMembre = :idMembre";
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute(array(":nom" => $membre->nom(), ":prenom" => $membre->prenom(), ":idIut" => $membre->id_iut(), ":email" => $membre->email(), ":passwordHash" => $membre->passwordHash(), ":admin" => $membre->admin(), ":idMembre" => $membre->idMembre()));
         }
     }
 ?>

@@ -123,10 +123,16 @@ elseif (isset($_POST["valider_recher"])) {
 
 
 
+elseif(isset($_POST["modifier_membre"])){
+    $membreController->modifierMembre();
+}
 //Espace utilisateur
 elseif (isset($_GET["action"]) && $_GET["action"] == "espaceMembre"){
     $membreController->espaceMembre();
 }
+
+
+
 elseif (isset($_GET["action"]) && $_GET["action"] == "mesProjets"){
     $projetController->listeMesProjets();
 }

@@ -32,6 +32,9 @@ class MembreController {
 			$_SESSION['acces'] = "oui";
             # convert idMmebre to string
             $_SESSION["idMembre"] = strval($membre->idMembre());
+            if ($membre->admin()==1){
+                $_SESSION["admin"] = 1;
+            }
             //var_dump($_SESSION['idMembre']);
             #save session
             session_commit();
@@ -88,6 +91,7 @@ class MembreController {
 	function membreDeconnexion() {
         unset($_SESSION["acces"]);
         unset($_SESSION["idMembre"]);
+        unset($_SESSION["admin"]);
 		$message = "vous êtes déconnecté";
 		echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message)); 
 	 
@@ -118,9 +122,24 @@ class MembreController {
             return;
         }
         $membre = $this->membreManager->get($_SESSION["idMembre"]);
+        $projetsParticiper = $this->projetManager->getListParticiper($_SESSION["idMembre"]);
+        echo $this->twig->render('membre_espace.html.twig',array('membre'=>$membre,'projets'=>$projetsParticiper, 'acces'=>$_SESSION["acces"]));
+    }
+    public function modifierMembre(){
+        if (!isset($_SESSION["idMembre"])){
+            $message = "Vous devez être connecté pour accéder à cette page";
+            echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
+            return;
+        }
+        $membre = $this->membreManager->get($_SESSION["idMembre"]);
+        $membre->setNom($_POST["nom"]);
+        $membre->setPrenom($_POST["prenom"]);
+        $membre->setEmail($_POST["email"]);
 
+        $membre->setIdIut($_POST["idIUT"]);
+        $this->membreManager->modifier($membre);
+        header("Location: index.php?action=espaceMembre");
 
-        echo $this->twig->render('membre_espace.html.twig',array('membre'=>$membre, 'acces'=>$_SESSION["acces"]));
     }
 
 

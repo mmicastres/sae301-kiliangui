@@ -185,6 +185,19 @@ return $res;
         return $projets;
     }
 
+    public function getListParticiper(int $idMembre):array
+    {
+        $req = 'SELECT * FROM pr_projet inner join pr_participer WHERE pr_participer.idProjet = pr_projet.idProjet AND  idMembre=?';
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($idMembre));
+        $projets = [];
+        while ($data = $stmt->fetch()) {
+            $uncomplete = new Projet($data);
+            $projets[] = $this->completeProjet($uncomplete);
+        }
+        return $projets;
+    }
+
 
     public function addParticipant(int $idProjet, int $idMembre):bool
     {

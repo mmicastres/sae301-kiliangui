@@ -4,8 +4,8 @@
 
     <h1>Espace Membre</h1>
     <div class="d-flex">
-        <h2>Vous avez participer</h2>
         <section>
+            <h2>Vous avez participer</h2>
             <ul class="row row-cols-1 row-cols-md-3  row-cols-lg-4  ">
                 {% for projet in projets %}
                     <li class="card mb-3 col ">
@@ -23,28 +23,35 @@
         </section>
         <section class="card">
             <h2> Vos info</h2>
-            <ul class="infos">
-                <li>
-                    <label for="nom">Nom :</label>
-                    <input class="form-control" disabled id="nom" name="nom" value="{{ membre.nom }}">
-                </li>
-                <li>
-                    <label for="prenom">Prenom :</label>
-                    <input class="form-control" disabled id="prenom" name="prenom" value="{{ membre.prenom }}">
-                </li>
-                <li>
-                   <label for="email">Email :</label>
-                    <input class="form-control" disabled id="email" name="email" value="{{ membre.email }}">
-                </li>
-                <li>
-                    <label for="idIUT">Identifiant IUT :</label>
-                    <input class="form-control" disabled id="idIUT" name="idIUT" value="{{ membre.id_iut }}">
-                </li>
-
-            </ul>
-
+            <form id="infoMembre" action="" method="post">
+                <ul class="infos">
+                    <li>
+                        <label for="nom">Nom :</label>
+                        <input class="form-control" disabled id="nom" name="nom" value="{{ membre.nom }}">
+                    </li>
+                    <li>
+                        <label for="prenom">Prenom :</label>
+                        <input class="form-control" disabled id="prenom" name="prenom" value="{{ membre.prenom }}">
+                    </li>
+                    <li>
+                       <label for="email">Email :</label>
+                        <input class="form-control" disabled id="email" name="email" value="{{ membre.email }}">
+                    </li>
+                    <li>
+                        <label for="idIUT">Identifiant IUT :</label>
+                        <input class="form-control" disabled id="idIUT" name="idIUT" value="{{ membre.id_iut }}">
+                    </li>
+                </ul>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button id="modMembre" class="btn btn-primary" type="button">Modifier les infos</button>
+                    <button id="confModMembre" class="btn btn-success d-none" type="submit" name="modifier_membre" value="true" >Valider </button>
+                </div>
+            </form>
         </section>
     </div>
 
 {% endblock %}
 
+{% block head %}
+    <script src="assets/js/updateMembre.js" defer></script>
+{% endblock %}
