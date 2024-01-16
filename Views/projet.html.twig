@@ -78,19 +78,32 @@
                 </form>
                 <ul>
                     {% for commentaire in projet.commentaires %}
-                        <li class="card">
-                            <div class="d-flex justify-content-between align-items-center ">
+                        <li class="card" id="{{ commentaire.idCommentaire }}">
+                            <div class="d-flex justify-content-between align-items-center comment">
                                 <p class="h5">{{ commentaire.membre.prenom }} {{ commentaire.membre.nom }}</p>
                                 <p>{{ commentaire.date }}</p>
                             </div>
                             <p>{{ commentaire.contenu }}</p>
                             {% if commentaire.proprietaire %}
+                                <form class="modify-form d-none">
+                                    <!-- Formulaire de modification -->
+                                    <input type="hidden" name="idCommentaire" value="{{ commentaire.idCommentaire }}">
+                                    <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
+                                    <div>
+                                        <label for="contenu">Ecrie un commentaire</label>
+                                        <textarea name="contenu" id="contenu">{{ commentaire.contenu }}</textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <input class="btn btn-success" type="submit" name="saisie_modif" value="Edit">
+                                        <input class="btn btn-danger" type="submit" name="del_commentaire" value="Supprimer">
+                                    </div>
+                                </form>
 
                                 <form method="post" action="">
                                     <input type="hidden" name="idCommentaire" value="{{ commentaire.idCommentaire }}">
                                     <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <input class="btn btn-primary" type="submit" name="saisie_modif" value="Edit">
+                                        <button class="btn btn-primary edit-button " value="{{ commentaire.idCommentaire }}" type="button">Modifier</button>
                                         <input class="btn btn-danger" type="submit" name="del_commentaire" value="Supprimer">
                                     </div>
                                 </form>
@@ -112,3 +125,7 @@
 
 {% endblock %}
 
+
+{% block head %}
+<script src="assets/js/modif_commentaire.js" defer></script>
+{% endblock %}
