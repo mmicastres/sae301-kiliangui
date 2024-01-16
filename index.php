@@ -100,6 +100,9 @@ elseif (isset($_POST["valider_supprimer_projet"])){
 elseif (isset($_POST["envoie_commentaire"])){
     $projetController->ajoutCommentaire();
 }
+elseif (isset($_POST["del_commentaire"])){
+    $projetController->delCommentaire();
+}
 
 
 // recherche d'itineraire : saisie des critres de recherche dans un formulaire

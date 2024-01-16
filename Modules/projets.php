@@ -21,8 +21,8 @@ class Projet{
     private int $_likes;
     private bool $_liked;
 
+    //Initialisation d'un projet à partir des données
     public function __construct(array $donnees) {
-        // initialisation d'un produit à partir d'un tableau de données*/
         if (isset($donnees['idProjet'])) { $this->_idProjet = $donnees['idProjet']; }
         if (isset($donnees['titre'])) { $this->_titre = $donnees['titre']; }
         if (isset($donnees['description'])) { $this->_description = $donnees['description']; }
@@ -34,6 +34,7 @@ class Projet{
         if (isset($donnees['idCategorie'])) { $this->_idCategorie = intval($donnees['idCategorie']); }
         if (isset($donnees['participants'])) {
             if (is_array($donnees['participants'])) {
+                // Verifie si le tableau est un tableau d'id ou de Membre
                 if (get_class($donnees["participants"][0]) == "Membre") {
                     $this->_participants = $donnees["participants"];
 
@@ -47,9 +48,6 @@ class Projet{
                     $this->_participants = $donnees['participants'];
                 }
             }
-            else{
-            }
-            #explode(',', $donnees['participants'])
         }
         if (isset($donnees['tags'])) {
             if (is_array($donnees['tags'])) {
@@ -58,11 +56,8 @@ class Projet{
                 $this->_tags = explode(',', $donnees['tags']);
             }
         }
-        if (isset($donnees['commentaires'])) {
-            $this->_commentaires = $donnees['commentaires'];
-        }
-        if (isset($donnees['proprietaire'])) {
-            $this->_proprietaire = intval($donnees['proprietaire']); }
+        if (isset($donnees['commentaires'])) { $this->_commentaires = $donnees['commentaires']; }
+        if (isset($donnees['proprietaire'])) { $this->_proprietaire = intval($donnees['proprietaire']); }
         if (isset($donnees["likes"])){ $this->_likes = intval($donnees["likes"]);}
         if (isset($donnees["liked"])){ $this->_liked = $donnees["liked"];}
     }
@@ -72,8 +67,10 @@ class Projet{
     public function idProjet() { return $this->_idProjet;}
     public function nomProjet() { return $this->_titre;}
     public function description() { return $this->_description;}
+    //Description courte
     public function courte() { return substr($this->_description, 0, 100)."[...]";}
     public function imgsUrls() { return isset($this->_imgsUrls) ? $this->_imgsUrls : [];}
+    //Premiere image
     public function thumbnail() { return isset($this->_imgsUrls) ? $this->_imgsUrls[0] : "";}
     public function urlsDemos() { return isset($this->_urlsDemos) ? $this->_urlsDemos : [];}
     public function urlsSources() { return isset($this->_urlsSources) ? $this->_urlsSources : [] ;}
@@ -85,6 +82,7 @@ class Projet{
     public function commentaires() { return isset($this->_commentaires) ? $this->_commentaires : [];}
     public function proprietaire() { return   $this->_proprietaire;}
     public function likes() { return   $this->_likes;}
+    //Detect si le projet est liké par l'utilisateur
     public function liked() { return   $this->_liked;}
 
     // SETTERS //

@@ -25,12 +25,13 @@ class CommentaireManager{
         return $stmp;
     }
 
-    public function del(Commentaire $commentaire) {
-        $req = $this->_db->prepare('DELETE FROM commentaires WHERE idCommentaire = :idCommentaire');
-        $stmp = $req->execute(array(
-            'idCommentaire' => $commentaire->idCommentaire()
+    public function del(int $idCommentaire) {
+        $req = 'DELETE FROM pr_commentaire WHERE idCommentaire = :idCommentaire';
+        $stmp = $this->_db->prepare($req);
+        $stmp->execute(array(
+            'idCommentaire' => $idCommentaire
         ));
-        $stmp->execute();
+        return $stmp->execute();
     }
 
     public function getList(Projet $projet) {

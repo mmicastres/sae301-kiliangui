@@ -85,9 +85,14 @@
                             </div>
                             <p>{{ commentaire.contenu }}</p>
                             {% if commentaire.proprietaire %}
+
                                 <form method="post" action="">
                                     <input type="hidden" name="idCommentaire" value="{{ commentaire.idCommentaire }}">
-                                    <input class="btn btn-primary" type="submit" name="saisie_modif" value="Edit">
+                                    <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <input class="btn btn-primary" type="submit" name="saisie_modif" value="Edit">
+                                        <input class="btn btn-danger" type="submit" name="del_commentaire" value="Supprimer">
+                                    </div>
                                 </form>
                             {% endif %}
                         </li>

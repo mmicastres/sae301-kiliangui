@@ -98,10 +98,14 @@ class ProjetController{
         $commentaire = new Commentaire(array("idProjet"=>$idProjet,"idMembre"=>$idMembre,"contenu"=>$contenu));
         $ok = $this->commentaireManager->add($commentaire);
         $message = $ok ? "Commentaire ajouté" : "probleme lors de l'ajout";
-        $projet = $this->projetManager->get($idProjet);
-        $this->projetManager->completeProjet($projet);
-        $proprietaire = $projet->proprietaire() == $idMembre;
-        echo $this->twig->render('projet.html.twig', array('projet'=>$projet,'is_proprietaire'=>$proprietaire,'acces'=>$_SESSION['acces']));
+        // Redirection vers la page du projet concerné
+        header("Location: index.php?action=projet&id=".$_POST["idProjet"]);}
+
+    public function delCommentaire(){
+        $idCommentaire = $_POST["idCommentaire"];
+        $ok = $this->commentaireManager->del($idCommentaire);
+        $message = $ok ? "Commentaire supprimé" : "probleme lors de la suppression";
+        header("Location: index.php?action=projet&id=".$_POST["idProjet"]);
     }
 
     public function choixModProjet($idMembre){
@@ -112,7 +116,6 @@ class ProjetController{
     public function saisieModProjet(){
         $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
-        $this->projetManager->completeProjet($projet);
         $contexts = $this->contextManager->listContext();
         $categories = $this->categorieManager->getList();
 
@@ -160,7 +163,6 @@ $idProjet = $_POST["idProjet"];
         }
         $message = "Le projet à était éditer";
         $projet = $this->projetManager->get($idProjet);
-
         $proprietaire = $projet->proprietaire();
         echo $this->twig->render('projet.html.twig', array('projet'=>$projet,'is_proprietaire'=>true,'acces'=>$_SESSION['acces']));
     }
