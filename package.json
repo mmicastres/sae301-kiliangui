@@ -1,0 +1,24 @@
+{
+  "name": "sae301-kiliangui",
+  "version": "1.0.0",
+  "description": "Ce repo vous présente le code source d'une application permettant aux étudiants de publier leurs projets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "css": "node-sass styles -o assets/css/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mmicastres/sae301-kiliangui.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mmicastres/sae301-kiliangui/issues"
+  },
+  "homepage": "https://github.com/mmicastres/sae301-kiliangui#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.2",
+    "node-sass": "^9.0.0"
+  }
+}
