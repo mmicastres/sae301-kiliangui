@@ -32,7 +32,7 @@ class MembreController {
 			$_SESSION['acces'] = "oui";
             # convert idMmebre to string
             $_SESSION["idMembre"] = strval($membre->idMembre());
-            var_dump($_SESSION['idMembre']);
+            //var_dump($_SESSION['idMembre']);
             #save session
             session_commit();
 
@@ -56,7 +56,7 @@ class MembreController {
         $domain = explode('.', $domain);
         $domain = array_slice($domain, -2, 2);
         $domain = implode('.', $domain);
-        echo $domain;
+        //echo $domain;
         if ($domain != "iut-tlse3.fr"){
             $message = "Vous devez utiliser votre adresse mail de l'IUT";
             echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'message'=>$message));
@@ -64,7 +64,7 @@ class MembreController {
         }
         $membre = $this->membreManager->InscriptionMembre($_POST["nom"],$_POST["prenom"],$_POST["id_iut"],$_POST["email"],$_POST["password"],0);
         //check type of $membre
-        echo gettype($membre);
+        //echo gettype($membre);
         if ($membre != false && gettype($membre) == "object" ){
             $_SESSION["acces"] = "oui";
             $_SESSION["idMembre"] = $membre->idMembre();

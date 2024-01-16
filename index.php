@@ -103,13 +103,22 @@ elseif (isset($_GET["action"]) && $_GET["action"]=="modif") {
 // --> au clic sur le bouton "saisie modif" du form précédent
 //  ==> version 0 : pas modif de l'iditi ni de l'idmembre
 elseif (isset($_POST["saisie_modif"])) {
-  $itiController->saisieModItineraire();
+  //$itiController->saisieModItineraire();
+    $projetController->saisieModProjet();
 }
 
 //modification d'un itineraire : enregistrement dans la bd
 // --> au clic sur le bouton "valider_modif" du form précédent
-elseif (isset($_POST["valider_modif"])) {
-  $itiController->modItineraire();
+elseif (isset($_POST["valider_mod_projet"])) {
+  $projetController->validerModProjet();
+}
+
+elseif (isset($_POST["select_supprimer_projet"])){
+    $projetController->selectSuppr();
+}
+elseif (isset($_POST["valider_supprimer_projet"])){
+    echo "SUPPRI";
+    $projetController->supprimerProjet();
 }
 
 

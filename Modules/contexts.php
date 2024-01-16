@@ -18,7 +18,7 @@ class Contexte {
 
     // GETTERS //
     public function idContexte()       { return $this->_idContexte;}
-    public function identifiant()    { return $this->_identifiant;}
+    public function identifiant()    { return $this->_idContexte;}
     public function intitule()    { return $this->_intitule;}
     public function semestre()  { return $this->_semestre;}
 

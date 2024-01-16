@@ -37,7 +37,6 @@ class ProjetManager
             $stmt = $this->_db->prepare($req);
             $res = $stmt->execute(array($projet->idProjet(), $projet->proprietaire() , $projet->nomProjet(),$projet->description(),$projet->publier(),$projet->idContexte(),$projet->idCategorie()));
 
-            //
             // pour debuguer les requêtes SQL
             $errorInfo = $stmt->errorInfo();
             if ($errorInfo[0] != 0) {
@@ -46,6 +45,57 @@ class ProjetManager
 
 return $res;
 }
+
+    public function modifier(){
+        // MISE A JOUR DU PROJET
+        $idProjet = $_POST['idProjet'];
+        $projet = $this->get($idProjet);
+        $titre = $_POST['titre'];
+        $description = $_POST['description'];
+        $publier = $projet->publier();
+        $idContexte = $_POST['idContexte'];
+        $idCategorie = $_POST['idCategorie'];
+        $req = "UPDATE pr_projet SET titre = ?, description = ?, publier = ?, idContexte = ?, idCategorie = ? WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($titre,$description,$publier,$idContexte,$idCategorie,$idProjet));
+        // Mise a jour des urls
+        $this->_urlsManage->deleteAll($idProjet);
+        $imgsUrls = json_decode($_POST["imgsUrls"]);
+        $demosUrls = json_decode($_POST["demosUrls"]);
+        $sourcesUrls = json_decode($_POST["sourcesUrls"]);
+        foreach ($imgsUrls as $url) {
+            $url = new Url(array("idProjet"=>$idProjet,"type"=>"img","url"=>$url));
+            $this->_urlsManage->addUrl($url);
+        }
+        foreach ($demosUrls as $url) {
+            $url = new Url(array("idProjet"=>$idProjet,"type"=>"demo","url"=>$url));
+            $this->_urlsManage->addUrl($url);
+        }
+        foreach ($sourcesUrls as $url) {
+            $url = new Url(array("idProjet"=>$idProjet,"type"=>"source","url"=>$url));
+            $this->_urlsManage->addUrl($url);
+        }
+        // Mise a jour des tags
+        //$this->deleteAllTags($idProjet);
+        //$tags = json_decode($_POST["tags"]);
+        //foreach ($tags as $tag) {
+        //    $this->addTag($idProjet,$tag);
+        //}
+        // Mise a jour des participants
+        $this->deleteAllParticipants($idProjet);
+        $participants = json_decode($_POST["participants"]);
+        foreach ($participants as $participant) {
+            $this->addParticipant($idProjet,$participant);
+        }
+
+    }
+
+
+    public function deleteAllParticipants($idProjet){
+        $req = "DELETE FROM pr_participer WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($idProjet));
+    }
 
     /**
      * nombre de projets dans la base de données
@@ -63,11 +113,27 @@ return $res;
      * suppression d'un projet dans la base de données
      * @param Projet
      * @return boolean true si suppression, false sinon
-     * @param rien
      */
     public function delete(Projet $projet) : bool
     {
-        $req = "DELETE FROM projet WHERE idProjet = ?";
+        // delete urls
+        $this->_urlsManage->deleteAll($projet->idProjet());
+        // delete participants
+        $req = "DELETE FROM pr_participer WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($projet->idProjet()));
+        // delete tags
+        $req = "DELETE FROM pr_caracterise WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($projet->idProjet()));
+        // delete aime
+        $req = "DELETE FROM pr_aime WHERE idProjet = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($projet->idProjet()));
+
+        // delete projet
+
+        $req = "DELETE FROM pr_projet WHERE idProjet = ?";
         $stmt = $this->_db->prepare($req);
         return $stmt->execute(array($projet->idProjet()));
     }
@@ -89,7 +155,8 @@ return $res;
             print_r($errorInfo);
         }
         $data = $stmt->fetch();
-        return new Projet($data);
+        $projet = new Projet($data);
+        return $this->completeProjet($projet);
     }
 
     /**

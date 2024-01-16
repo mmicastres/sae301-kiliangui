@@ -4,9 +4,8 @@
       <h1>Vos projets</h1>
       <ul class="row row-cols-1 row-cols-md-3  row-cols-lg-4  ">
             {% for projet in projets %}
-                  <li class="card mb-3 col">
+                  <li class="card mb-3 col ">
                         <a href="?action=projet&id={{ projet.idProjet }}">
-
                               <img src="{{ projet.thumbnail.url }}" class="card-img-top" alt="...">
                               <div class="card-body">
                                     <h2 class="card-title h5 a ">{{ projet.nomProjet }}</h2>
