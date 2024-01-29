@@ -122,5 +122,11 @@ class MembreManager
             $stmt = $this->_db->prepare($req);
             $stmt->execute(array(":nom" => $membre->nom(), ":prenom" => $membre->prenom(), ":idIut" => $membre->id_iut(), ":email" => $membre->email(), ":passwordHash" => $membre->passwordHash(), ":admin" => $membre->admin(), ":idMembre" => $membre->idMembre()));
         }
+
+        public function delete(Membre $membre){
+            $req = "DELETE FROM pr_membre WHERE idMembre = :idMembre";
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute(array(":idMembre" => $membre->idMembre()));
+        }
     }
 ?>

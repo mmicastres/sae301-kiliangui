@@ -59,6 +59,9 @@ if (!empty($_POST)) {
     } elseif (isset($_POST["modifier_membre"])) {
         $membreController->modifierMembre();
     }
+    elseif (isset($_POST["supprMembre"])) {
+        $membreController->deleteMembre();
+    }
     // recherche des itineraires : construction de la requete SQL en fonction des critères
 // de recherche et affichage du résultat dans un tableau HTML
 // --> au clic sur le bouton "valider_recher" du form précédent

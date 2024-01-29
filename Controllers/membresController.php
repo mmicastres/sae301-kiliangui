@@ -185,6 +185,26 @@ class MembreController {
 
     }
 
+    public function deleteMembre(){
+
+        if (isset($_SESSION["admin"]) && $_SESSION["admin"] == 1){
+            var_dump($_POST["idMembre"]);
+            $membre = $this->membreManager->get($_POST["idMembre"]);
+            $this->membreManager->delete($membre);
+            header("Location: index.php?action=espaceAdmin");
+            return;
+        }else{
+            if (!isset($_SESSION["idMembre"])){
+                $message = "Vous devez être connecté pour accéder à cette page";
+                echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
+                return;
+            }
+            $membre = $this->membreManager->get($_SESSION["idMembre"]);
+            $this->membreManager->delete($membre);
+            header("Location: index.php?action=deconnexion");
+        }
+    }
+
 
     public function searchUser(){
         $search = $_GET["search"];
