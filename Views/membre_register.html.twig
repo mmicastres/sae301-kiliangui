@@ -4,7 +4,7 @@
 {% block section %}
 <form method="post" action="index.php" class="well">
 <fieldset>
-  <legend>veuillez vous inscrire</legend>
+  <legend>{% if membre %}Modifier l'utilisateur{% else %}veuillez vous inscrire{% endif %}</legend>
   {% if message is defined %}
   <div class="alert alert-danger" role="alert">
     {{ message }}
@@ -13,38 +13,43 @@
     <div class="form-group row">
       <label for="login" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
       <div class="col-sm-6">
-        <input  type="email" id="login" class="form-control form-control-sm" name="email" required placeholder="" />
+        <input  type="email" id="login" class="form-control form-control-sm" name="email" required placeholder="" {% if membre%}value="{{ membre.email }}"{% endif %} />
       </div>
     </div>
 <!--nom-->
     <div class="form-group row">
       <label for="nom" class="col-sm-2 col-form-label col-form-label-sm">Nom</label>
       <div class="col-sm-6">
-        <input  type="text" id="nom" class="form-control form-control-sm" name="nom" required placeholder="" />
+        <input  type="text" id="nom" class="form-control form-control-sm" name="nom" required placeholder=""  {% if membre%}value="{{ membre.nom }}"{% endif %} />
       </div>
     </div>
 <!--prenom-->
     <div class="form-group row">
       <label for="prenom" class="col-sm-2 col-form-label col-form-label-sm">Prenom</label>
       <div class="col-sm-6">
-        <input  type="text" id="prenom" class="form-control form-control-sm" name="prenom" required placeholder="" />
+        <input  type="text" id="prenom" class="form-control form-control-sm" name="prenom" required placeholder="" {% if membre%}value="{{ membre.prenom }}"{% endif %} />
       </div>
     </div>
 <!--id_iut-->
     <div class="form-group row">
       <label for="id_iut" class="col-sm-2 col-form-label col-form-label-sm">Identifiant IUT</label>
       <div class="col-sm-6">
-        <input  type="text" id="id_iut" class="form-control form-control-sm" name="id_iut" required placeholder="" />
+        <input  type="text" id="id_iut" class="form-control form-control-sm" name="id_iut" required placeholder="" {% if membre%}value="{{ membre.id_iut }}"{% endif %}  />
       </div>
     </div>
 
     <div class="form-group row">
-      <label for="logpasswdin" class="col-sm-2 col-form-label col-form-label-sm">Mot de passe</label>
+      <label for="logpasswdin" class="col-sm-2 col-form-label col-form-label-sm">{% if membre %}Nouveau mot de passe{% else %}Mot de passe{% endif %}</label>
       <div class="col-sm-6">
-        <input  type="password" id="passwd" class="form-control form-control-sm" name="password" required placeholder="" />
+        <input  type="password" id="passwd" class="form-control form-control-sm" name="password" {% if not membre %}required{% endif %} placeholder="" />
       </div>
     </div>
-  <input type="submit" name="inscription" value="inscription"/>
+  {% if membre %}
+    <input type="hidden" name="idMembre" value="{{ membre.idMembre }}"/>
+    <input type="submit" name="modifier_membre" value="modifier_membre"/>
+  {% else %}
+    <input type="submit" name="inscription" value="inscription"/>
+  {% endif %}
 </fieldset>
 </form>
 {% endblock %}

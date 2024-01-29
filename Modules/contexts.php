@@ -1,6 +1,5 @@
 <?php
 
-
 class Contexte {
     private int $_idContexte;
     private string $_identifiant;
@@ -10,15 +9,15 @@ class Contexte {
     // contructeur
     public function __construct(array $data) {
         // initialisation d'un produit à partir d'un tableau de données
-        if (isset($data['idContexte']))       { $this->_idContexte =       $data['idContexte']; }
+        if (isset($data['idContexte']))       { $this->_idContexte =       intval($data['idContexte']); }
         if (isset($data['identifiant']))    { $this->_identifiant =    $data['identifiant']; }
         if (isset($data['intitule']))    { $this->_intitule =    $data['intitule']; }
-        if (isset($data['semestre']))  { $this->_semestre =  $data['semestre']; }
+        if (isset($data['semestre']))  { $this->_semestre =  intval($data['semestre']); }
     }
 
     // GETTERS //
     public function idContexte()       { return $this->_idContexte;}
-    public function identifiant()    { return $this->_idContexte;}
+    public function identifiant()    { return $this->_identifiant;}
     public function intitule()    { return $this->_intitule;}
     public function semestre()  { return $this->_semestre;}
 
@@ -29,3 +28,5 @@ class Contexte {
     public function setSemestre(string $semestre)         { $this->_semestre = $semestre; }
 
 }
+
+?>

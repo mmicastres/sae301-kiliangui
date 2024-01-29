@@ -1,0 +1,100 @@
+{% extends "index.html.twig" %}
+
+{% block section %}
+
+
+   <div>
+       <dialog id="CategorieModal">
+              <form action="" method="post">
+                  <input hidden name="idCategorie" id="idCategorie" value="">
+                  <div>
+                      <label for="intitule">Intitulé</label>
+                      <input class="form-control"  type="text" name="intitule" id="intitule">
+                  </div>
+                <button class="btn-primary btn" name="addCategorie" value="true" type="submit">Ajouter</button>
+                <button hidden class="btn btn-danger" id="delCategorie" name="delCategorie" value="true" type="submit">Delete</button>
+
+              </form>
+       </dialog>
+         <dialog id="ContexteModal">
+                  <form action="" method="post">
+                      <input hidden name="idContexte" id="idContexte" value="">
+                      <div>
+                            <label for="identifiant">Identifiant</label>
+                            <input type="text" name="identifiant" id="identifiant">
+                      </div>
+                    <div>
+                         <label for="intitule">Intitulé</label>
+                         <input class="form-control" type="text" name="intitule" id="intitule">
+                    </div>
+                      <div>
+                            <label for="semestre">Semestre</label>
+                            <input type="text" name="semestre" id="semestre">
+                      </div>
+                 <button class="btn btn-primary" name="addContexte" value="true"  type="submit">Ajouter</button>
+                      <button hidden class="btn btn-danger" id="delContexte" name="delContexte" value="true" type="submit">Delete</button>
+
+                  </form>
+   </div>
+
+
+    <h1>Espace Admin</h1>
+        <section>
+            <h2>Projets à vérifier</h2>
+            <ul class="row row-cols-1 row-cols-md-3  row-cols-lg-4  ">
+                {% for projet in projets %}
+                    <li class="card mb-3 col ">
+                        <a href="?action=projet&id={{ projet.idProjet }}">
+                            <img src="{{ projet.thumbnail.url }}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h2 class="card-title h5 a ">{{ projet.nomProjet }}</h2>
+                                <p class="card-text">{{ projet.courte }}</p>
+                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    <div>
+        <h2>Catégories</h2>
+        <ul class="d-flex gap-1 list-unstyled">
+            <li class=""><button id="addCategorie" class="btn btn-primary">Ajouter</button></li>
+            {% for categorie in categories %}
+                <li class="card px-2" id="{{ categorie.idCategorie }}"><span>{{ categorie.intitule }}</span><button class="modCategorie">Modifier</button></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <h2>Contexte</h2>
+        <ul class="d-flex gap-1 list-unstyled">
+            <li class=""><button id="addContexte" class="btn btn-primary">Ajouter</button></li>
+            {% for context in contexts %}
+                <li class="card px-2 d-flex" id="{{ context.idContexte }}"><span class="identifiant">{{ context.identifiant }}</span> - <span class="intitule">{{ context.intitule }}</span> - S<span class="semestre">{{ context.semestre }}</span><button class="modContexte">Modifier</button></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <h2>Membres</h2>
+
+        <table class="table table-hover table-sm"><thead>
+            <tr><th>IdMembre</th><th>Nom</th><th>Prenom</th><th>Email</th><th>IdIut</th><th>Modifier</th></tr>
+            </thead><tbody>
+            {% for membre in membres %}
+                <tr><td>{{membre.idMembre}}</td>
+                    <td>{{membre.nom}}</td>
+                    <td>{{ membre.prenom }}</td>
+                    <td>{{ membre.email }}</td>
+                    <td>{{ membre.id_iut }}</td>
+                    <td><a class="btn btn-primary" href="?action=modifMembre&idMembre={{ membre.idMembre }}" >Modifier</a> </td>
+                </tr>
+            {% endfor %}
+            </tbody></table>
+
+    </div>
+
+{% endblock %}
+
+{% block head %}
+<script src="assets/js/adminModal.js" defer></script>
+{% endblock %}

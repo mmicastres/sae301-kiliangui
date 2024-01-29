@@ -80,7 +80,7 @@ class Projet{
     public function participants() { return isset($this->_participants) ? $this->_participants : [];}
     public function tags() { return $this->_tags;}
     public function commentaires() { return isset($this->_commentaires) ? $this->_commentaires : [];}
-    public function proprietaire() { return   $this->_proprietaire;}
+    public function proprietaire() { return isset($this->_proprietaire) ? $this->_proprietaire : false;}
     public function likes() { return   $this->_likes;}
     //Detect si le projet est liké par l'utilisateur
     public function liked() { return   $this->_liked;}

@@ -7,7 +7,7 @@ require_once "Models/urlsManager.php";
 class ProjetManager
 {
     private $_membresManage;
-    private $_urlsManage;
+    private $_urlsManager;
 
     private $_commentaireManage;
     private $_db; // Instance de PDO - objet de connexion au SGBD
@@ -20,7 +20,7 @@ class ProjetManager
     public function __construct($db)
     {
         $this->_db = $db;
-        $this->_urlsManage = new UrlsManager($db);
+        $this->_urlsManager = new UrlsManager($db);
         $this->_membresManage = new MembreManager($db);
         $this->_commentaireManage = new CommentaireManager($db);
     }
@@ -38,7 +38,7 @@ class ProjetManager
             // requete d'ajout dans la BD
             $req = "INSERT INTO pr_projet (idProjet,proprietaire,titre,description,publier,idContexte,idCategorie) VALUES (?,?,?,?,?,?,?)";
             $stmt = $this->_db->prepare($req);
-            $res = $stmt->execute(array($projet->idProjet(), $projet->proprietaire() , $projet->nomProjet(),$projet->description(),$projet->publier(),$projet->idContexte(),$projet->idCategorie()));
+            $res = $stmt->execute(array($projet->idProjet(), $_SESSION["idMembre"] , $projet->nomProjet(),$projet->description(),$projet->publier(),$projet->idContexte(),$projet->idCategorie()));
 
             // pour debuguer les requêtes SQL
             $errorInfo = $stmt->errorInfo();
@@ -62,21 +62,21 @@ return $res;
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($titre,$description,$publier,$idContexte,$idCategorie,$idProjet));
         // Mise a jour des urls
-        $this->_urlsManage->deleteAll($idProjet);
+        $this->_urlsManager->deleteAll($idProjet);
         $imgsUrls = json_decode($_POST["imgsUrls"]);
         $demosUrls = json_decode($_POST["demosUrls"]);
         $sourcesUrls = json_decode($_POST["sourcesUrls"]);
         foreach ($imgsUrls as $url) {
             $url = new Url(array("idProjet"=>$idProjet,"type"=>"img","url"=>$url));
-            $this->_urlsManage->addUrl($url);
+            $this->_urlsManager->addUrl($url);
         }
         foreach ($demosUrls as $url) {
             $url = new Url(array("idProjet"=>$idProjet,"type"=>"demo","url"=>$url));
-            $this->_urlsManage->addUrl($url);
+            $this->_urlsManager->addUrl($url);
         }
         foreach ($sourcesUrls as $url) {
             $url = new Url(array("idProjet"=>$idProjet,"type"=>"source","url"=>$url));
-            $this->_urlsManage->addUrl($url);
+            $this->_urlsManager->addUrl($url);
         }
         // Mise a jour des tags
         //$this->deleteAllTags($idProjet);
@@ -120,7 +120,7 @@ return $res;
     public function delete(Projet $projet) : bool
     {
         // delete urls
-        $this->_urlsManage->deleteAll($projet->idProjet());
+        $this->_urlsManager->deleteAll($projet->idProjet());
         // delete participants
         $req = "DELETE FROM pr_participer WHERE idProjet = ?";
         $stmt = $this->_db->prepare($req);
@@ -133,6 +133,7 @@ return $res;
         $req = "DELETE FROM pr_aime WHERE idProjet = ?";
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($projet->idProjet()));
+        $this->_commentaireManage->delList($projet);
 
         // delete projet
 
@@ -187,9 +188,9 @@ return $res;
 
     public function getListParticiper(int $idMembre):array
     {
-        $req = 'SELECT * FROM pr_projet inner join pr_participer WHERE pr_participer.idProjet = pr_projet.idProjet AND  idMembre=?';
+        $req = 'SELECT * FROM pr_projet inner join pr_participer WHERE (pr_participer.idProjet = pr_projet.idProjet AND idMembre=? OR proprietaire=?) GROUP BY pr_projet.idProjet';
         $stmt = $this->_db->prepare($req);
-        $stmt->execute(array($idMembre));
+        $stmt->execute(array($idMembre,$idMembre));
         $projets = [];
         while ($data = $stmt->fetch()) {
             $uncomplete = new Projet($data);
@@ -214,7 +215,7 @@ return $res;
     public function completeProjet(Projet $projet){
 
         // get list of urls
-        $urls = $this->_urlsManage->listUrl($projet);
+        $urls = $this->_urlsManager->listUrl($projet);
         $commantaires = $this->_commentaireManage->getList($projet);
         $imgs = array();
         $demos = array();
@@ -242,6 +243,83 @@ return $res;
 
 
 
+    function update($projet){
+        $sql = "UPDATE pr_projet SET titre = :titre, description = :description, publier = :publier, idContexte = :idContexte, idCategorie = :idCategorie WHERE idProjet = :idProjet";
+        $req = $this->_db->prepare($sql);
+        $req->execute(array(
+            'titre' => $projet->nomProjet(),
+            'description' => $projet->description(),
+            'publier' => $projet->publier(),
+            'idContexte' => $projet->idContexte(),
+            'idCategorie' => $projet->idCategorie(),
+            'idProjet' => $projet->idProjet()
+        ));
+
+        $idProjet = $projet->idProjet();
+        $imgsUrls = $projet->imgsUrls();
+        $demosUrls = $projet->urlsDemos();
+        $sourcesUrls = $projet->urlsSources();
+
+        // update urls
+        $this->_urlsManager->deleteAll($idProjet);
+        for ($i=0; $i < count($imgsUrls); $i++) {
+            $url = $imgsUrls[$i];
+            $this->_urlsManager->addUrl($url);
+        }
+        for ($i=0; $i < count($demosUrls); $i++) {
+            $url = $demosUrls[$i];
+            $this->_urlsManager->addUrl($url);
+        }
+        for ($i=0; $i < count($sourcesUrls); $i++) {
+            var_dump($sourcesUrls[$i]);
+            $url = $sourcesUrls[$i];
+            $this->_urlsManager->addUrl($url);
+        }
+        // update participants
+        if (isset($_POST["participants"])) {
+            $this->deleteAllParticipants($idProjet);
+            for ($i=0; $i < count($_POST["participants"]); $i++) {
+                $idMembre = $_POST["participants"][$i];
+                $this->addParticipant($idProjet, $idMembre );
+            }
+        }
+
+        return true;
+
+
+    }
+
+    public function deleteAllFromCatetorie(Categorie $categorie){
+        // select all projet from categorie
+        $req = "SELECT * FROM pr_projet WHERE idCategorie = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($categorie->idCategorie()));
+        $projets = [];
+        while ($data = $stmt->fetch()) {
+            $projets[] = new Projet($data);
+        }
+        // delete all projet
+        foreach ($projets as $projet) {
+            $this->delete($projet);
+        }
+    }
+
+    public function deleteAllFromContexte(Contexte $contexte){
+        // select all projet from categorie
+        $req = "SELECT * FROM pr_projet WHERE idContexte = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($contexte->idContexte()));
+        $projets = [];
+        while ($data = $stmt->fetch()) {
+            $projets[] = new Projet($data);
+        }
+        // delete all projet
+        foreach ($projets as $projet) {
+            $this->delete($projet);
+        }
+
+    }
+
 
     /**
      * retourne l'ensemble des projets publier
@@ -251,6 +329,22 @@ return $res;
     public function getListPublier():array
     {
         $stmt = $this->_db->prepare('SELECT DISTINCT * FROM pr_projet WHERE publier=1');
+        $stmt->execute();
+        $projets = [];
+        while ($data = $stmt->fetch()) {
+// get a list of users
+            $projet = new Projet($data);
+            $projet = $this->completeProjet($projet);
+            $projets[] = $projet;
+
+        }
+
+        //var_dump($projets);
+        return $projets;
+    }
+    public function getListAPublier():array
+    {
+        $stmt = $this->_db->prepare('SELECT DISTINCT * FROM pr_projet WHERE publier=0');
         $stmt->execute();
         $projets = [];
         while ($data = $stmt->fetch()) {

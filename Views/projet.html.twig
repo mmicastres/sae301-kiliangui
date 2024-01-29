@@ -13,6 +13,14 @@
                                 <form method="post" action="">
                                     <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
                                     <input class="btn btn-primary" type="submit" name="saisie_modif" value="Edit">
+
+                                    {% if admin %}
+                                        {% if projet.publier %}
+                                            <input class="btn btn-info" type="submit" name="dePublierProjet" value="De-publier">
+                                        {% else %}
+                                            <input class="btn btn-success" type="submit" name="publierProjet" value="Publier">
+                                        {% endif %}
+                                    {% endif %}
                                 </form>
                             {% endif %}
                         </div>
@@ -64,7 +72,8 @@
 
             </article>
             <div>
-                <h2>Comments</h2>
+                <h2>Commentaires</h2>
+                {% if not projet.proprietaire %}
                 <form action="" method="post" >
 
                     <div>
@@ -76,6 +85,7 @@
                         Envoyer
                     </button>
                 </form>
+                {% endif %}
                 <ul>
                     {% for commentaire in projet.commentaires %}
                         <li class="card" id="{{ commentaire.idCommentaire }}">

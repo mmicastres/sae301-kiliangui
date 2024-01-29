@@ -33,6 +33,11 @@ class CommentaireManager{
         ));
         return $stmp->execute();
     }
+    public function delList(Projet $projet){
+        $req= 'DELETE FROM pr_commentaire WHERE idProjet = :idProjet';
+        $stmp = $this->_db->prepare($req);
+        $stmp->execute(array('idProjet'=>$projet->idProjet()));
+    }
 
     public function getList(Projet $projet) {
         $req = 'SELECT * FROM pr_commentaire WHERE idProjet = :idProjet order by date_commentaire desc limit 25';

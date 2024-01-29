@@ -1,50 +1,67 @@
 <?php
 
 require_once 'Modules/categories.php';
+
 class CategorieManager{
     private $_db; // Instance de PDO
+    private projetManager $_projetManager;
 
     public function __construct($db) {
-        $this->setDb($db);
+        $this->_db=$db;
+        $this->_projetManager = new projetManager($db);
+
     }
 
-    // GETTERS //
-    public function db() { return $this->_db; }
-
-    // SETTERS //
-    public function setDb(PDO $db) { $this->_db = $db; }
-
-    // CRUD //
     public function add(Categorie $categorie) {
-        $q = $this->_db->prepare('INSERT INTO categories(intitule) VALUES(:intitule)');
-        $q->bindValue(':intitule', $categorie->intitule());
-        $q->execute();
+        $req = "INSERT INTO pr_categorie (intitule) VALUES (:identifiant)";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array(":identifiant" => $categorie->intitule()));
+        header("Location: index.php?action=espaceAdmin");
+    }
+    public function get(Categorie $categorie){
+        $req = "SELECT * FROM pr_categorie WHERE intitule = :intitule";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array(":intitule" => $categorie->intitule()));
+        $data = $stmt->fetch();
+        if ($data == null) return null;
+        return new Categorie($data);
+    }
+    public function getId(Categorie $categorie){
+        $req = "SELECT * FROM pr_categorie WHERE idCategorie = :idCategorie";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array(":idCategorie" => $categorie->idCategorie()));
+        $data = $stmt->fetch();
+        if ($data == null) return null;
+        return new Categorie($data);
     }
 
-    public function delete(Categorie $categorie) {
-        $this->_db->exec('DELETE FROM categories WHERE idCategorie = '.$categorie->idCategorie());
-    }
-
-    public function get(int $id) {
-        $id = (int) $id;
-        $q = $this->_db->query('SELECT * FROM categories WHERE idCategorie = '.$id);
-        $donnees = $q->fetch(PDO::FETCH_ASSOC);
-        return new Categorie($donnees);
-    }
 
     public function getList() {
-        $categories = [];
-        $q = $this->_db->query('SELECT * FROM pr_categorie ORDER BY intitule');
-        while ($donnees = $q->fetch()) {
-            $categories[] = new Categorie($donnees);
+        $req = "SELECT * FROM pr_categorie";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute();
+        $categories = array();
+        while ($data = $stmt->fetch()) {
+            $categories[] = new Categorie($data);
         }
         return $categories;
     }
 
     public function update(Categorie $categorie) {
-        $q = $this->_db->prepare('UPDATE categories SET intitule = :intitule WHERE idCategorie = :idCategorie');
-        $q->bindValue(':intitule', $categorie->intitule());
-        $q->bindValue(':idCategorie', $categorie->idCategorie());
-        $q->execute();
+        $req = "UPDATE pr_categorie SET intitule = :intitule WHERE idCategorie = :idCategorie";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array(":intitule" => $categorie->intitule(), ":idCategorie" => $categorie->idCategorie()));
+        echo "request executed";
+
     }
+
+    public function delete(Categorie $categorie) {
+        $this->_projetManager->deleteAllFromCatetorie($categorie);
+        $req = "DELETE FROM pr_categorie WHERE pr_categorie.idCategorie = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($categorie->idCategorie()));
+        header("Location: index.php?action=espaceAdmin");
+    }
+
+
 }

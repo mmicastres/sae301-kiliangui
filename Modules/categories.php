@@ -6,7 +6,7 @@ class Categorie{
 
     public function __construct(array $donnees) {
         // initialisation d'un produit à partir d'un tableau de données*/
-        if (isset($donnees['idCategorie'])) { $this->_idCategorie = $donnees['idCategorie']; }
+        if (isset($donnees['idCategorie'])) { $this->_idCategorie = intval($donnees['idCategorie']); }
         if (isset($donnees['intitule'])) { $this->_intitule = $donnees['intitule']; }
     }
 

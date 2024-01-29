@@ -1,6 +1,9 @@
 <?php
 include "Modules/membre.php";
 include "Models/membresManager.php";
+//include "Models/categoriesManager.php";
+//include "Models/projetsManager.php";
+//include "Models/contextsManager.php";
 /**
 * Définition d'une classe permettant de gérer les membres 
 *   en relation avec la base de données	
@@ -16,6 +19,8 @@ class MembreController {
 	public function __construct($db, $twig) {
 		$this->membreManager = new MembreManager($db);
         $this->projetManager = new ProjetManager($db);
+        $this->categoriesManager = new CategorieManager($db);
+        $this->contextsManager = new ContextsManager($db);
 		$this->twig = $twig;
 	}
         
@@ -93,7 +98,7 @@ class MembreController {
         unset($_SESSION["idMembre"]);
         unset($_SESSION["admin"]);
 		$message = "vous êtes déconnecté";
-		echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message)); 
+		echo $this->twig->render('index.html.twig',array('message'=>$message));
 	 
 	}
 
@@ -115,6 +120,15 @@ class MembreController {
         echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
+    public function espaceAdmin(){
+        $projets = $this->projetManager->getListAPublier();
+        $categories = $this->categoriesManager->getList();
+        $contexts = $this->contextsManager->listContext();
+        $membres = $this->membreManager->getList();
+        echo $this->twig->render('admin_espace.html.twig',array('membres'=>$membres,'contexts'=>$contexts,'categories'=>$categories,'projets'=> $projets, 'acces'=>$_SESSION["acces"],'admin'=>$_SESSION["admin"]));
+
+    }
+
     public function espaceMembre() {
         if (!isset($_SESSION["idMembre"])){
             $message = "Vous devez être connecté pour accéder à cette page";
@@ -123,22 +137,51 @@ class MembreController {
         }
         $membre = $this->membreManager->get($_SESSION["idMembre"]);
         $projetsParticiper = $this->projetManager->getListParticiper($_SESSION["idMembre"]);
-        echo $this->twig->render('membre_espace.html.twig',array('membre'=>$membre,'projets'=>$projetsParticiper, 'acces'=>$_SESSION["acces"]));
+        echo $this->twig->render('membre_espace.html.twig',array('membre'=>$membre,'projets'=>$projetsParticiper, 'acces'=>$_SESSION["acces"],'admin'=>$_SESSION["admin"]));
     }
-    public function modifierMembre(){
-        if (!isset($_SESSION["idMembre"])){
-            $message = "Vous devez être connecté pour accéder à cette page";
-            echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
-            return;
-        }
-        $membre = $this->membreManager->get($_SESSION["idMembre"]);
-        $membre->setNom($_POST["nom"]);
-        $membre->setPrenom($_POST["prenom"]);
-        $membre->setEmail($_POST["email"]);
 
-        $membre->setIdIut($_POST["idIUT"]);
-        $this->membreManager->modifier($membre);
-        header("Location: index.php?action=espaceMembre");
+    public function modifMembreView(){
+        if (isset($_SESSION["admin"]) && $_SESSION["admin"] == 1 ){
+            $membre = $this->membreManager->get($_GET["idMembre"]);
+        } else{
+            if (!isset($_SESSION["idMembre"])){
+                $message = "Vous devez être connecté pour accéder à cette page";
+                echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
+                return;
+            }
+            $membre = $this->membreManager->get($_SESSION["idMembre"]);
+        }
+        echo $this->twig->render('membre_register.html.twig',array('membre'=>$membre,'acces'=>$_SESSION["acces"],'admin'=>$_SESSION["admin"]));
+    }
+
+    public function modifierMembre(){
+        if (isset($_SESSION["admin"]) && $_SESSION["admin"] == 1){
+            var_dump($_POST["idMembre"]);
+            $membre = $this->membreManager->get($_POST["idMembre"]);
+            var_dump($membre);
+            $membre->setNom($_POST["nom"]);
+            $membre->setPrenom($_POST["prenom"]);
+            $membre->setEmail($_POST["email"]);
+            $membre->setIdIut($_POST["id_iut"]);
+            if (isset($_POST["admin"])) $membre->setAdmin($_POST["admin"]);
+            $this->membreManager->modifier($membre);
+            header("Location: index.php?action=espaceAdmin");
+            return;
+        }else{
+            if (!isset($_SESSION["idMembre"])){
+                $message = "Vous devez être connecté pour accéder à cette page";
+                echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
+                return;
+            }
+            $membre = $this->membreManager->get($_SESSION["idMembre"]);
+            $membre->setNom($_POST["nom"]);
+            $membre->setPrenom($_POST["prenom"]);
+            $membre->setEmail($_POST["email"]);
+            $membre->setIdIut($_POST["idIUT"]);
+            $this->membreManager->modifier($membre);
+            header("Location: index.php?action=espaceMembre");
+        }
+
 
     }
 

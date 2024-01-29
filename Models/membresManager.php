@@ -26,6 +26,16 @@ class MembreManager
                 return $membre;
             } else return false;
         }
+        public function getList(){
+            $req = "SELECT idMembre,nom,prenom,idIut,email,admin FROM pr_membre";
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute();
+            $membres = array();
+            while ($data = $stmt->fetch()) {
+                $membres[] = new Membre($data);
+            }
+            return $membres;
+        }
 
         public function get_participants($idProjet){
             $req = "SELECT * FROM pr_membre WHERE idMembre IN (SELECT idMembre FROM pr_participer WHERE idProjet=:idProjet)";

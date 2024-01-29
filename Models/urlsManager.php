@@ -45,6 +45,8 @@ class UrlsManager
      * @return boolean true si ajout, false sinon
      */
     public function addUrl(Url $url){
+        echo "the url0 :";
+        var_dump($url);
         $req = "INSERT INTO pr_url (url,type,idProjet) VALUES (?,?,?)";
         $stmt = $this->_db->prepare($req);
         $res = $stmt->execute(array($url->url(),$url->type(),$url->idProjet()));

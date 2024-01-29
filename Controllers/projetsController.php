@@ -91,13 +91,21 @@ class ProjetController{
         echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
+
+
+
+
     public function ajoutCommentaire(){
         $idProjet = $_POST["idProjet"];
-        $idMembre = $_SESSION["idMembre"];
-        $contenu = $_POST["contenu"];
-        $commentaire = new Commentaire(array("idProjet"=>$idProjet,"idMembre"=>$idMembre,"contenu"=>$contenu));
-        $ok = $this->commentaireManager->add($commentaire);
-        $message = $ok ? "Commentaire ajouté" : "probleme lors de l'ajout";
+        $projet = $this->projetManager->get($idProjet);
+        if (!$projet->proprietaire()){
+
+            $idMembre = $_SESSION["idMembre"];
+            $contenu = $_POST["contenu"];
+            $commentaire = new Commentaire(array("idProjet"=>$idProjet,"idMembre"=>$idMembre,"contenu"=>$contenu));
+            $ok = $this->commentaireManager->add($commentaire);
+            $message = $ok ? "Commentaire ajouté" : "probleme lors de l'ajout";
+            }
         // Redirection vers la page du projet concerné
         header("Location: index.php?action=projet&id=".$_POST["idProjet"]);}
 
@@ -121,50 +129,39 @@ class ProjetController{
 
         echo $this->twig->render('projet_ajout.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'contexts'=>$contexts,'categories'=>$categories));
     }
+
     public function validerModProjet(){
-$idProjet = $_POST["idProjet"];
+        $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
         $titre = $_POST['titre'];
         $description = $_POST['description'];
         $publier = $projet->publier();
         $idContexte = $_POST['idContexte'];
         $idCategorie = $_POST['idCategorie'];
-        $req = "UPDATE pr_projet SET titre = ?, description = ?, publier = ?, idContexte = ?, idCategorie = ? WHERE idProjet = ?";
-        $stmt = $this->_db->prepare($req);
-        $stmt->execute(array($titre,$description,$publier,$idContexte,$idCategorie,$idProjet));
-        // Mise a jour des urls
-        $this->urlsManager->deleteAll($idProjet);
+
         $imgsUrls = json_decode($_POST["imgsUrls"]);
         $demosUrls = json_decode($_POST["demosUrls"]);
         $sourcesUrls = json_decode($_POST["sourcesUrls"]);
-        foreach ($imgsUrls as $url) {
-            $url = new Url(array("idProjet"=>$idProjet,"type"=>"img","url"=>$url));
-            $this->urlsManager->addUrl($url);
-        }
-        foreach ($demosUrls as $url) {
-            $url = new Url(array("idProjet"=>$idProjet,"type"=>"demo","url"=>$url));
-            $this->urlsManager->addUrl($url);
-        }
-        foreach ($sourcesUrls as $url) {
-            $url = new Url(array("idProjet"=>$idProjet,"type"=>"source","url"=>$url));
-            $this->urlsManager->addUrl($url);
-        }
-        // Mise a jour des tags
-        //$this->deleteAllTags($idProjet);
-        //$tags = json_decode($_POST["tags"]);
-        //foreach ($tags as $tag) {
-        //    $this->addTag($idProjet,$tag);
-        //}
-        // Mise a jour des participants
-        $this->projetManager->deleteAllParticipants($idProjet);
-        $participants = $_POST["participants"];
-        foreach ($participants as $participant) {
-            $this->projetManager->addParticipant($idProjet,$participant);
-        }
+
+
+        $projet = new Projet(array("idProjet"=>$idProjet,"titre"=>$titre,"description"=>$description,"publier"=>$publier, "idContexte"=>$idContexte,"idCategorie"=>$idCategorie));
+
+        # add urls to projet
+
+        $projet->setImgsUrls($imgsUrls);
+        $projet->setUrlsDemos($demosUrls);
+        $projet->setUrlsSources($sourcesUrls);
+        if (isset($_POST["participants"]) ){ $projet->setParticipants($_POST["participants"]);}
+        else{ $projet->setParticipants([]);}
+
+        $ok = $this->projetManager->update($projet);
+
+
+
         $message = "Le projet à était éditer";
         $projet = $this->projetManager->get($idProjet);
         $proprietaire = $projet->proprietaire();
-        echo $this->twig->render('projet.html.twig', array('projet'=>$projet,'is_proprietaire'=>true,'acces'=>$_SESSION['acces']));
+        echo $this->twig->render('projet.html.twig', array('projet'=>$projet,'is_proprietaire'=>true,"admin"=>$_SESSION["admin"],'acces'=>$_SESSION['acces']));
     }
 
     public function selectSuppr(){
@@ -195,7 +192,8 @@ $idProjet = $_POST["idProjet"];
     }
 
 
-    function projet($idMembre){
+    function projet(){
+
         $idProjet = $_GET["id"];
         $projet = $this->projetManager->get($idProjet);
         if ($projet == false){
@@ -203,14 +201,41 @@ $idProjet = $_POST["idProjet"];
             echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
             return;
         }
-        $proprietaire = $projet->proprietaire();
         $is_proprietaire = false;
-        if ($proprietaire == $idMembre){
-            $message = "Vous etes le propriétaire";
-            $is_proprietaire = true;
+        if (isset($_SESSION["idMembre"]) ){
+
+            $idMembre = $_SESSION["idMembre"];
+            if ($idMembre != False){
+                $proprietaire = $projet->proprietaire();
+                if ($proprietaire == $idMembre){
+                    $message = "Vous etes le propriétaire";
+                    $is_proprietaire = true;
+                }
+            }
         }
         $this->projetManager->completeProjet($projet);
+
+        var_dump($_SESSION["admin"]);
         echo $this->twig->render('projet.html.twig',array('projet'=>$projet,'is_proprietaire'=>$is_proprietaire,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+    }
+
+    function publierProjet(){
+        if (!isset($_SESSION["admin"])) return;
+        $idProjet = $_POST["idProjet"];
+        $projet = $this->projetManager->get($idProjet);
+        $projet->setPublier(1);
+        $ok = $this->projetManager->update($projet);
+        $message = $ok ? "Projet validé" : "probleme lors de la validation";
+        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+    }
+    function dePublierProjet(){
+        if (!isset($_SESSION["admin"])) return;
+        $idProjet = $_POST["idProjet"];
+        $projet = $this->projetManager->get($idProjet);
+        $projet->setPublier(0);
+        $ok = $this->projetManager->update($projet);
+        $message = $ok ? "Projet dépublié" : "probleme lors de la dépublication";
+        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
 }
