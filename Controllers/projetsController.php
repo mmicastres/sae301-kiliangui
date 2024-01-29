@@ -2,10 +2,10 @@
 
 include "Modules/projets.php";
 include "Modules/urls.php";
-
 include "Models/categoriesManager.php";
 include "Models/projetsManager.php";
 include "Models/contextsManager.php";
+include_once "Models/tagsManager.php";
 //commentaires
 include "Models/commentaireManager.php";
 
@@ -18,6 +18,7 @@ class ProjetController{
     private $categorieManager;
     private $urlsManager;
     private $commentaireManager;
+    private $_tagsManager;
     private $twig;
 
     //DEBUG
@@ -30,39 +31,25 @@ class ProjetController{
         $this->categorieManager = new CategorieManager($db);
         $this->urlsManager = new UrlsManager($db);
         $this->commentaireManager = new CommentaireManager($db);
+        $this->_tagsManager = new TagsManager($db);
         $this->twig = $twig;
 
         //DEBUG ONLY
         $this->_db = $db;
     }
 
-    public function listeProjets(){
-        $projets = $this->projetManager->getListPublier();
-        echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
-    }
-
-
-
-    public function formAjoutProjet(){
-        $contexts = $this->contextManager->listContext();
-        $categories = $this->categorieManager->getList();
-        echo $this->twig->render('projet_ajout.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'idMembre'=>$_SESSION['idMembre'], 'contexts'=>$contexts,'categories'=>$categories));
-    }
     public function ajoutProjet(){
         if (! isset($_SESSION["idMembre"])) return
-
-
-        $_POST["publier"] =0;
-        # Extract json
-        if (!isset($_POST["imgsUrls"])) $_POST["imgsUrls"] = "[]";
-        if (!isset($_POST["demosUrls"])) $_POST["demosUrls"] = "[]";
-        if (!isset($_POST["sourcesUrls"])) $_POST["sourcesUrls"] = "[]";
-
-        $_POST["imgsUrls"] = json_decode($_POST["imgsUrls"]) ;
-        $_POST["demosUrls"] = json_decode($_POST["demosUrls"]);
-        $_POST["sourcesUrls"] = json_decode($_POST["sourcesUrls"]);
+            $_POST["publier"] =0;
         $_POST["idMembre"] = $_SESSION["idMembre"];
         $_POST["publier"] = 0;
+        $tags = [];
+        if (isset($_POST["tags"])) {
+            foreach (explode(",",$_POST["tags"]) as $tag) {
+                $tags[] = new Tag(array("intitule" => $tag));
+            }
+        }
+        $_POST["tags"] = $tags;
         $projet = new Projet($_POST);
 
         $ok = $this->projetManager->add($projet);
@@ -80,15 +67,20 @@ class ProjetController{
                 $url = new Url(array("idProjet"=>$projet->idProjet(),"type"=>"source","url"=>$projet->urlsSources()[$i]));
                 $this->urlsManager->addUrl($url);
             }
+
+            foreach ($projet->tags() as $tag) {
+                $this->_tagsManager->addTagToProjet($tag, $projet);
+            }
             # add participants
             for ($i=0; $i < count($projet->participants()); $i++) {
-                $idMembre = $projet->participants()[$i];
-                $this->projetManager->addParticipant($projet->idProjet(), $idMembre );
+                $membre = $projet->participants()[$i];
+                $this->projetManager->addParticipant($projet->idProjet(), $membre->idMembre());
             }
+            $message = "Projet ajouté";
 
         }
         $message = $ok ? "Projet ajouté" : "probleme lors de l'ajout";
-        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
     }
 
 
@@ -98,16 +90,29 @@ class ProjetController{
     public function ajoutCommentaire(){
         $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
-        if (!$projet->proprietaire()){
-
+        if (!$projet->isProprietaire()){
             $idMembre = $_SESSION["idMembre"];
             $contenu = $_POST["contenu"];
             $commentaire = new Commentaire(array("idProjet"=>$idProjet,"idMembre"=>$idMembre,"contenu"=>$contenu));
             $ok = $this->commentaireManager->add($commentaire);
             $message = $ok ? "Commentaire ajouté" : "probleme lors de l'ajout";
-            }
+        }
         // Redirection vers la page du projet concerné
         header("Location: index.php?action=projet&id=".$_POST["idProjet"]);}
+
+
+    public function listeProjets(){
+        $projets = $this->projetManager->getListPublier();
+        echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+    }
+
+
+
+    public function formAjoutProjet(){
+        $contexts = $this->contextManager->listContext();
+        $categories = $this->categorieManager->getList();
+        echo $this->twig->render('projet_ajout.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'idMembre'=>$_SESSION['idMembre'], 'contexts'=>$contexts,'categories'=>$categories));
+    }
 
     public function delCommentaire(){
         $idCommentaire = $_POST["idCommentaire"];
@@ -116,10 +121,21 @@ class ProjetController{
         header("Location: index.php?action=projet&id=".$_POST["idProjet"]);
     }
 
-    public function choixModProjet($idMembre){
-        $projets = $this->projetManager->getListMembre($idMembre);
+    public function likeProjet(){
+        $idProjet = $_POST["idProjet"];
+        $idMembre = $_SESSION["idMembre"];
+        if (isset($_POST["liked"])){
+            if ($_POST["liked"] == "1"){
+                $ok = $this->projetManager->unlike($idProjet,$idMembre);}
+                else{
+                    $ok = $this->projetManager->like($idProjet,$idMembre);
+                }
+        }else{
 
-        echo $this->twig->render('projet_choix_modification.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+            $ok = $this->projetManager->like($idProjet,$idMembre);
+        }
+        $message = $ok ? "Projet liké" : "probleme lors du like";
+        header("Location: index.php?action=projet&id=".$_POST["idProjet"]);
     }
     public function saisieModProjet(){
         $idProjet = $_POST["idProjet"];
@@ -130,38 +146,23 @@ class ProjetController{
         echo $this->twig->render('projet_ajout.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'contexts'=>$contexts,'categories'=>$categories));
     }
 
+
+    // TODO TO TEST
     public function validerModProjet(){
         $idProjet = $_POST["idProjet"];
-        $projet = $this->projetManager->get($idProjet);
-        $titre = $_POST['titre'];
-        $description = $_POST['description'];
-        $publier = $projet->publier();
-        $idContexte = $_POST['idContexte'];
-        $idCategorie = $_POST['idCategorie'];
-
-        $imgsUrls = json_decode($_POST["imgsUrls"]);
-        $demosUrls = json_decode($_POST["demosUrls"]);
-        $sourcesUrls = json_decode($_POST["sourcesUrls"]);
-
-
-        $projet = new Projet(array("idProjet"=>$idProjet,"titre"=>$titre,"description"=>$description,"publier"=>$publier, "idContexte"=>$idContexte,"idCategorie"=>$idCategorie));
-
-        # add urls to projet
-
-        $projet->setImgsUrls($imgsUrls);
-        $projet->setUrlsDemos($demosUrls);
-        $projet->setUrlsSources($sourcesUrls);
+        $old = $this->projetManager->get($idProjet);
+        $projet = new Projet($_POST);
+        $projet->setPublier($old->publier());
         if (isset($_POST["participants"]) ){ $projet->setParticipants($_POST["participants"]);}
         else{ $projet->setParticipants([]);}
 
+
         $ok = $this->projetManager->update($projet);
-
-
 
         $message = "Le projet à était éditer";
         $projet = $this->projetManager->get($idProjet);
         $proprietaire = $projet->proprietaire();
-        echo $this->twig->render('projet.html.twig', array('projet'=>$projet,'is_proprietaire'=>true,"admin"=>$_SESSION["admin"],'acces'=>$_SESSION['acces']));
+        echo $this->twig->render('projet.html.twig', array('projet'=>$projet,"admin"=>$_SESSION["admin"],'acces'=>$_SESSION['acces'],'message'=>$message));
     }
 
     public function selectSuppr(){
@@ -214,8 +215,6 @@ class ProjetController{
             }
         }
         $this->projetManager->completeProjet($projet);
-
-        var_dump($_SESSION["admin"]);
         echo $this->twig->render('projet.html.twig',array('projet'=>$projet,'is_proprietaire'=>$is_proprietaire,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 

@@ -1,5 +1,6 @@
 <?php
 require_once "Models/membresManager.php";
+require_once "Models/tagsManager.php";
 require_once "Modules/contexts.php";
 require_once "Modules/urls.php";
 require_once "Models/urlsManager.php";
@@ -8,7 +9,7 @@ class ProjetManager
 {
     private $_membresManage;
     private $_urlsManager;
-
+    private $_tagsManager;
     private $_commentaireManage;
     private $_db; // Instance de PDO - objet de connexion au SGBD
 
@@ -21,6 +22,7 @@ class ProjetManager
     {
         $this->_db = $db;
         $this->_urlsManager = new UrlsManager($db);
+        $this->_tagsManager = new TagsManager($db);
         $this->_membresManage = new MembreManager($db);
         $this->_commentaireManage = new CommentaireManager($db);
     }
@@ -40,15 +42,21 @@ class ProjetManager
             $stmt = $this->_db->prepare($req);
             $res = $stmt->execute(array($projet->idProjet(), $_SESSION["idMembre"] , $projet->nomProjet(),$projet->description(),$projet->publier(),$projet->idContexte(),$projet->idCategorie()));
 
-            // pour debuguer les requêtes SQL
-            $errorInfo = $stmt->errorInfo();
-            if ($errorInfo[0] != 0) {
-                print_r($errorInfo);
-            }
-
 return $res;
 }
 
+public function like($idProjet, $idMembre){
+    $req = "INSERT INTO pr_aime (idProjet,idMembre,aime) VALUES (?,?,?)";
+    $stmt = $this->_db->prepare($req);
+    $res = $stmt->execute(array($idProjet,$idMembre,1));
+    return $res;
+}
+public function unlike($idProjet, $idMembre){
+    $req = "DELETE FROM pr_aime WHERE idProjet = ? AND idMembre = ?";
+    $stmt = $this->_db->prepare($req);
+    $res = $stmt->execute(array($idProjet,$idMembre));
+    return $res;
+}
     public function modifier(){
         // MISE A JOUR DU PROJET
         $idProjet = $_POST['idProjet'];
@@ -78,13 +86,6 @@ return $res;
             $url = new Url(array("idProjet"=>$idProjet,"type"=>"source","url"=>$url));
             $this->_urlsManager->addUrl($url);
         }
-        // Mise a jour des tags
-        //$this->deleteAllTags($idProjet);
-        //$tags = json_decode($_POST["tags"]);
-        //foreach ($tags as $tag) {
-        //    $this->addTag($idProjet,$tag);
-        //}
-        // Mise a jour des participants
         $this->deleteAllParticipants($idProjet);
         $participants = json_decode($_POST["participants"]);
         foreach ($participants as $participant) {
@@ -153,11 +154,6 @@ return $res;
         $req = 'SELECT * FROM pr_projet WHERE idProjet=?';
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($idProjet));
-        // pour debuguer les requêtes SQL
-        $errorInfo = $stmt->errorInfo();
-        if ($errorInfo[0] != 0) {
-            print_r($errorInfo);
-        }
         $data = $stmt->fetch();
         $projet = new Projet($data);
         return $this->completeProjet($projet);
@@ -174,15 +170,8 @@ return $res;
         $stmt->execute(array($idmembre));
         $projets = [];
         while ($data = $stmt->fetch()) {
-// get a list of users
-            $data['participants'] = $this->_membresManage->get_participants($data['idProjet']);
-            // get tags
-            $data['tags'] = $this->get_Tag($data['idProjet']);
-            $uncomplete = new Projet($data);
-            $projets[] = $this->completeProjet($uncomplete);
-
+            $projets[] = $this->completeProjet(new Projet($data));
         }
-
         return $projets;
     }
 
@@ -191,10 +180,10 @@ return $res;
         $req = 'SELECT * FROM pr_projet inner join pr_participer WHERE (pr_participer.idProjet = pr_projet.idProjet AND idMembre=? OR proprietaire=?) GROUP BY pr_projet.idProjet';
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($idMembre,$idMembre));
-        $projets = [];
+        $projets=[];
         while ($data = $stmt->fetch()) {
-            $uncomplete = new Projet($data);
-            $projets[] = $this->completeProjet($uncomplete);
+            $data["idProjet"] = $data["0"];
+            $projets[] = $this->completeProjet(new Projet($data));
         }
         return $projets;
     }
@@ -213,32 +202,35 @@ return $res;
      * @return Projet
      */
     public function completeProjet(Projet $projet){
-
-        // get list of urls
         $urls = $this->_urlsManager->listUrl($projet);
         $commantaires = $this->_commentaireManage->getList($projet);
         $imgs = array();
         $demos = array();
         $sources = array();
         foreach ($urls as $url) {
-            if ($url->type() == "img") {
-                $imgs[] = $url;
-            } else if ($url->type() == "demo") {
-                $demos[] = $url;
-            } else if ($url->type() == "source") {
-
-                $sources[] = $url;
-            }
+            if ($url->type() == "img") $imgs[] = $url;
+            else if ($url->type() == "demo") $demos[] = $url;
+            else if ($url->type() == "source") $sources[] = $url;
         }
+        // get tags
+        $tags = $this->_tagsManager->listTag($projet);
+        $projet->setTags($tags);
         $projet->setImgsUrls($imgs);
         $projet->setUrlsDemos($demos);
         $projet->setUrlsSources($sources);
         $projet->setParticipants($this->_membresManage->get_participants($projet->idProjet()));
-        $projet->setTags($this->get_Tag($projet->idProjet()));
         $projet->setCommentaires($commantaires);
+        $projet->setLiked($this->liked($projet->idProjet()));
 
         return $projet;
 
+    }
+    public function liked($idProjet){
+        $idMembre = isset($_SESSION["idMembre"]) ? $_SESSION["idMembre"] : -1;
+        $req = "SELECT COUNT(*) FROM pr_aime WHERE idProjet = ? and idMembre = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($idProjet,$idMembre));
+        return $stmt->fetch()[0];
     }
 
 
@@ -263,17 +255,21 @@ return $res;
         // update urls
         $this->_urlsManager->deleteAll($idProjet);
         for ($i=0; $i < count($imgsUrls); $i++) {
-            $url = $imgsUrls[$i];
+            $url = new Url(array("idProjet"=>$idProjet,"type"=>"img","url"=>$imgsUrls[$i]));
             $this->_urlsManager->addUrl($url);
         }
         for ($i=0; $i < count($demosUrls); $i++) {
-            $url = $demosUrls[$i];
+            $url = new Url(array("idProjet"=>$idProjet,"type"=>"demo","url"=>$demosUrls[$i]));
             $this->_urlsManager->addUrl($url);
         }
         for ($i=0; $i < count($sourcesUrls); $i++) {
-            var_dump($sourcesUrls[$i]);
-            $url = $sourcesUrls[$i];
+            $url = new Url(array("idProjet"=>$idProjet,"type"=>"source","url"=>$sourcesUrls[$i]));
             $this->_urlsManager->addUrl($url);
+        }
+        $this->_tagsManager->deleteAll($idProjet);
+        foreach ($projet->tags() as $tag) {
+            $tag = new Tag(array("intitule"=>$tag));
+            $this->_tagsManager->addTagToProjet($tag, $projet);
         }
         // update participants
         if (isset($_POST["participants"])) {
@@ -332,14 +328,9 @@ return $res;
         $stmt->execute();
         $projets = [];
         while ($data = $stmt->fetch()) {
-// get a list of users
-            $projet = new Projet($data);
-            $projet = $this->completeProjet($projet);
+            $projet = $this->completeProjet(new Projet($data));
             $projets[] = $projet;
-
         }
-
-        //var_dump($projets);
         return $projets;
     }
     public function getListAPublier():array
@@ -348,14 +339,10 @@ return $res;
         $stmt->execute();
         $projets = [];
         while ($data = $stmt->fetch()) {
-// get a list of users
             $projet = new Projet($data);
             $projet = $this->completeProjet($projet);
             $projets[] = $projet;
-
         }
-
-        //var_dump($projets);
         return $projets;
     }
 
@@ -369,18 +356,4 @@ return $res;
         }
         return $projets;
     }
-
-    public function get_Tag(int $idProjet):array
-    {
-        $stmt = $this->_db->prepare('SELECT * FROM pr_tag JOIN pr_caracterise WHERE pr_caracterise.intitule = pr_tag.intitule AND pr_caracterise.idProjet=?');
-        $stmt->execute(array($idProjet));
-        $tags = [];
-        while ($data = $stmt->fetch()) {
-            $tags[] = $data['intitule'];
-        }
-        return $tags;
-    }
-
-
-
 }

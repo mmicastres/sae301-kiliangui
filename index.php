@@ -58,6 +58,8 @@ if (!empty($_POST)) {
         $projetController->delCommentaire();
     } elseif (isset($_POST["modifier_membre"])) {
         $membreController->modifierMembre();
+    }elseif (isset($_POST["like"])){
+        $projetController->likeProjet();
     }
     elseif (isset($_POST["supprMembre"])) {
         $membreController->deleteMembre();

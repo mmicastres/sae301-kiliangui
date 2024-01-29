@@ -40,7 +40,6 @@ class MembreController {
             if ($membre->admin()==1){
                 $_SESSION["admin"] = 1;
             }
-            //var_dump($_SESSION['idMembre']);
             #save session
             session_commit();
 
@@ -76,8 +75,12 @@ class MembreController {
         if ($membre != false && gettype($membre) == "object" ){
             $_SESSION["acces"] = "oui";
             $_SESSION["idMembre"] = $membre->idMembre();
+            if ($membre->admin()==1){
+                $_SESSION["admin"] = 1;
+            }
             $message = "Bonjour ".$membre->prenom()." ".$membre->nom()."!";
             echo $this->twig->render("index.html.twig", array('acces' => $_SESSION["acces"], 'message'=>$message));
+            return;
         } if ($membre != false && gettype($membre) == "string"){
             $message = $membre;
             echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
@@ -156,9 +159,7 @@ class MembreController {
 
     public function modifierMembre(){
         if (isset($_SESSION["admin"]) && $_SESSION["admin"] == 1){
-            var_dump($_POST["idMembre"]);
             $membre = $this->membreManager->get($_POST["idMembre"]);
-            var_dump($membre);
             $membre->setNom($_POST["nom"]);
             $membre->setPrenom($_POST["prenom"]);
             $membre->setEmail($_POST["email"]);
@@ -188,7 +189,6 @@ class MembreController {
     public function deleteMembre(){
 
         if (isset($_SESSION["admin"]) && $_SESSION["admin"] == 1){
-            var_dump($_POST["idMembre"]);
             $membre = $this->membreManager->get($_POST["idMembre"]);
             $this->membreManager->delete($membre);
             header("Location: index.php?action=espaceAdmin");

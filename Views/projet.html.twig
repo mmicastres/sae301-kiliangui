@@ -9,7 +9,7 @@
                         <a href="?action=liste">back</a>
                         <h1>{{ projet.nomProjet }}</h1>
                         <div>
-                            {% if is_proprietaire %}
+                            {% if projet.isProprietaire %}
                                 <form method="post" action="">
                                     <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
                                     <input class="btn btn-primary" type="submit" name="saisie_modif" value="Edit">
@@ -65,6 +65,14 @@
                                 <li>{{ demo.url }}</li>
                             {% endfor %}
                         </ul>
+                        <h3>Tags</h3>
+                        <ul>
+
+                            {% for tag in projet.tags %}
+                            <li>{{ tag.intitule }}</li>
+                            {% endfor %}
+
+                        </ul>
                     </div>
 
 
@@ -73,7 +81,8 @@
             </article>
             <div>
                 <h2>Commentaires</h2>
-                {% if not projet.proprietaire %}
+                {{ projet.proprietaire }}{{ membre.idMembre }}
+                {% if not projet.isProprietaire %}
                 <form action="" method="post" >
 
                     <div>
@@ -128,7 +137,15 @@
         <div class="">
 
             <ul class=" list-unstyled">
-                <li class="pl position-fixed"><a class="" href="?action=like&id={{ projet.idProjet }}"><3</a></li>
+                {% if not projet.isProprietaire %}
+                    <li class="pl position-fixed">
+                        <form method="post">
+                            <input hidden name="idProjet" value="{{ projet.idProjet }}">
+                            <input hidden name="liked" value="{{ projet.liked }}" >
+                            <button class="btn {% if projet.liked %}btn-danger{% else %}btn-primary{% endif %}" type="submit" name="like"><3</button>
+                        </form>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

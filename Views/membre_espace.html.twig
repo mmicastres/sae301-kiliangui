@@ -45,7 +45,11 @@
                 </ul>
                 <div class="d-flex justify-content-between align-items-center">
                     <button id="modMembre" class="btn btn-primary" type="button">Modifier les infos</button>
-                    <button id="confModMembre" class="btn btn-success d-none" type="submit" name="modifier_membre" value="true" >Valider </button>
+                    <div id="confModMembre"  class="d-none">
+
+                        <button class="btn btn-success" type="submit" name="modifier_membre" value="true" >Valider</button>
+                        <button class="btn btn-danger" type="submit" name="supprMembre">supprimer</button>
+                    </div>
                 </div>
             </form>
         </section>

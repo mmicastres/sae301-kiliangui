@@ -26,26 +26,60 @@ class Projet{
         if (isset($donnees['idProjet'])) { $this->_idProjet = $donnees['idProjet']; }
         if (isset($donnees['titre'])) { $this->_titre = $donnees['titre']; }
         if (isset($donnees['description'])) { $this->_description = $donnees['description']; }
-        if (isset($donnees['imgsUrls'])) { $this->_imgsUrls = $donnees['imgsUrls']; }
-        if (isset($donnees['demosUrls'])) { $this->_urlsDemos = $donnees['demosUrls']; }
-        if (isset($donnees['sourcesUrls'])) { $this->_urlsSources = $donnees['sourcesUrls']; }
+        if (isset($donnees['imgsUrls'])) {
+            if (is_array($donnees['imgsUrls'])) {
+                $this->_imgsUrls = $donnees['imgsUrls'];
+            } else {
+                $this->_imgsUrls = json_decode($donnees['imgsUrls']);
+            }
+        }
+        if (isset($donnees['demosUrls'])) {
+            if (is_array($donnees['demosUrls'])) {
+                $this->_urlsDemos = $donnees['demosUrls'];
+            } else {
+                $this->_urlsDemos = json_decode($donnees['demosUrls']);
+            }
+        }
+        if (isset($donnees['sourcesUrls'])) {
+            if (is_array($donnees['sourcesUrls'])) {
+                $this->_urlsSources = $donnees['sourcesUrls'];
+            } else {
+                $this->_urlsSources = json_decode($donnees['sourcesUrls']);
+            }
+        }
         if (isset($donnees['publier'])) { $this->_publier = $donnees['publier']; }
         if (isset($donnees['idContexte'])) { $this->_idContexte = intval($donnees['idContexte']); }
         if (isset($donnees['idCategorie'])) { $this->_idCategorie = intval($donnees['idCategorie']); }
         if (isset($donnees['participants'])) {
             if (is_array($donnees['participants'])) {
-                // Verifie si le tableau est un tableau d'id ou de Membre
-                if (get_class($donnees["participants"][0]) == "Membre") {
-                    $this->_participants = $donnees["participants"];
-
-                }else {
+                if (is_string($donnees['participants'][0])) {
+                    $data = explode(",",$donnees['participants'][0]);
                     $this->_participants = [];
-                    foreach ($donnees["participants"] as $participant) {
+                    foreach ($data as $participant) {
                         $user = ["idMembre" => $participant];
                         $user = new Membre($user);
                         array_push($this->_participants, $user);
                     }
-                    $this->_participants = $donnees['participants'];
+
+                }else{
+
+
+
+                    // Verifie si le tableau est un tableau d'id ou de Membre
+                    if (get_class($donnees["participants"][0]) == "Membre") {
+                        $this->_participants = $donnees["participants"];
+
+                    }else {
+                        $this->_participants = [];
+                        foreach ($donnees["participants"] as $participant) {
+                            $user = ["idMembre" => $participant];
+                            $user = new Membre($user);
+                            array_push($this->_participants, $user);
+                        }
+                        $this->_participants = $donnees['participants'];
+                    }
+
+
                 }
             }
         }
@@ -79,8 +113,16 @@ class Projet{
     public function idCategorie() { return $this->_idCategorie;}
     public function participants() { return isset($this->_participants) ? $this->_participants : [];}
     public function tags() { return $this->_tags;}
+    public function tagsstr() {
+        $tagsstr = "";
+        foreach ($this->_tags as $tag) {
+            $tagsstr .= $tag->intitule().", ";
+        }
+        return $tagsstr;
+    }
     public function commentaires() { return isset($this->_commentaires) ? $this->_commentaires : [];}
     public function proprietaire() { return isset($this->_proprietaire) ? $this->_proprietaire : false;}
+    public function isProprietaire() { return isset($_SESSION["idMembre"]) ? $this->_proprietaire == $_SESSION["idMembre"] : false  ;}
     public function likes() { return   $this->_likes;}
     //Detect si le projet est liké par l'utilisateur
     public function liked() { return   $this->_liked;}

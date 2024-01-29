@@ -88,6 +88,10 @@
             </select>
 
         </div>
+        <div>
+            <label for="tags" class="form-label">Tags</label>
+            <input type="text" name="tags" id="tags" class="form-control" required {% if projet %}value="{{ projet.tagsstr }}" {% endif%} placeholder="tag1,tag2,tag3" >
+        </div>
         <!--SELECT THE Participants-->
         <div class="mb-3">
             <label for="participants" class="form-label">Participants</label>

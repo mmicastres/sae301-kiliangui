@@ -13,6 +13,29 @@ class UrlsManager
         $this->_db = $db;
     }
 
+
+
+    /**
+     * Ajoute une url dans la base de données
+     * @param String $url
+     * @param string $type
+     * @return boolean true si ajout, false sinon
+     */
+    public function addUrl(Url $url){
+        $req = "INSERT INTO pr_url (url,type,idProjet) VALUES (?,?,?)";
+        $stmt = $this->_db->prepare($req);
+        $res = $stmt->execute(array($url->url(),$url->type(),$url->idProjet()));
+
+        //
+        // pour debuguer les requêtes SQL
+        $errorInfo = $stmt->errorInfo();
+        if ($errorInfo[0] != 0) {
+            print_r($errorInfo);
+        }
+
+        return $res;
+    }
+
     /**
      * Liste les urls d'un projet
      * @param int $idProjet
@@ -38,27 +61,5 @@ class UrlsManager
         $stmt->execute(array($idProjet));
     }
 
-    /**
-     * Ajoute une url dans la base de données
-     * @param String $url
-     * @param string $type
-     * @return boolean true si ajout, false sinon
-     */
-    public function addUrl(Url $url){
-        echo "the url0 :";
-        var_dump($url);
-        $req = "INSERT INTO pr_url (url,type,idProjet) VALUES (?,?,?)";
-        $stmt = $this->_db->prepare($req);
-        $res = $stmt->execute(array($url->url(),$url->type(),$url->idProjet()));
-
-        //
-        // pour debuguer les requêtes SQL
-        $errorInfo = $stmt->errorInfo();
-        if ($errorInfo[0] != 0) {
-            print_r($errorInfo);
-        }
-
-        return $res;
-    }
 
 }
