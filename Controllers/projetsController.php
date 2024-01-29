@@ -106,6 +106,13 @@ class ProjetController{
         echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
+    public function rechercheProjet(){
+        $recherche = $_GET["s"];
+        var_dump("recherche : ".$recherche);
+        $projets = $this->projetManager->rechercheProjet($recherche);
+        echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+    }
+
 
 
     public function formAjoutProjet(){
