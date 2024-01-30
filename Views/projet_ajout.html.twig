@@ -26,7 +26,7 @@
             <ul id="sourceUrlList">
                 {% if projet %}
                     {% for url in projet.urlsSources %}
-                        <li>{{ url.url }}</li>
+                        <li>{{ url.url }} <button type="button" onclick="deleteUrl(this.parentNode)">Delete</button></li>
                     {% endfor %}
                 {% endif %}
             </ul>
@@ -43,7 +43,7 @@
             <ul id="demoUrlList">
                 {% if projet %}
                     {% for url in projet.urlsDemos %}
-                        <li>{{ url.url }}</li>
+                        <li>{{ url.url }} <button type="button" onclick="deleteUrl(this.parentNode)">Delete</button></li>
                     {% endfor %}
                 {% endif %}
             </ul>
@@ -60,7 +60,7 @@
             <ul id="imgUrlList">
                 {% if projet %}
                     {% for url in projet.imgsUrls %}
-                        <li>{{ url.url }}</li>
+                        <li>{{ url.url }} <button type="button" onclick="deleteUrl(this.parentNode)">Delete</button></li>
                     {% endfor %}
                 {% endif %}
             </ul>
@@ -111,9 +111,6 @@
         <button type="submit" class="btn btn-primary" name="{% if projet %}valider_mod_projet{% else %}valider_ajout_projet{% endif %}" value="true">
             {% if projet %}Modifier{% else %}Ajouter{% endif %}
         </button>
-        {%if projet %}
-            <button type="submit" class="btn btn-danger" name="select_supprimer_projet" value="true">Supprimer</button>
-        {% endif %}
     </form>
 
     <script>

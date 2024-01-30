@@ -1,7 +1,7 @@
 {% extends "index.html.twig" %}
 
 {% block section %}
-    <div class="d-flex">
+    <div class="d-flex justify-content-center ">
         <div>
             <article>
                 <div class="card p-2">
@@ -73,6 +73,14 @@
                             {% endfor %}
 
                         </ul>
+                        {% if projet.isProprietaire %}
+                        <h3>Supprimer le projet</h3>
+                            <form method="post">
+                                <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
+                                <button type="submit" class="btn btn-danger" name="select_supprimer_projet" value="true">Supprimer</button>
+
+                            </form>
+                        {% endif %}
                     </div>
 
 
