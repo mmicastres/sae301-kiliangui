@@ -1,5 +1,6 @@
 <?php
 
+
 /**
 * Définition d'une classe permettant de gérer les membres 
 * en relation avec la base de données
@@ -123,10 +124,44 @@ class MembreManager
             $stmt->execute(array(":nom" => $membre->nom(), ":prenom" => $membre->prenom(), ":idIut" => $membre->id_iut(), ":email" => $membre->email(), ":passwordHash" => $membre->passwordHash(), ":admin" => $membre->admin(), ":idMembre" => $membre->idMembre()));
         }
 
+
         public function delete(Membre $membre){
-            $req = "DELETE FROM pr_membre WHERE idMembre = :idMembre";
+            // On ne peu pas importer la classe ProjetManager ici car cela créer une boucle d'importation
+            // Donc je réécris les fonctions de suppression de projet ici
+            // Start a transaction
+            $this->_db->beginTransaction();
+            // Delete all the comments of the project
+            $req = "DELETE FROM pr_commentaire WHERE idProjet in (SELECT idProjet FROM pr_projet WHERE proprietaire = :idMembre)";
             $stmt = $this->_db->prepare($req);
             $stmt->execute(array(":idMembre" => $membre->idMembre()));
+            // Delete likes
+            $req = "DELETE FROM pr_aime WHERE idProjet in (SELECT idProjet FROM pr_projet WHERE proprietaire = :idMembre)";
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute(array(":idMembre" => $membre->idMembre()));
+            // Delete Caracterise
+            $req = "DELETE FROM pr_caracterise WHERE idProjet in (SELECT idProjet FROM pr_projet WHERE proprietaire = :idMembre)";
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute(array(":idMembre" => $membre->idMembre()));
+            // Delete participations
+            $req = "DELETE FROM pr_participer WHERE idProjet in (SELECT idProjet FROM pr_projet WHERE proprietaire = :idMembre)";
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute(array(":idMembre" => $membre->idMembre()));
+            // Delete Urls
+            $req = "DELETE FROM pr_url WHERE idProjet in (SELECT idProjet FROM pr_projet WHERE proprietaire = :idMembre)";
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute(array(":idMembre" => $membre->idMembre()));
+
+            // Delete Projets
+            $req = "DELETE FROM pr_projet WHERE proprietaire = :idMembre";
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute(array(":idMembre" => $membre->idMembre()));
+            // Delete Membre
+            $req = "DELETE FROM pr_membre WHERE  idMembre = :idMembre";
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute(array(":idMembre" => $membre->idMembre()));
+            // Commit the transaction
+            $this->_db->commit();
+
         }
     }
 ?>

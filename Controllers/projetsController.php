@@ -158,7 +158,6 @@ class ProjetController{
         if ($projet->isProprietaire()) return;
 
         if (!isset($_SESSION["idMembre"])) return;
-        var_dump($_SESSION);
         $idMembre = $_SESSION["idMembre"];
         if (isset($_POST["liked"])){
             if ($_POST["liked"] == "1"){

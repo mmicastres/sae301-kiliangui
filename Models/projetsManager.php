@@ -369,4 +369,25 @@ public function unlike($idProjet, $idMembre){
         }
         return $projets;
     }
+
+
+
+
+
+
+    ## Outils de suppression de membres
+
+    public function deleteAllParticipationsFromMembre($membre){
+        $req = "DELETE FROM pr_participer WHERE idMembre = :idMembre";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array(":idMembre" => $membre->idMembre()));
+    }
+
+
+    public function deleteAllLikesFromMembre($membre){
+        $req = "DELETE FROM pr_aime WHERE idMembre = :idMembre";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array(":idMembre" => $membre->idMembre()));
+    }
+
 }
