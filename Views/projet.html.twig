@@ -1,7 +1,7 @@
 {% extends "index.html.twig" %}
 
 {% block section %}
-    <div class="col col-md-12 col-lg-7   mx-auto ">
+    <div class="col col-md-12 col-lg-7 d-flex  mx-auto ">
         <div id="content" class="w-100">
             <article>
                 <div class="card p-2">
@@ -89,10 +89,10 @@
             </article>
             <div>
                 <h2>Commentaires</h2>
-                {{ projet.proprietaire }}{{ membre.idMembre }}
-                {% if not projet.isProprietaire %}
+                {% if projet.isParticipant %}
+                <p>Vous ne pouvez pas commenter votre propre projet</p>
+                {% elseif acces=="oui" %}
                 <form action="" method="post" >
-
                     <div>
                         <label for="contenu">Ecrie un commentaire</label>
                         <textarea name="contenu" id="contenu"></textarea>
@@ -102,8 +102,16 @@
                         Envoyer
                     </button>
                 </form>
+                    {% else %}
+                    <p>Vous devez être connecté pour commenter</p>
+                        <a href="?action=login" >Me connecter</a>
                 {% endif %}
                 <ul>
+                    {% if projet.commentaires|length == 0 %}
+                        <li class="card">
+                            <p>Les commentaires apparaitrons ici</p>
+                        </li>
+                    {% endif %}
                     {% for commentaire in projet.commentaires %}
                         <li class="card" id="{{ commentaire.idCommentaire }}">
                             <div class="d-flex justify-content-between align-items-center comment">
@@ -142,15 +150,14 @@
             </div>
         </div>
 
-        <div class="">
-
-            <ul class=" list-unstyled">
-                {% if not projet.isProprietaire %}
-                    <li class="pl position-fixed">
+        <div class="pl ">
+            <ul class=" ms-3 list-unstyled">
+                {% if not projet.isProprietaire and acces=="oui" %}
+                    <li class="position-fixed">
                         <form method="post">
                             <input hidden name="idProjet" value="{{ projet.idProjet }}">
                             <input hidden name="liked" value="{{ projet.liked }}" >
-                            <button class="btn {% if projet.liked %}btn-danger{% else %}btn-primary{% endif %}" type="submit" name="like"><3</button>
+                            <button class="btn  p-4 ratio ratio-1x1 rounded-5 {% if projet.liked %}btn-danger{% else %}btn-primary{% endif %}" type="submit" name="like"><i style="position: absolute; top: 32%; left: 32%;" class="fa-solid fa-heart w-auto h-auto"></i></button>
                         </form>
                     </li>
                 {% endif %}

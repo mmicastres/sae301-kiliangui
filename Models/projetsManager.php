@@ -178,7 +178,7 @@ public function unlike($idProjet, $idMembre){
      */
     public function getListMembre(int $idmembre):array
     {
-        $stmt = $this->_db->prepare('SELECT * FROM pr_projet inner join pr_participer WHERE pr_participer.idProjet = pr_projet.idProjet AND  proprietaire=?');
+        $stmt = $this->_db->prepare('SELECT pr_projet.*,(SELECT COUNT(pr_aime.idProjet) FROM pr_aime WHERE pr_aime.idProjet = pr_projet.idProjet) as likes FROM pr_projet inner join pr_participer WHERE pr_participer.idProjet = pr_projet.idProjet AND  proprietaire=?');
         $stmt->execute(array($idmembre));
         $projets = [];
         while ($data = $stmt->fetch()) {
