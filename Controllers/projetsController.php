@@ -130,6 +130,9 @@ class ProjetController{
 
     public function likeProjet(){
         $idProjet = $_POST["idProjet"];
+        // sécurité : on ne peut pas liker son propre projet
+        $projet = $this->projetManager->get($idProjet);
+        if ($projet->isProprietaire()) return;
         $idMembre = $_SESSION["idMembre"];
         if (isset($_POST["liked"])){
             if ($_POST["liked"] == "1"){
