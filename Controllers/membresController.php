@@ -39,10 +39,11 @@ class MembreController {
             $_SESSION["idMembre"] = strval($membre->idMembre());
             if ($membre->admin()==1){
                 $_SESSION["admin"] = 1;
+            }else{
+                $_SESSION["admin"] = 0;
             }
             #save session
             session_commit();
-
 			$message = "Bonjour ".$membre->prenom()." ".$membre->nom()."!";
 			echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'idMembre'=>$_SESSION["idMembre"],'message'=>$message));
 		} else { // acces non autorisé : variable de session acces = non
@@ -124,6 +125,17 @@ class MembreController {
     }
 
     public function espaceAdmin(){
+        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1){
+
+            if (!isset($_SESSION["idMembre"])){
+                $message = "Vous devez être connecté pour accéder à cette page";
+                echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
+            }else{
+                $message = "Vous devez être administrateur pour accéder à cette page";
+                echo $this->twig->render('membre_espace.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
+              }
+            return;
+        }
         $projets = $this->projetManager->getListAPublier();
         $categories = $this->categoriesManager->getList();
         $contexts = $this->contextsManager->listContext();
@@ -133,6 +145,7 @@ class MembreController {
     }
 
     public function espaceMembre() {
+        var_dump($_SESSION);
         if (!isset($_SESSION["idMembre"])){
             $message = "Vous devez être connecté pour accéder à cette page";
             echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));

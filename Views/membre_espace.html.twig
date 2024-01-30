@@ -3,10 +3,17 @@
 {% block section %}
 
     <h1>Espace Membre</h1>
-    <div class="d-flex">
-        <section>
+    <div class="d-flex flex-column-reverse flex-md-row ">
+        <section class="w-md-75 container">
             <h2>Vous avez participer</h2>
-            <ul class="row row-cols-1 row-cols-md-3  row-cols-lg-4  ">
+            <ul class="row row-cols-1 row-cols-md-3  row-cols-lg-4 p-0">
+                <li class="card mb-3 col bg-body-color text-primary ">
+                    <a href="?action=ajoutProjet" class="h-100">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center h-100">
+                            <h2 class="card-title h5 a  text-primary">Ajoute un projet</h2>
+                        </div>
+                    </a>
+                </li>
                 {% for projet in projets %}
                     <li class="card mb-3 col ">
                         <a href="?action=projet&id={{ projet.idProjet }}">
@@ -25,7 +32,7 @@
             <h2> Vos info</h2>
             <form id="infoMembre" action="" method="post">
                 <input hidden name="idMembre" value="{{ membre.idMembre }}">
-                <ul class="infos">
+                <ul class="infos ">
                     <li>
                         <label for="nom">Nom :</label>
                         <input class="form-control" disabled id="nom" name="nom" value="{{ membre.nom }}">
