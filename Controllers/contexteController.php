@@ -14,7 +14,7 @@ class ContexteController
 
     public function addContext()
     {
-        if (!isset($_SESSION["idMembre"])) return;
+        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");;
         if (!isset($_POST["identifiant"])) return;
         if (!isset($_POST["intitule"])) return;
         if (!isset($_POST["semestre"])) return;
@@ -25,7 +25,7 @@ class ContexteController
     }
 
     public function modContexte(){
-        if (!isset($_SESSION["idMembre"]) || !isset($_SESSION["admin"])) header("Location: index.php");;
+        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");;
         if (!isset($_POST["identifiant"])) header("Location: index.php?action=admin_espace");;
         if (!isset($_POST["intitule"])) header("Location: index.php?action=admin_espace");;
         if (!isset($_POST["semestre"])) header("Location: index.php?action=admin_espace");;
@@ -40,6 +40,7 @@ class ContexteController
         if (!isset($_POST["identifiant"])) header("Location: index.php?action=admin_espace");;
         if (!isset($_POST["intitule"])) header("Location: index.php?action=admin_espace");;
         if (!isset($_POST["semestre"])) header("Location: index.php?action=admin_espace");;
+        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");;
         $context = new Contexte($_POST);
         $this->contextManager->delete($context);
         header("Location: index.php?action=espaceAdmin");

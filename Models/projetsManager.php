@@ -291,13 +291,7 @@ public function unlike($idProjet, $idMembre){
                 $this->addParticipant($idProjet, $idMembre );
             }
         }
-        // ajout du propriétaire en participant
-        $exist = false;
-        foreach ($_POST["participants"] as $participant) {
-            if ($participant == $projet->proprietaire()) $exist = true;
-        }
-        var_dump($projet->proprietaire());
-        if (!$exist) $this->addParticipant($projet->idProjet(), $projet->proprietaire());
+        if (!$projet->isParticipant()) $this->addParticipant($projet->idProjet(), $projet->proprietaire());
 
         return true;
 

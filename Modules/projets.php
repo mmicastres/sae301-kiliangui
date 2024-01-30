@@ -62,14 +62,11 @@ class Projet{
                     }
 
                 }else{
-
-
-
                     // Verifie si le tableau est un tableau d'id ou de Membre
                     if (get_class($donnees["participants"][0]) == "Membre") {
                         $this->_participants = $donnees["participants"];
-
                     }else {
+                        echo "ELSE FROM 69 PROJET IS USED";
                         $this->_participants = [];
                         foreach ($donnees["participants"] as $participant) {
                             $user = ["idMembre" => $participant];
@@ -78,8 +75,6 @@ class Projet{
                         }
                         $this->_participants = $donnees['participants'];
                     }
-
-
                 }
             }
         }
@@ -123,6 +118,14 @@ class Projet{
     public function commentaires() { return isset($this->_commentaires) ? $this->_commentaires : [];}
     public function proprietaire() { return isset($this->_proprietaire) ? $this->_proprietaire : false;}
     public function isProprietaire() { return isset($_SESSION["idMembre"]) ? $this->_proprietaire == $_SESSION["idMembre"] : false  ;}
+    public function isParticipant() {
+        if (!isset($_SESSION["idMembre"])) return false;
+        foreach ($this->_participants as $participant) {
+            $idMembre = is_string($participant) ? $participant : $participant->idMembre();
+            if ($idMembre== $_SESSION["idMembre"]) return true;
+        }
+        return false;
+    }
     public function likes() { return   $this->_likes;}
     //Detect si le projet est liké par l'utilisateur
     public function liked() { return   $this->_liked;}

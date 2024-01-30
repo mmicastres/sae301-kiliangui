@@ -132,9 +132,23 @@ class ProjetController{
 
     public function delCommentaire(){
         $idCommentaire = $_POST["idCommentaire"];
-        $ok = $this->commentaireManager->del($idCommentaire);
-        $message = $ok ? "Commentaire supprimé" : "probleme lors de la suppression";
-        header("Location: index.php?action=projet&id=".$_POST["idProjet"]);
+        if (!isset($_SESSION["idMembre"])) return;
+        $idMembre = $_SESSION["idMembre"];
+        // get commentaire
+        $commentaire = $this->commentaireManager->get($idCommentaire);
+        var_dump($commentaire);
+        if ($commentaire->idMembre() == $idMembre) {
+            $ok = $this->commentaireManager->del($idCommentaire);
+            $message = $ok ? "Commentaire supprimé" : "probleme lors de la suppression";
+            header("Location: index.php?action=projet&id=".$_POST["idProjet"]);
+
+        }elseif (isset($_SESSION["admin"]) || $_SESSION["admin"] == 1){ // Permissions des admins
+            $ok = $this->commentaireManager->del($idCommentaire);
+            $message = $ok ? "Commentaire supprimé" : "probleme lors de la suppression";
+            header("Location: index.php?action=projet&id=".$_POST["idProjet"]);
+        }
+
+
     }
 
     public function likeProjet(){
@@ -180,18 +194,12 @@ class ProjetController{
 
 
         $ok = $this->projetManager->update($projet);
-
-        $message = "Le projet à était éditer";
+        if ($ok) $message = "Le projet à était éditer";
+        else $message = "probleme lors de l'édition";
         $projet = $this->projetManager->get($idProjet);
-        $proprietaire = $projet->proprietaire();
         echo $this->twig->render('projet.html.twig', array('projet'=>$projet,"admin"=>$_SESSION["admin"],'acces'=>$_SESSION['acces'],'message'=>$message));
     }
 
-    public function selectSuppr(){
-        $idProjet = $_POST["idProjet"];
-        $projet = $this->projetManager->get($idProjet);
-        echo $this->twig->render('suppr_confirm.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
-    }
 
     public function supprimerProjet(){
         $idProjet = $_POST["idProjet"];
@@ -216,7 +224,6 @@ class ProjetController{
 
 
     function projet(){
-
         $idProjet = $_GET["id"];
         $projet = $this->projetManager->get($idProjet);
         if ($projet == false){
@@ -241,7 +248,7 @@ class ProjetController{
     }
 
     function publierProjet(){
-        if (!isset($_SESSION["admin"])) return;
+        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");;
         $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
         $projet->setPublier(1);
@@ -250,7 +257,7 @@ class ProjetController{
         echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
     function dePublierProjet(){
-        if (!isset($_SESSION["admin"])) return;
+        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");;
         $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
         $projet->setPublier(0);

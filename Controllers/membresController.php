@@ -145,7 +145,6 @@ class MembreController {
     }
 
     public function espaceMembre() {
-        var_dump($_SESSION);
         if (!isset($_SESSION["idMembre"])){
             $message = "Vous devez être connecté pour accéder à cette page";
             echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));

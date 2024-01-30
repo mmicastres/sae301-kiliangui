@@ -24,6 +24,16 @@ class CommentaireManager{
         ));
         return $stmp;
     }
+    public function get(int $idCommentaire) {
+        $req = 'SELECT * FROM pr_commentaire WHERE idCommentaire = :idCommentaire';
+        $stmp = $this->_db->prepare($req);
+        $stmp->execute(array(
+            'idCommentaire' => $idCommentaire
+        ));
+        $data = $stmp->fetch();
+        $data["membre"] = $this->_membreManager->get($data["idMembre"]);
+        return new Commentaire($data);
+    }
 
     public function del(int $idCommentaire) {
         $req = 'DELETE FROM pr_commentaire WHERE idCommentaire = :idCommentaire';

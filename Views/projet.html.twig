@@ -9,12 +9,12 @@
                         <a href="?action=liste">back</a>
                         <h1>{{ projet.nomProjet }}</h1>
                         <div>
-                            {% if projet.isProprietaire %}
+                            {% if projet.isParticipant or admin==1 %}
                                 <form method="post" action="">
                                     <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
                                     <input class="btn btn-primary" type="submit" name="saisie_modif" value="Edit">
 
-                                    {% if admin %}
+                                    {% if admin==1 %}
                                         {% if projet.publier %}
                                             <input class="btn btn-info" type="submit" name="dePublierProjet" value="De-publier">
                                         {% else %}
@@ -111,7 +111,7 @@
                                 <p>{{ commentaire.date }}</p>
                             </div>
                             <p>{{ commentaire.contenu }}</p>
-                            {% if commentaire.proprietaire %}
+                            {% if commentaire.proprietaire or admin==1 %}
                                 <form class="modify-form d-none">
                                     <!-- Formulaire de modification -->
                                     <input type="hidden" name="idCommentaire" value="{{ commentaire.idCommentaire }}">

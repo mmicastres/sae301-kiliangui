@@ -1,0 +1,26 @@
+
+/* After medium */
+body{overflow-x: hidden;}
+@media (min-width: 768px) {
+    #illustration {
+        /* MAKE IT NOT CLICKABLE */
+        pointer-events: none;
+
+        background-image: url(../img/design2.svg);
+        background-repeat: no-repeat;
+        background-size: contain    ;
+        background-position: center;
+        rotate: 35deg;
+        width: 700px;
+        top: 2rem;
+        height: 750px;
+        position: absolute;
+        right: 0;
+        z-index: 1;
+    }
+}
+
+.btn-primary {
+    color: #fff;
+    font-weight: bold;
+}

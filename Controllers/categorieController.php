@@ -19,6 +19,8 @@ class CategorieController
     {
         if (!isset($_SESSION["idMembre"])) return;
         if (!isset($_POST["intitule"])) return;
+        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");;
+
         $categorie = new Categorie($_POST);
 
         if ($this->categorieManager->get($categorie) != null) return;
@@ -28,6 +30,7 @@ class CategorieController
     public function modCategorie(){
         if (!isset($_SESSION["idMembre"]) || !isset($_SESSION["admin"])) header("Location: index.php");;
         if (!isset($_POST["intitule"])) header("Location: index.php?action=admin_espace");;
+        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");;
         $categorie = new Categorie($_POST);
         echo "the categorie : ";
         if ($this->categorieManager->getId($categorie) == null) return;
@@ -39,6 +42,7 @@ class CategorieController
     public function deleteCategorie()
     {
         if (!isset($_SESSION["idMembre"])) return;
+        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");;
         if (!isset($_POST["intitule"])) return;
         $categorie = new Categorie($_POST);
 

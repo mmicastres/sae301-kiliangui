@@ -47,9 +47,11 @@ if (!empty($_POST)) {
     // --> au clic sur le bouton "valider_modif" du form précédent
     elseif (isset($_POST["valider_mod_projet"])) {
         $projetController->validerModProjet();
-    } elseif (isset($_POST["select_supprimer_projet"])) {
-        $projetController->selectSuppr();
-    } elseif (isset($_POST["valider_supprimer_projet"])) {
+    }
+    //elseif (isset($_POST["select_supprimer_projet"])) {
+    //    $projetController->selectSuppr();
+    //}
+    elseif (isset($_POST["valider_supprimer_projet"])) {
         echo "SUPPRI";
         $projetController->supprimerProjet();
     } elseif (isset($_POST["envoie_commentaire"])) {

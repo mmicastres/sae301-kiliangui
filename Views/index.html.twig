@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" href="assets/img/logo.png">
     {% block title %}
         <title>MMI Castres - Cours de PHP</title>
     {% endblock %}
@@ -13,18 +14,19 @@
     <!-- Bootstrap core CSS -->
     <link href="assets/css/index.css" rel="stylesheet" crossorigin="anonymous">
     <script src="assets/js/searchbar.js" crossorigin="anonymous" defer></script>
-    <link rel="stylesheet" href="design.css"> 
+    <link rel="stylesheet" href="design.css">
+    <link rel="stylesheet" href="assets/css/autre.css">
 </head>
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="?">Projets MMI</a>
+      <a class="navbar-brand d-flex align-items-center" href="?"><img class="me-2" height="32px" src="assets/img/logo.png"><span class="h2 m-0 fw-bold">Projets MMI</span></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav d-flex justify-content-between w-100">
+      <div class="navbar-nav d-flex justify-content-between align-items-center w-100 ">
           <div class="d-flex">
               <a class="nav-link" href="?action=liste">Liste</a>
               <a class="nav-link" href="?action=recher">Rechercher</a>
@@ -34,8 +36,8 @@
           </div>
 
         <!--<a class="nav-link" href="?action=ajoutProjet">Ajouter</a>-->
-          <div class="d-flex">
-              <input class="form-control" list="searchBarOptions" id="searchBar" placeholder="Type to search...">
+          <div class="d-flex align-items-center">
+              <input class="form-control w-auto" list="searchBarOptions" id="searchBar" placeholder="Type to search...">
               <datalist id="searchBarOptions">
                   <option value="San Francisco">
                   <option value="New York">
@@ -63,13 +65,17 @@
 </nav>
 
   <div class="container">
-      {% if message %}<div class="alert alert-danger">{{message}}</div>{% endif %}
+      {% if message %}<div class=" z-2 alert alert-danger">{{message}}</div>{% endif %}
 	{% block section %}
-       <div>
+       <div style="min-height: 75vh" class="d-flex flex-column justify-content-center">
+           <div>
 
-           <h1>Projets MMI</h1>
-           <p>Retrouve les <mark>projets des étudiants</mark> de MMI</p>
-           <a href="?action=liste" class="btn btn-primary">Voir les projets</a>
+               <h1 class=" fs-0 fw-bolder">Projets MMI</h1>
+               <p class="fs-3">Retrouve les <mark>projets des étudiants</mark> de MMI</p>
+               <a href="?action=liste" class="btn btn-primary text-white fw-semibold p-2 px-5 mt-5">Voir les projets</a>
+
+           </div>
+           <div class="position-absolute" id="illustration" src="assets/img/design2.svg" class="img-fluid w-25 mx-auto"></div>
        </div>
         <div>
 

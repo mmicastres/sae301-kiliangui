@@ -1,6 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap');
+
+*{
+  font-family: Inter;
+}
 //Customize the bootstrap colors
 $primary: #FE9A1B;
-$secondary: #6c757d;
+$secondary: #1CAEFF;
 $success: #28a745;
 $info: #17a2b8;
 $warning: #ffc107;
@@ -11,7 +16,8 @@ $body:#ffffff;
 $body-bg: #131312;
 $body-secondary-bg :#000000;
 $body-color:#ffffff;
-$card-bg : #6b6b64;
+$card-bg : #2A2A29;
+
 
 $table-color : $body-color;
 
@@ -94,6 +100,35 @@ $theme-colors: (
         "body": $body-bg,
         "body-color": $body-color
 );
+
+
+// defaults bootstrap fs
+$font-sizes: (
+    0: 8rem,
+    1: 2.5rem,
+    2: 2rem,
+    3: 1.75rem,
+    4: 1.5rem,
+    5: 1.25rem,
+);
+
+
+// Above md
+@media (min-width: 768px) {
+  // defaults bootstrap fs
+  $font-sizes: (
+          0: 8rem,
+          1: 2.5rem,
+          2: 2rem,
+          3: 1.75rem,
+          4: 1.5rem,
+          5: 1.25rem,
+  );
+}
+
+
+
+
 
 // Path: styles/index.scss
 // Import the bootstrap styles
