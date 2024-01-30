@@ -106,6 +106,13 @@ class ProjetController{
         echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
+    public function rechercheProjet(){
+        $recherche = $_GET["s"];
+        var_dump("recherche : ".$recherche);
+        $projets = $this->projetManager->rechercheProjet($recherche);
+        echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+    }
+
 
 
     public function formAjoutProjet(){
@@ -123,6 +130,9 @@ class ProjetController{
 
     public function likeProjet(){
         $idProjet = $_POST["idProjet"];
+        // sécurité : on ne peut pas liker son propre projet
+        $projet = $this->projetManager->get($idProjet);
+        if ($projet->isProprietaire()) return;
         $idMembre = $_SESSION["idMembre"];
         if (isset($_POST["liked"])){
             if ($_POST["liked"] == "1"){

@@ -94,6 +94,18 @@ public function unlike($idProjet, $idMembre){
 
     }
 
+    public function rechercheProjet($recherche){
+        $idMembre = isset($_SESSION["idMembre"]) ? $_SESSION["idMembre"] : -1;
+        $req = "SELECT * FROM pr_projet WHERE (publier = 1 or proprietaire = ? ) AND (titre LIKE ? OR description LIKE ?)";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($idMembre,"%".$recherche."%","%".$recherche."%"));
+        $projets = [];
+        while ($data = $stmt->fetch()) {
+            $projets[] = $this->completeProjet(new Projet($data));
+        }
+        return $projets;
+    }
+
 
     public function deleteAllParticipants($idProjet){
         $req = "DELETE FROM pr_participer WHERE idProjet = ?";

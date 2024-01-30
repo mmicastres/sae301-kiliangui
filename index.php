@@ -63,14 +63,7 @@ if (!empty($_POST)) {
     }
     elseif (isset($_POST["supprMembre"])) {
         $membreController->deleteMembre();
-    }
-    // recherche des itineraires : construction de la requete SQL en fonction des critères
-// de recherche et affichage du résultat dans un tableau HTML
-// --> au clic sur le bouton "valider_recher" du form précédent
-    elseif (isset($_POST["valider_recher"])) {
-        //$itiController->rechercheItineraire();
-        echo "recherche";
-    } elseif (isset($_POST["addCategorie"])) {
+    }elseif (isset($_POST["addCategorie"])) {
         $categorieController->addCategorie();
     }elseif (isset($_POST["modCategorie"])) {
         echo "modCategorie";
@@ -144,7 +137,7 @@ elseif (isset($_GET["action"]) && $_GET["action"]=="liste") {
 // recherche d'un projet par le nom
 //  https://.../index/php?action=recherc
 elseif (isset($_GET["action"]) && $_GET["action"]=="recher") {
-  //$itiController->formRechercheItineraire();
+    $projetController->rechercheProjet();
 }
 
 
