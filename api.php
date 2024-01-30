@@ -7,8 +7,13 @@ include "connect.php";
 
 include "Modules/membre.php";
 include "Models/membresManager.php";
+include "Models/projetsManager.php";
+// commentaires
+include "Models/commentaireManager.php";
+include "Modules/projets.php";
 
 $membreManager = new MembreManager($bdd);
+$projetManager = new ProjetManager($bdd);
 
 
 // texte du message
@@ -30,6 +35,18 @@ if (isset($_GET["action"]) && ($_GET["action"]=="search"))  {
             $membres[$i] = $membres[$i]->jsonSerialize();
         }
         echo json_encode($membres);
+    }
+}
+
+if (isset($_GET["action"]) && ($_GET["action"]=="searchProjet")){
+    if (isset($_GET["s"]) && strlen($_GET["s"]) >= 3){
+        $search = $_GET["s"];
+        $projets = $projetManager->rechercheProjet($search);
+        // serialize method
+        for ($i = 0; $i < count($projets); $i++){
+            $projets[$i] = $projets[$i]->jsonSerialize();
+        }
+        echo json_encode($projets);
     }
 }
 

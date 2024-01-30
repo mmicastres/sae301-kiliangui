@@ -127,6 +127,12 @@ class Projet{
     //Detect si le projet est liké par l'utilisateur
     public function liked() { return   $this->_liked;}
 
+    public function jsonSerialize(){
+        $vars = get_object_vars($this);
+        $vars["_url"] = "?action=projet&id=".$this->_idProjet;
+        return $vars;
+    }
+
     // SETTERS //
     public function setIdProjet(int $idProjet) { $this->_idProjet = $idProjet; }
     public function setTitre(string $nomProjet) { $this->_titre = $nomProjet; }

@@ -12,6 +12,7 @@
     {% endblock %}
     <!-- Bootstrap core CSS -->
     <link href="assets/css/index.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="assets/js/searchbar.js" crossorigin="anonymous" defer></script>
     <link rel="stylesheet" href="design.css"> 
 </head>
 
@@ -23,33 +24,47 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="?action=liste">Liste</a>
-        <a class="nav-link" href="?action=recher">Rechercher</a>
-{% if acces == "oui" %}
-        <a class="nav-link" href="?action=mesProjets">Mes projets</a>
-        <a class="nav-link" href="?action=ajoutProjet">Ajouter</a>
-        <a class="nav-link" href="?action=modif">Modifier</a>
-        <a class="nav-link" href="?action=espaceMembre">Espace membre</a>
-    {% if admin == "1" %}
-        <a class="nav-link" href="?action=espaceAdmin">Admin</a>
-    {% endif %}
-        <a class="nav-link" href="?action=logout">Deconnexion</a>
-    {% if admin == "oui" %}
-        <a class="nav-link" href="?action=gestion">Gestion</a>
-    {% endif %}
-	{% else %}
-        <a class="nav-link" href="?action=login">Connexion</a>
-        <a class="nav-link" href="?action=register">Inscription</a>
-{% endif %}
+      <div class="navbar-nav d-flex justify-content-between w-100">
+          <div class="d-flex">
+              <a class="nav-link" href="?action=liste">Liste</a>
+              <a class="nav-link" href="?action=recher">Rechercher</a>
+              {% if acces == "oui" %}
+              <a class="nav-link" href="?action=mesProjets">Mes projets</a>
+              {% endif %}
+          </div>
+
+        <!--<a class="nav-link" href="?action=ajoutProjet">Ajouter</a>-->
+          <div class="d-flex">
+              <input class="form-control" list="searchBarOptions" id="searchBar" placeholder="Type to search...">
+              <datalist id="searchBarOptions">
+                  <option value="San Francisco">
+                  <option value="New York">
+                  <option value="Seattle">
+                  <option value="Los Angeles">
+                  <option value="Chicago">
+              </datalist>
+              {% if acces == "oui" %}
+              <a class="nav-link" href="?action=espaceMembre">Espace membre</a>
+                  {% endif %}
+              {% if admin == "1" %}
+                  <a class="nav-link" href="?action=espaceAdmin">Admin</a>
+              {% endif %}
+              {% if acces == "oui" %}
+              <a class="nav-link" href="?action=logout">Deconnexion</a>
+              {% else %}
+                  <a class="nav-link" href="?action=login">Connexion</a>
+                  <a class="nav-link" href="?action=register">Inscription</a>
+              {% endif %}
+          </div>
+
       </div>
     </div>
   </div>
 </nav>
 
   <div class="container">
+      {% if message %}<div class="alert alert-danger">{{message}}</div>{% endif %}
 	{% block section %}
-		{{message}}
        <div>
 
            <h1>Projets MMI</h1>

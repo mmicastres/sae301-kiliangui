@@ -51,7 +51,8 @@ class ProjetController{
         }
         $_POST["tags"] = $tags;
         $projet = new Projet($_POST);
-
+        $projet->setProprietaire($_SESSION["idMembre"]);
+        // Ajout du projet principale
         $ok = $this->projetManager->add($projet);
         if ($ok){
             # add urls
@@ -71,16 +72,24 @@ class ProjetController{
             foreach ($projet->tags() as $tag) {
                 $this->_tagsManager->addTagToProjet($tag, $projet);
             }
-            # add participants
+            # ajout des participants
             for ($i=0; $i < count($projet->participants()); $i++) {
                 $membre = $projet->participants()[$i];
                 $this->projetManager->addParticipant($projet->idProjet(), $membre->idMembre());
             }
-            $message = "Projet ajouté";
+            // ajout du propriétaire en participant
+            $exist = false;
+            var_dump($projet->proprietaire());
+            foreach ($projet->participants() as $participant) {
+                if ($participant->idMembre() == $projet->proprietaire()) $exist = true;
+            }
+            var_dump("exist : ");
+            var_dump($exist);
+            if (!$exist) $this->projetManager->addParticipant($projet->idProjet(), $projet->proprietaire());
 
         }
         $message = $ok ? "Projet ajouté" : "probleme lors de l'ajout";
-        echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
+        echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
     }
 
 
@@ -133,6 +142,9 @@ class ProjetController{
         // sécurité : on ne peut pas liker son propre projet
         $projet = $this->projetManager->get($idProjet);
         if ($projet->isProprietaire()) return;
+
+        if (!isset($_SESSION["idMembre"])) return;
+        var_dump($_SESSION);
         $idMembre = $_SESSION["idMembre"];
         if (isset($_POST["liked"])){
             if ($_POST["liked"] == "1"){

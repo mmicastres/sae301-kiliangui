@@ -26,7 +26,6 @@ class UrlsManager
         $stmt = $this->_db->prepare($req);
         $res = $stmt->execute(array($url->url(),$url->type(),$url->idProjet()));
 
-        //
         // pour debuguer les requêtes SQL
         $errorInfo = $stmt->errorInfo();
         if ($errorInfo[0] != 0) {

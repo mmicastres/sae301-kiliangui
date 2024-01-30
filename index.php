@@ -22,9 +22,9 @@ $message = "";
 
 // si la variable de session n'existe pas, on la crée
 if (!isset($_SESSION['acces']) ) {
-   $_SESSION['acces']="non";
-   $_SESSION["idMembre"] = false;
-   $_SESSION['admin']="0";
+    $_SESSION['acces'] = "non";
+    $_SESSION["admin"] = 0;
+    session_commit();
 }
 
 
@@ -155,7 +155,7 @@ elseif (isset($_GET["action"]) && $_GET["action"] == "ajoutProjet"){
     $projetController->formAjoutProjet();
 }
 elseif (isset($_GET["action"]) && $_GET["action"] == "projet"){
-    $projetController->projet($_SESSION['idMembre']);
+    $projetController->projet();
 }
 //Espace Admin
 elseif (isset($_GET["action"]) && $_GET["action"] == "espaceAdmin"){
