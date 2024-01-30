@@ -48,9 +48,9 @@ if (!empty($_POST)) {
     elseif (isset($_POST["valider_mod_projet"])) {
         $projetController->validerModProjet();
     }
-    //elseif (isset($_POST["select_supprimer_projet"])) {
-    //    $projetController->selectSuppr();
-    //}
+    elseif (isset($_POST["select_supprimer_projet"])) {
+        $projetController->selectSuppr();
+    }
     elseif (isset($_POST["valider_supprimer_projet"])) {
         echo "SUPPRI";
         $projetController->supprimerProjet();

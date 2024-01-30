@@ -53,7 +53,20 @@ nav .navbar-nav{
     }
   }
 }
-.a{
+.a.important{
+    color: $primary !important;
+    text-decoration: none !important;
+    &:has(img:hover){
+        .a {
+        color: $primary !important;
+        }
+    }
+
+    :hover{
+        .a{
+        color: $primary
+        }
+    }
 }
 .card a{
   color: white !important;

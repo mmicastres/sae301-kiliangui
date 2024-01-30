@@ -223,6 +223,9 @@ public function unlike($idProjet, $idMembre){
             if ($url->type() == "img") $imgs[] = $url;
             else if ($url->type() == "demo") $demos[] = $url;
             else if ($url->type() == "source") $sources[] = $url;
+            $titre =  parse_url($url->url())["host"];
+            $url->setTitre($titre);
+
         }
         // get tags
         $tags = $this->_tagsManager->listTag($projet);

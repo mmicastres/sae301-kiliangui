@@ -125,6 +125,8 @@ class MembreManager
         }
 
 
+
+        // Désolé j'imagine ?
         public function delete(Membre $membre){
             // On ne peu pas importer la classe ProjetManager ici car cela créer une boucle d'importation
             // Donc je réécris les fonctions de suppression de projet ici
@@ -135,7 +137,7 @@ class MembreManager
             $stmt = $this->_db->prepare($req);
             $stmt->execute(array(":idMembre" => $membre->idMembre()));
             // Delete likes
-            $req = "DELETE FROM pr_aime WHERE idProjet in (SELECT idProjet FROM pr_projet WHERE proprietaire = :idMembre)";
+            $req = "DELETE FROM pr_aime WHERE idMembre= :idMembre or idProjet in (SELECT idProjet FROM pr_projet WHERE proprietaire = :idMembre)";
             $stmt = $this->_db->prepare($req);
             $stmt->execute(array(":idMembre" => $membre->idMembre()));
             // Delete Caracterise

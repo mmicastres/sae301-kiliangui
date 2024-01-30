@@ -30,7 +30,9 @@ class Projet{
             if (is_array($donnees['imgsUrls'])) {
                 $this->_imgsUrls = $donnees['imgsUrls'];
             } else {
-                $this->_imgsUrls = json_decode($donnees['imgsUrls']);
+                if (is_string($donnees['imgsUrls']) && $donnees['imgsUrls'] == "") $this->_imgsUrls = [];
+                else $this->_imgsUrls = json_decode($donnees['imgsUrls']);
+
             }
         }
         if (isset($donnees['demosUrls'])) {

@@ -25,7 +25,6 @@ class Url{
     public function idProjet() { return $this->_idProjet;}
     public function titre() {
         if (isset($this->_titre) && $this->_titre != ""){
-            var_dump($this->_titre == "");
             return $this->_titre;
         }
         else{

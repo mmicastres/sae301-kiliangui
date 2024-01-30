@@ -37,8 +37,24 @@
 
                 <div class=" m-0 card p-2 mt-3 flex-row row row-cols-1 row-cols-md-3 ">
                     <div class="col flex-grow-1">
+                        <div>
                         <h2>Description</h2>
                         <p>{{ projet.description }}</p>
+                        </div>
+                        <div >
+                            <h3>Sources</h3>
+                            <ul class="d-flex gap-2">
+                                {% for url in projet.urlsSources %}
+                                    <li class="btn btn-primary"><a class="text-primary " href="{{ url.url }}">{{ url.titre }}</a></li>
+                                {% endfor %}
+                            </ul>
+                            <h3>Demo</h3>
+                            <ul class="d-flex gap-2">
+                                {% for url in projet.urlsDemos %}
+                                    <li class="list-unstyled btn btn-primary"><a class="text-primary " href="{{ url.url }}">{{ url.titre }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
 
                     </div>
                     <div class="col">
@@ -53,27 +69,16 @@
                         </ul>
                         <h2>Urls</h2>
 
-                        <h3>Sources</h3>
-                        <ul>
-                            {% for source in projet.urlsSources %}
-                                <li><a href="{{ source.url }}">{{ source.titre }}</a></li>
-                            {% endfor %}
-                        </ul>
-                        <h3>Demo</h3>
-                        <ul>
-                            {% for demo in projet.urlsDemos %}
-                                <li>{{ demo.url }}</li>
-                            {% endfor %}
-                        </ul>
+
                         <h3>Tags</h3>
                         <ul>
 
                             {% for tag in projet.tags %}
-                            <li>{{ tag.intitule }}</li>
+                            <li class="badge badge-pill text-bg-primary text-white">{{ tag.intitule }}</li>
                             {% endfor %}
 
                         </ul>
-                        {% if projet.isProprietaire %}
+                        {% if projet.isProprietaire or admin==1 %}
                         <h3>Supprimer le projet</h3>
                             <form method="post">
                                 <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">

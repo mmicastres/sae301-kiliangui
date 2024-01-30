@@ -56,6 +56,17 @@ class ProjetController{
         $ok = $this->projetManager->add($projet);
         if ($ok){
             # add urls
+            #$extensions = array('jpg', 'png', 'jpeg', 'gif');
+            #if (isset($_FILES["photo"]["name"])) {
+            #    $file_name = explode('.', $_FILES["photo"]["name"]);
+            #    $extension = end($file_name);
+            #    if ( !in_array($extension, $extensions ) ) {
+            #        $message = "Le fichier n'est pas une image";
+            #        echo $this->twig->render('index.html.twig', array('acces' => $_SESSION['acces'], 'message' => $message));
+            #        return;
+            #    }
+
+
             for ($i=0; $i < count($projet->imgsUrls()); $i++) {
                 $url = new Url(array("idProjet"=>$projet->idProjet(),"type"=>"img","url"=>$projet->imgsUrls()[$i]));
                 $this->urlsManager->addUrl($url);
@@ -181,8 +192,6 @@ class ProjetController{
         echo $this->twig->render('projet_ajout.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'contexts'=>$contexts,'categories'=>$categories));
     }
 
-
-    // TODO TO TEST
     public function validerModProjet(){
         $idProjet = $_POST["idProjet"];
         $old = $this->projetManager->get($idProjet);
@@ -201,11 +210,17 @@ class ProjetController{
 
 
     public function supprimerProjet(){
+        echo "supprimerProjet";
         $idProjet = $_POST["idProjet"];
         $projet = new Projet(array("idProjet"=>$idProjet));
         $ok = $this->projetManager->delete($projet);
         $message = $ok ? "Projet supprimé" : "probleme lors de la suppression";
         echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+    }
+    public function selectSuppr(){
+        $idProjet = $_POST["idProjet"];
+        $projet = $this->projetManager->get($idProjet);
+        echo $this->twig->render('suppr_confirm.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
 
 

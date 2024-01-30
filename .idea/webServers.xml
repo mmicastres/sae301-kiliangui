@@ -9,6 +9,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="a2be9667-9827-4555-a340-0e03f8197afc" name="prod" url="https://projetsmmi.kiliangui.fr/">
+        <fileTransfer rootFolder="/home/kiliangui-projetsmmi/htdocs/projetsmmi.kiliangui.fr/htdocs/projetsmmi.kiliangui.fr" accessType="SFTP" host="cp.kiliangui.fr" port="22" sshConfigId="083a8f7e-1836-4b7a-b0bb-90ddb5845793" sshConfig="root@cp.kiliangui.fr:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
