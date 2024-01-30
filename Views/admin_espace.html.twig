@@ -61,12 +61,12 @@
         <ul class="d-flex gap-1 list-unstyled">
             <li class="card px-2 d-flex p-1" >
                 <p>Ajouter une catégorie</p>
-                <button id="addCategorie" class="btn btn-success"><i class="fas fa-add"></i></button>
+                <button id="addCategorie" class="btn btn-success"><i class="fas fa-add"></i> Ajouter </button>
             </li>
             {% for categorie in categories %}
                 <li class="card px-2 p-1 " id="{{ categorie.idCategorie }}">
                     <span><p>{{ categorie.intitule }}</p></span>
-                    <button class="modCategorie btn btn-primary"><i class="fas fa-edit"></i></button>
+                    <button class="modCategorie btn btn-primary"><i class="fas fa-edit"></i> Modifier</button>
                 </li>
             {% endfor %}
         </ul>
@@ -76,11 +76,11 @@
         <ul class="d-flex gap-1 list-unstyled">
             <li class="card px-2 d-flex p-1" >
                 <p>Ajouter un contexte</p>
-                <button id="addContexte" class="btn btn-success"><i class="fas fa-add"></i></button>
+                <button id="addContexte" class="btn btn-success"><i class="fas fa-add"></i> Ajouter</button>
             </li>
 
             {% for context in contexts %}
-                <li class="card px-2 d-flex p-1" id="{{ context.idContexte }}"><p><span class="identifiant">{{ context.identifiant }}</span> - <span class="intitule">{{ context.intitule }}</span> - S<span class="semestre">{{ context.semestre }}</span></p><button class="btn btn-primary modContexte"><i class="fas fa-edit"></i></button></li>
+                <li class="card px-2 d-flex p-1" id="{{ context.idContexte }}"><p><span class="identifiant">{{ context.identifiant }}</span> - <span class="intitule">{{ context.intitule }}</span> - S<span class="semestre">{{ context.semestre }}</span></p><button class="btn btn-primary modContexte"><i class="fas fa-edit"></i> Modifier</button></li>
             {% endfor %}
         </ul>
     </div>
@@ -96,8 +96,8 @@
                     <td>{{ membre.prenom }}</td>
                     <td>{{ membre.email }}</td>
                     <td>{{ membre.id_iut }}</td>
-                    <td><a class="btn btn-primary" href="?action=modifMembre&idMembre={{ membre.idMembre }}" >Modifier</a> </td>
-                    <td><form method="post"><input hidden name="idMembre" value="{{ membre.idMembre }}"><input class="btn btn-danger" type="submit" name="supprMembre" value="Supprimer"  ></form> </td>
+                    <td><a class="btn btn-primary " href="?action=modifMembre&idMembre={{ membre.idMembre }}" ><i class="fas fa-edit"></i> Modifier</a> </td>
+                    <td><a class="btn btn-danger" href="?action=supprMembre&idMembre={{ membre.idMembre }}"><i class="fas fa-edit"></i> Supprimer</a> </td>
                 </tr>
             {% endfor %}
             </tbody></table>

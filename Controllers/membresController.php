@@ -194,8 +194,22 @@ class MembreController {
             $this->membreManager->modifier($membre);
             header("Location: index.php?action=espaceMembre");
         }
+    }
 
-
+    public function confirmSupprMembre(){
+        if (isset($_SESSION["admin"]) && $_SESSION["admin"] == 1){
+            $membre = $this->membreManager->get($_GET["idMembre"]);
+            echo $this->twig->render('utilisateur/supprimer.html.twig',array('membre'=>$membre,'acces'=>$_SESSION["acces"],'admin'=>$_SESSION["admin"]));
+            return;
+        }else{
+            if (!isset($_SESSION["idMembre"])){
+                $message = "Vous devez être connecté pour accéder à cette page";
+                echo $this->twig->render('membre_login.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
+                return;
+            }
+            $membre = $this->membreManager->get($_SESSION["idMembre"]);
+            echo $this->twig->render('utilisateur/supprimer.html.twig',array('membre'=>$membre,'acces'=>$_SESSION["acces"],'admin'=>$_SESSION["admin"]));
+        }
     }
 
     public function deleteMembre(){

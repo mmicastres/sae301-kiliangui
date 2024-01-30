@@ -5,11 +5,13 @@
       <ul class="row row-cols-1 row-cols-md-3  row-cols-lg-4  ">
             {% for projet in projets %}
                   <li class="card mb-3 col ">
-                        {{ projet.idProjet }}
                         <a href="?action=projet&id={{ projet.idProjet }}">
                               <img src="{{ projet.thumbnail.url }}" class="card-img-top" alt="...">
                               <div class="card-body">
-                                    <h2 class="card-title h5 a ">{{ projet.nomProjet }}</h2>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                          <h2 class="card-title h5 a m-0">{{ projet.nomProjet }}</h2>
+                                          <span>{{ projet.likes }} <i class="text-primary fas fa-heart"></i></span>
+                                    </div>
                                     <p class="card-text">{{ projet.courte }}</p>
                                     <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
                               </div>
@@ -18,7 +20,7 @@
             {% endfor %}
       </ul>
 
-
+{% if false %}
 <table class="table table-hover table-sm"><thead>
 <tr><th>Id</th><th>Nom</th><th>Source</th><th>Demo</th><th>Image</th><th>Utilisateurs</th><th>Tags</th></tr>
 </thead><tbody>
@@ -35,6 +37,6 @@
             </td>
       </tr>
 {% endfor %}
-</tbody></table>
+</tbody></table>{% endif %}
 {% endblock %}
 

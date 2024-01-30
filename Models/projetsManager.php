@@ -189,7 +189,7 @@ public function unlike($idProjet, $idMembre){
 
     public function getListParticiper(int $idMembre):array
     {
-        $req = 'SELECT * FROM pr_projet inner join pr_participer WHERE (pr_participer.idProjet = pr_projet.idProjet AND idMembre=? OR proprietaire=?) GROUP BY pr_projet.idProjet';
+        $req = 'SELECT pr_projet.*,(SELECT COUNT(pr_aime.idProjet) FROM pr_aime WHERE pr_aime.idProjet = pr_projet.idProjet) as likes FROM pr_projet inner join pr_participer WHERE (pr_participer.idProjet = pr_projet.idProjet AND idMembre=? OR proprietaire=?) GROUP BY pr_projet.idProjet';
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($idMembre,$idMembre));
         $projets=[];
@@ -337,7 +337,7 @@ public function unlike($idProjet, $idMembre){
      */
     public function getListPublier():array
     {
-        $stmt = $this->_db->prepare('SELECT DISTINCT * FROM pr_projet WHERE publier=1');
+        $stmt = $this->_db->prepare('SELECT pr_projet.*,(SELECT COUNT(pr_aime.idProjet) FROM pr_aime WHERE pr_aime.idProjet = pr_projet.idProjet) as likes FROM pr_projet WHERE publier=1');
         $stmt->execute();
         $projets = [];
         while ($data = $stmt->fetch()) {
@@ -348,7 +348,7 @@ public function unlike($idProjet, $idMembre){
     }
     public function getListAPublier():array
     {
-        $stmt = $this->_db->prepare('SELECT DISTINCT * FROM pr_projet WHERE publier=0');
+        $stmt = $this->_db->prepare('SELECT pr_projet.*,(SELECT COUNT(pr_aime.idProjet) FROM pr_aime WHERE pr_aime.idProjet = pr_projet.idProjet) as likes FROM pr_projet WHERE publier=0');
         $stmt->execute();
         $projets = [];
         while ($data = $stmt->fetch()) {
@@ -361,7 +361,7 @@ public function unlike($idProjet, $idMembre){
 
     public function getListMembrePublier(int $idmembre):array
     {
-        $stmt = $this->_db->prepare('SELECT * FROM pr_projet WHERE publier=1 AND idmembre=?');
+        $stmt = $this->_db->prepare('SELECT pr_projet.*,(SELECT COUNT(pr_aime.idProjet) FROM pr_aime WHERE pr_aime.idProjet = pr_projet.idProjet) as likes FROM pr_projet WHERE publier=1 AND idmembre=?');
         $stmt->execute(array($idmembre));
         $projets = [];
         while ($data = $stmt->fetch()) {

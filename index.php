@@ -163,6 +163,9 @@ elseif (isset($_GET["action"]) && $_GET["action"] == "projet"){
 elseif (isset($_GET["action"]) && $_GET["action"] == "espaceAdmin"){
     $membreController->espaceAdmin();
 }
+elseif (isset($_GET["action"]) && $_GET["action"] == "supprMembre"){
+    $membreController->confirmSupprMembre();
+}
 
 
 else{
