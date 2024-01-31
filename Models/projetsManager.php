@@ -321,6 +321,9 @@ public function unlike($idProjet, $idMembre){
     }
         $this->_tagsManager->deleteAll($idProjet);
         foreach ($projet->tags() as $tag) {
+            if (is_string($tag)){
+                $tag = new Tag(array("intitule"=>$tag));
+            }
             //$tag = new Tag(array("intitule"=>$tag));
             $this->_tagsManager->addTagToProjet($tag, $projet);
         }
