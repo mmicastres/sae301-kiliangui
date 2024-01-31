@@ -2,6 +2,7 @@
 require_once "Models/membresManager.php";
 require_once "Models/tagsManager.php";
 require_once "Modules/contexts.php";
+require_once "Modules/categories.php";
 require_once "Modules/urls.php";
 require_once "Models/urlsManager.php";
 //require_once  "Models/commentaireManager.php";

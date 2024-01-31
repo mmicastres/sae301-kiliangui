@@ -19,7 +19,10 @@ function observeSearch() {
     if (searchString.length > 2) {
         url = "api?action=searchProjet&s=" + searchString;
         fetch(url)
-            .then(response => response.json())
+            .then((response )=> {
+                console.log(response)
+                return response.json();
+            })
             .then(data => {
                 console.log(data);
                 displayOptions(data);
