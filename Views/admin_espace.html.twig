@@ -8,8 +8,8 @@
               <form  method="post">
                   <input hidden name="idCategorie" id="idCategorie" value="">
                   <div>
-                      <label for="intitule">Intitulé</label>
-                      <input class="form-control"  type="text" name="intitule" id="intitule">
+                      <label for="intituleCategorie">Intitulé</label>
+                      <input class="form-control"  type="text" name="intitule" id="intituleCategorie">
                   </div>
                 <button class="btn-primary btn" name="addCategorie" value="true" type="submit">Ajouter</button>
                 <button hidden class="btn btn-danger" id="delCategorie" name="delCategorie" value="true" type="submit">Delete</button>
@@ -24,8 +24,8 @@
                             <input type="text" name="identifiant" id="identifiant">
                       </div>
                     <div>
-                         <label for="intitule">Intitulé</label>
-                         <input class="form-control" type="text" name="intitule" id="intitule">
+                         <label for="intituleContexte">Intitulé</label>
+                         <input class="form-control" type="text" name="intitule" id="intituleContexte">
                     </div>
                       <div>
                             <label for="semestre">Semestre</label>
@@ -67,7 +67,7 @@
                 <button id="addCategorie" class="btn btn-success"><i class="fas fa-add"></i> Ajouter </button>
             </li>
             {% for categorie in categories %}
-                <li class="card px-2 p-1 " id="{{ categorie.idCategorie }}">
+                <li class="card px-2 p-1 " id="cat{{ categorie.idCategorie }}">
                     <span>{{ categorie.intitule }}</span>
                     <button class="modCategorie btn btn-primary"><i class="fas fa-edit"></i> Modifier</button>
                 </li>

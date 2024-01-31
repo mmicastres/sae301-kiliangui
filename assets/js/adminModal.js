@@ -10,7 +10,7 @@ const delContexte = document.getElementById('delContexte');
 
 
 function resetCategorieModal(action){
-    const intitule = CategorieModal.querySelector('#intitule');
+    const intitule = CategorieModal.querySelector('#intituleCategorie');
     intitule.value = '';
     const button = CategorieModal.querySelector('button');
     delCategorie.hidden = true;
@@ -27,7 +27,7 @@ function resetCategorieModal(action){
 
 }
 function resetContexteModal(CTA){
-    const intitule = ContexteModal.querySelector('#intitule');
+    const intitule = ContexteModal.querySelector('#intituleContexte');
     intitule.value = '';
     const semestre = ContexteModal.querySelector('#semestre');
     semestre.value = '';
@@ -64,9 +64,9 @@ for (const categorie of modCategorie) {
 
         const li = this.parentElement;
         const intitule = li.querySelector('span');
-        const intitule_modal = CategorieModal.querySelector('#intitule');
+        const intitule_modal = CategorieModal.querySelector('#intituleCategorie');
         const idCategorie = CategorieModal.querySelector('#idCategorie');
-        idCategorie.value = li.id;
+        idCategorie.value = li.id.replace("cat","");
         console.log(intitule_modal);
         console.log(intitule);
         intitule_modal.value = intitule.textContent;
@@ -80,7 +80,7 @@ for (const contexte of modContexte) {
         resetContexteModal("mod");
         const li = this.parentElement;
         const intitule = li.querySelector('.intitule');
-        const intitule_modal = ContexteModal.querySelector('#intitule');
+        const intitule_modal = ContexteModal.querySelector('#intituleContexte');
         const semestre = li.querySelector('.semestre');
         const semestre_modal = ContexteModal.querySelector('#semestre');
         const identifiant = li.querySelector('.identifiant');
