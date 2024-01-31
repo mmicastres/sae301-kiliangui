@@ -285,6 +285,13 @@ class ProjetController{
             echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
             return;
         }
+        if (!$projet->publier() && !$projet->isParticipant() && !(isset($_SESSION["admin"]) && $_SESSION["admin"] == 1)  ){
+                    $message = "Ce projet n'est pas encore validé";
+                    echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
+                    return;
+
+        }
+
         $is_proprietaire = false;
         if (isset($_SESSION["idMembre"]) ){
 

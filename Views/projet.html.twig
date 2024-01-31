@@ -43,13 +43,13 @@
                         </div>
                         <div >
                             <h3>Sources</h3>
-                            <ul class="d-flex gap-2">
+                            <ul class="d-flex gap-2 flex-wrap">
                                 {% for url in projet.urlsSources %}
                                     <li class="btn btn-primary"><a class="text-primary " href="{{ url.url }}">{{ url.titre }}</a></li>
                                 {% endfor %}
                             </ul>
                             <h3>Demo</h3>
-                            <ul class="d-flex gap-2">
+                            <ul class="d-flex gap-2 flex-wrap   ">
                                 {% for url in projet.urlsDemos %}
                                     <li class="list-unstyled btn btn-primary"><a class="text-primary " href="{{ url.url }}">{{ url.titre }}</a></li>
                                 {% endfor %}
@@ -58,13 +58,11 @@
 
                     </div>
                     <div class="col">
-                        <h2>Créateur :</h2>
-
 
                         <h2>Participants</h2>
-                        <ul>
+                        <ul class="card bg-body p-3">
                             {% for participant in projet.participants %}
-                                <li>{{ participant.nom }} {{ participant.prenom }}</li>
+                                <li class="list-unstyled ">{{ participant.nom }} {{ participant.prenom }}</li>
                             {% endfor %}
                         </ul>
                         <h2>Urls</h2>

@@ -172,11 +172,25 @@ class MembreController {
     public function modifierMembre(){
         if (isset($_SESSION["admin"]) && $_SESSION["admin"] == 1){
             $membre = $this->membreManager->get($_POST["idMembre"]);
+            $domain = substr($_POST["email"], strpos($_POST["email"], '@') + 1);
+            // ignore subdomain
+            $domain = explode('.', $domain);
+
+            $domain = array_slice($domain, -3, 3);
+            $domain = implode('.', $domain);
+
+            //echo $domain;
+            if ($domain != "etu.iut-tlse3.fr"){
+                $message = "Vous devez utiliser votre adresse mail de l'IUT";
+                echo $this->twig->render('membre_register.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
+                return;
+            }
             $membre->setNom($_POST["nom"]);
             $membre->setPrenom($_POST["prenom"]);
             $membre->setEmail($_POST["email"]);
             $membre->setIdIut($_POST["id_iut"]);
             if (isset($_POST["admin"])) $membre->setAdmin($_POST["admin"]);
+
             $this->membreManager->modifier($membre);
             header("Location: index.php?action=espaceAdmin");
             return;
