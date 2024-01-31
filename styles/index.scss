@@ -53,6 +53,31 @@ nav .navbar-nav{
     }
   }
 }
+
+.form-control{
+  background-color: white !important;
+  color: black !important;
+
+  &:focus{
+    background-color: $body-secondary-bg !important;
+    color: $body-color !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+.form-control::placeholder{
+  color: #adb5bd !important;
+}
+
+.form-control::file-selector-button {
+  color: black !important;
+}
+
+.form-control:hover::file-selector-button {
+      color: white !important;
+    }
+
+
 .a.important{
     color: $primary !important;
     text-decoration: none !important;
