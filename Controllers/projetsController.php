@@ -206,6 +206,7 @@ class ProjetController{
         $idProjet = $_POST["idProjet"];
 
         $old = $this->projetManager->get($idProjet);
+        $old = $this->projetManager->completeProjet($old);
         if (!$old->isParticipant() && !(isset($_SESSION["admin"]) && $_SESSION["admin"] == 1 )) return;
         $this->handleFiles($old);
         $projet = new Projet($_POST);
