@@ -5,7 +5,7 @@
 
    <div>
        <dialog id="CategorieModal">
-              <form action="" method="post">
+              <form  method="post">
                   <input hidden name="idCategorie" id="idCategorie" value="">
                   <div>
                       <label for="intitule">Intitulé</label>
@@ -17,7 +17,7 @@
               </form>
        </dialog>
          <dialog id="ContexteModal">
-                  <form action="" method="post">
+                  <form  method="post">
                       <input hidden name="idContexte" id="idContexte" value="">
                       <div>
                             <label for="identifiant">Identifiant</label>
@@ -35,7 +35,9 @@
                       <button hidden class="btn btn-danger" id="delContexte" name="delContexte" value="true" type="submit">Delete</button>
 
                   </form>
+            </dialog>
    </div>
+
 
 
 
@@ -66,7 +68,7 @@
             </li>
             {% for categorie in categories %}
                 <li class="card px-2 p-1 " id="{{ categorie.idCategorie }}">
-                    <span><p>{{ categorie.intitule }}</p></span>
+                    <span>{{ categorie.intitule }}</span>
                     <button class="modCategorie btn btn-primary"><i class="fas fa-edit"></i> Modifier</button>
                 </li>
             {% endfor %}

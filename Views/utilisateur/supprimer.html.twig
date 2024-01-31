@@ -4,7 +4,7 @@
 {% block section %}
 
     <h1>Voulez vous vraiment supprimer <p>{{ membre.prenom }} {{ membre.nom }} ?</p></h1>
-    <form action="" method="POST" class="mt-4">
+    <form  method="POST" class="mt-4">
 
         <input hidden name="idMembre" value="{{ membre.idMembre }}">
         <button type="submit" class="btn btn-danger" type="submit" name="supprMembre" value="Supprimer" >

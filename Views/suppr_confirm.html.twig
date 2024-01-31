@@ -5,7 +5,7 @@
 {% block section %}
 
     <h1>Voulez vous vraiment supprimer <p class="mark">{% if projet %}{{ projet.nomProjet }}{% endif %}</p></h1>
-    <form action="" method="POST" class="mt-4">
+    <form method="POST" class="mt-4">
         {% if projet %}
             <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
         {% endif %}
