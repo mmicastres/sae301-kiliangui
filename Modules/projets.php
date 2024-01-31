@@ -8,6 +8,8 @@ class Projet{
     private int $_idProjet;
     private string $_titre;
     private string $_description;
+    private Contexte $_context;
+    private Categorie $_categorie;
     private array $_imgsUrls;
     private array $_urlsDemos;
     private array $_urlsSources;
@@ -26,6 +28,8 @@ class Projet{
         if (isset($donnees['idProjet'])) { $this->_idProjet = $donnees['idProjet']; }
         if (isset($donnees['titre'])) { $this->_titre = $donnees['titre']; }
         if (isset($donnees['description'])) { $this->_description = $donnees['description']; }
+        if (isset($donnees['contexte'])) { $this->_context = $donnees['contexte']; }
+        if (isset($donnees['categorie'])) { $this->_categorie = $donnees['categorie']; }
         if (isset($donnees['imgsUrls'])) {
             if (is_array($donnees['imgsUrls'])) {
                 $this->_imgsUrls = $donnees['imgsUrls'];
@@ -100,6 +104,8 @@ class Projet{
     public function description() { return $this->_description;}
     //Description courte
     public function courte() { return substr($this->_description, 0, 100)."[...]";}
+    public function contexte() { return $this->_context;}
+    public function categorie() { return $this->_categorie;}
     public function imgsUrls() { return isset($this->_imgsUrls) ? $this->_imgsUrls : [];}
     //Premiere image
     public function thumbnail() { return isset($this->_imgsUrls) ? $this->_imgsUrls[0] : "";}
@@ -143,6 +149,9 @@ class Projet{
     public function setIdProjet(int $idProjet) { $this->_idProjet = $idProjet; }
     public function setTitre(string $nomProjet) { $this->_titre = $nomProjet; }
     public function setDescription(string $description) { $this->_description = $description; }
+    public function setContexte(Contexte $contexte) { $this->_context = $contexte; }
+    public function setCategorie(Categorie $categorie) { $this->_categorie = $categorie; }
+
     public function setImgsUrls(array $imgsUrls) { $this->_imgsUrls = $imgsUrls; }
     public function setUrlsDemos(array $urlsDemos) { $this->_urlsDemos = $urlsDemos; }
     public function setUrlsSources(array $urlsSources) {  $this->_urlsSources = $urlsSources ; }

@@ -42,6 +42,8 @@
                         <p>{{ projet.description }}</p>
                         </div>
                         <div >
+
+                            <h2>Urls</h2>
                             <h3>Sources</h3>
                             <ul class="d-flex gap-2 flex-wrap">
                                 {% for url in projet.urlsSources %}
@@ -65,7 +67,6 @@
                                 <li class="list-unstyled ">{{ participant.nom }} {{ participant.prenom }}</li>
                             {% endfor %}
                         </ul>
-                        <h2>Urls</h2>
 
 
                         <h3>Tags</h3>
@@ -76,6 +77,14 @@
                             {% endfor %}
 
                         </ul>
+                        <h3>Contexte</h3>
+                        <p>{{ projet.contexte.intitule }} </p>
+                        <h4 class="fs-5">Semestre {{ projet.contexte.semestre}} </h4>
+
+
+                        <h3>Categorie</h3>
+                        <p>{{ projet.categorie.intitule }}</p>
+
                         {% if projet.isProprietaire or admin==1 %}
                         <h3>Supprimer le projet</h3>
                             <form method="post">

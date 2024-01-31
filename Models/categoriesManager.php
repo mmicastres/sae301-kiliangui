@@ -18,6 +18,14 @@ class CategorieManager{
         $stmt->execute(array(":identifiant" => $categorie->intitule()));
         header("Location: index.php?action=espaceAdmin");
     }
+    public function getById($id){
+        $req = "SELECT * FROM pr_categorie WHERE idCategorie = :idCategorie";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array(":idCategorie" => $id));
+        $data = $stmt->fetch();
+        if ($data == null) return null;
+        return new Categorie($data);
+    }
     public function get(Categorie $categorie){
         $req = "SELECT * FROM pr_categorie WHERE intitule = :intitule";
         $stmt = $this->_db->prepare($req);

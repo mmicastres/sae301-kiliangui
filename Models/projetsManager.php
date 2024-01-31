@@ -96,7 +96,7 @@ public function unlike($idProjet, $idMembre){
 
     public function rechercheProjet($recherche){
         $idMembre = isset($_SESSION["idMembre"]) ? $_SESSION["idMembre"] : -1;
-        $req = "SELECT * FROM pr_projet WHERE (publier = 1 or proprietaire = ? ) AND (titre LIKE ? OR description LIKE ?)";
+        $req = "SELECT pr_projet.*,(SELECT COUNT(pr_aime.idProjet) FROM pr_aime WHERE pr_aime.idProjet = pr_projet.idProjet) as likes FROM pr_projet WHERE (publier = 1 or proprietaire = ? ) AND (titre LIKE ? OR description LIKE ?)";
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($idMembre,"%".$recherche."%","%".$recherche."%"));
         $projets = [];
@@ -158,15 +158,16 @@ public function unlike($idProjet, $idMembre){
     /**
      * recherche dans la BD d'un projet à partir de son id
      * @param int $idProjet
-     * @return Projet
+     * @return Projet | bool
      * @param rien
      */
-    public function get(int $idProjet) : Projet
+    public function get(int $idProjet)
     {
-        $req = 'SELECT * FROM pr_projet WHERE idProjet=?';
+        $req = 'SELECT pr_projet.*,(SELECT COUNT(pr_aime.idProjet) FROM pr_aime WHERE pr_aime.idProjet = pr_projet.idProjet) as likes FROM pr_projet WHERE idProjet=?';
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($idProjet));
         $data = $stmt->fetch();
+        if (!$data) return $data;
         $projet = new Projet($data);
         return $this->completeProjet($projet);
     }
@@ -238,6 +239,22 @@ public function unlike($idProjet, $idMembre){
         $projet->setCommentaires($commantaires);
         $projet->setLiked($this->liked($projet->idProjet()));
 
+        // get the list of contextes
+        $req = "SELECT * FROM pr_contexte WHERE idContexte = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($projet->idContexte()));
+        $data = $stmt->fetch();
+        $contexte = new Contexte($data);
+        $projet->setContexte($contexte);
+        // get the list of categories
+        $req = "SELECT * FROM pr_categorie WHERE idCategorie = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($projet->idCategorie()));
+        $data = $stmt->fetch();
+        $categorie = new Categorie($data);
+        $projet->setCategorie($categorie);
+
+
         return $projet;
 
     }
@@ -276,7 +293,6 @@ public function unlike($idProjet, $idMembre){
                 $url = new Url(array("idProjet"=>$idProjet,"type"=>"img","url"=>$imgsUrls[$i]));
                 $this->_urlsManager->addUrl($url);
             }else{
-                var_dump($imgsUrls);
                 $url = $imgsUrls[$i];
 
                 $url->setIdProjet($idProjet);
@@ -284,16 +300,28 @@ public function unlike($idProjet, $idMembre){
             }
         }
         for ($i=0; $i < count($demosUrls); $i++) {
-            $url = new Url(array("idProjet"=>$idProjet,"type"=>"demo","url"=>$demosUrls[$i]));
-            $this->_urlsManager->addUrl($url);
+            if (is_string($demosUrls[$i])) {
+                $url = new Url(array("idProjet"=>$idProjet,"type"=>"demo","url"=>$demosUrls[$i]));
+                $this->_urlsManager->addUrl($url);
+            }else{
+                $url = $demosUrls[$i];
+                $url->setIdProjet($idProjet);
+                $this->_urlsManager->addUrl($url);
+            }
         }
         for ($i=0; $i < count($sourcesUrls); $i++) {
-            $url = new Url(array("idProjet"=>$idProjet,"type"=>"source","url"=>$sourcesUrls[$i]));
-            $this->_urlsManager->addUrl($url);
+            if (is_string($sourcesUrls[$i])) {
+                $url = new Url(array("idProjet"=>$idProjet,"type"=>"source","url"=>$sourcesUrls[$i]));
+                $this->_urlsManager->addUrl($url);
+            }else{
+                $url = $sourcesUrls[$i];
+                $url->setIdProjet($idProjet);
+                $this->_urlsManager->addUrl($url);
         }
+    }
         $this->_tagsManager->deleteAll($idProjet);
         foreach ($projet->tags() as $tag) {
-            $tag = new Tag(array("intitule"=>$tag));
+            //$tag = new Tag(array("intitule"=>$tag));
             $this->_tagsManager->addTagToProjet($tag, $projet);
         }
         // update participants
@@ -307,6 +335,7 @@ public function unlike($idProjet, $idMembre){
         if (!$projet->isParticipant()) $this->addParticipant($projet->idProjet(), $_SESSION["idMembre"]);
 
         return true;
+
 
 
     }

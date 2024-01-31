@@ -32,6 +32,14 @@ class ContextsManager {
 
         return $contextes;
     }
+    public function getById($contextId){
+        $req = "SELECT * FROM pr_contexte WHERE idContexte = :idContexte";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array(":idContexte" => $contextId));
+        $data = $stmt->fetch();
+        if ($data == null) return null;
+        return new Contexte($data);
+    }
 
     public function update(Contexte $contexte){
         $req = "UPDATE pr_contexte SET identifiant = :identifiant, intitule = :intitule, semestre = :semestre WHERE idContexte = :idContexte";
