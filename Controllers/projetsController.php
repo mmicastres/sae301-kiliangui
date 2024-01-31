@@ -259,7 +259,8 @@ class ProjetController{
 
     public function supprimerProjet(){
         $idProjet = $_POST["idProjet"];
-        $projet = new Projet(array("idProjet"=>$idProjet));
+        $projet = $this->projetManager->get($idProjet);
+        $projet = $this->projetManager->completeProjet($projet);
         if ($projet->isParticipant()){
             $ok = $this->projetManager->delete($projet);
             $message = $ok ? "Projet supprimé" : "probleme lors de la suppression";
