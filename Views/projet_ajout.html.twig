@@ -5,9 +5,9 @@
 {% block section %}
 
     <h1>{% if projet %} {{ projet.nomProjet}} {% else %} Ajout d'un projet {% endif %}</h1>
-    <div  method="POST" class="mt-4 " enctype="multipart/form-data">
+    <form  method="POST" class="mt-4 " enctype="multipart/form-data">
         <div class="d-flex gap-4">
-        <div class="flex-grow-1">
+        <div class="flex-grow-1 w-50">
 
             {% if projet %}
                 <input type="hidden" name="idProjet"  value="{{ projet.idProjet }}">
@@ -48,7 +48,7 @@
 
 
         </div>
-        <div class="flex-grow-1">
+        <div class="flex-grow-1 w-50">
 
             <!--demoUrls-->
             <div class="mb-3">
@@ -57,6 +57,17 @@
                     <input type="text" class="form-control" placeholder="https://..." id="demoUrlInput">
                     <button class="btn btn-primary" type="button" onclick="addUrl('demoUrlInput','demoUrlList','demoHiddenUrls' )">Add URL</button>
                 </div>
+                <ul id="demoUrlList">
+                    {% if projet %}
+                        {% for url in projet.urlsDemos %}
+                            <li>{{ url.url }} <button type="button" onclick="deleteUrl(this.parentNode)">Delete</button></li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+                <!--Create a hidden input to store the urls-->
+                <input type="hidden" name="demosUrls" id="demoHiddenUrls">
+            </div>
+
                 <div class="mb-3">
                     <label for="sourceUrlInput" class="form-label">Url de vos sources:</label>
                     <div class="d-flex">
@@ -72,16 +83,7 @@
                     </ul>
                     <!--Create a hidden input to store the urls-->
                     <input type="hidden" name="sourcesUrls" id="sourceHiddenUrls">
-                </div>
-                <ul id="demoUrlList">
-                    {% if projet %}
-                        {% for url in projet.urlsDemos %}
-                            <li>{{ url.url }} <button type="button" onclick="deleteUrl(this.parentNode)">Delete</button></li>
-                        {% endfor %}
-                    {% endif %}
-                </ul>
-                <!--Create a hidden input to store the urls-->
-                <input type="hidden" name="demosUrls" id="demoHiddenUrls">
+
             </div>
             <!--imgsUrls-->
             <div class="mb-3">
