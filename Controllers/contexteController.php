@@ -30,7 +30,6 @@ class ContexteController
         if (!isset($_POST["intitule"])) header("Location: index.php?action=admin_espace");;
         if (!isset($_POST["semestre"])) header("Location: index.php?action=admin_espace");;
         $context = new Contexte($_POST);
-        var_dump($context);
         $this->contextManager->update($context);
         header("Location: index.php?action=espaceAdmin");
     }

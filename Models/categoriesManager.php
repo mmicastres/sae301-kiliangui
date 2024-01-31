@@ -59,7 +59,6 @@ class CategorieManager{
         $req = "UPDATE pr_categorie SET intitule = :intitule WHERE idCategorie = :idCategorie";
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array(":intitule" => $categorie->intitule(), ":idCategorie" => $categorie->idCategorie()));
-        echo "request executed";
 
     }
 

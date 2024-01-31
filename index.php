@@ -53,7 +53,6 @@ if (!empty($_POST)) {
         $projetController->selectSuppr();
     }
     elseif (isset($_POST["valider_supprimer_projet"])) {
-        echo "SUPPRI";
         $projetController->supprimerProjet();
     } elseif (isset($_POST["envoie_commentaire"])) {
         $projetController->ajoutCommentaire();
@@ -73,7 +72,6 @@ if (!empty($_POST)) {
     }elseif (isset($_POST["addCategorie"])) {
         $categorieController->addCategorie();
     }elseif (isset($_POST["modCategorie"])) {
-        echo "modCategorie";
         $categorieController->modCategorie();
     }elseif(isset($_POST["modContexte"])) {
         $contexteController->modContexte();

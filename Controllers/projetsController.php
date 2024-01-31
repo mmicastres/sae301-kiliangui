@@ -210,7 +210,6 @@ class ProjetController{
         if (!$old->isParticipant() && !(isset($_SESSION["admin"]) && $_SESSION["admin"] == 1 )) return;
         $this->handleFiles($old);
         $projet = new Projet($_POST);
-        var_dump($_POST["imgsUrls"]);
 
         $projet->setPublier($old->publier());
         if (isset($_POST["participants"]) ){ $projet->setParticipants($_POST["participants"]);}

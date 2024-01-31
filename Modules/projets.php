@@ -72,7 +72,6 @@ class Projet{
                     if (get_class($donnees["participants"][0]) == "Membre") {
                         $this->_participants = $donnees["participants"];
                     }else {
-                        echo "ELSE FROM 69 PROJET IS USED";
                         $this->_participants = [];
                         foreach ($donnees["participants"] as $participant) {
                             $user = ["idMembre" => $participant];

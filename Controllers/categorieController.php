@@ -32,9 +32,7 @@ class CategorieController
         if (!isset($_POST["intitule"])) header("Location: index.php?action=admin_espace");;
         if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");;
         $categorie = new Categorie($_POST);
-        echo "the categorie : ";
         if ($this->categorieManager->getId($categorie) == null) return;
-        echo "modifying categorie;";
         $this->categorieManager->update($categorie);
         header("Location: index.php?action=espaceAdmin");
     }
