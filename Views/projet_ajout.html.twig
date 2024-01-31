@@ -5,7 +5,7 @@
 {% block section %}
 
     <h1>{% if projet %} {{ projet.nomProjet}} {% else %} Ajout d'un projet {% endif %}</h1>
-    <form action="" method="POST" class="mt-4">
+    <form action="" method="POST" class="mt-4" enctype="multipart/form-data">
         {% if projet %}
             <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
         {% endif %}
@@ -52,15 +52,19 @@
         </div>
         <!--imgsUrls-->
         <div class="mb-3">
-            <label for="imgUrlInput" class="form-label">Urls de vos images:</label>
+            <label for="fileInput" class="form-label">Fichiers :</label>
             <div class="d-flex">
-                <input type="text" class="form-control" id="imgUrlInput">
-                <button class="btn btn-primary" type="button" onclick="addUrl('imgUrlInput','imgUrlList','imgHiddenUrls' )">Add URL</button>
+                <input hidden id="imageInputCopy" type="file">
+                <input id="currentFile" type="file" name="files[]">
             </div>
-            <ul id="imgUrlList">
+            <ul id="fileList">
+                <li class="d-none" id="exampleImg" ><img class="w-25 ration ratio-1x1" ></li>
+            </ul>
+            <!--Process to delete current file-->
+            <ul id="imgUrlList" class="d-flex">
                 {% if projet %}
                     {% for url in projet.imgsUrls %}
-                        <li>{{ url.url }} <button type="button" onclick="deleteUrl(this.parentNode)">Delete</button></li>
+                        <li class="w-25 ration ratio-1x1" ><button  type="button" onclick="deleteUrl(this.parentNode)"><img  class=" w-25 ration ratio-1x1"  src="{{ url.url }}"></button></li>
                     {% endfor %}
                 {% endif %}
             </ul>
@@ -148,7 +152,53 @@
         });
     </script>
 
-    <script>
+    <script defer >
+        const imageInputCopy = document.getElementById("imageInputCopy");
+        imageInputCopy.id = "";
+        let currentFile = document.getElementById("currentFile");
+        const fileList = document.getElementById("fileList");
+        const exampleImg = document.getElementById("exampleImg");
+
+        currentFile.addEventListener("change", handleFiles);
+
+        let files = [];
+
+        function handleFiles(){
+            console.log("handleFiles")
+            currentFile.id = "";
+            const img = exampleImg.cloneNode(true);
+            img.id = "";
+            img.classList.remove("d-none");
+            img.children[0].src = URL.createObjectURL(currentFile.files[0]);
+
+            files.push({
+                url: URL.createObjectURL(currentFile.files[0]),
+                input: currentFile,
+                img: img
+            });
+            exampleImg.parentNode.appendChild(img)
+            img.addEventListener("click", function(){
+                // remove from the dom the input
+                for (const file of files) {
+                    if (file.img === this){
+                        file.input.remove();
+                        file.img.remove()
+                        files.splice(files.indexOf(file), 1);
+                    }
+                }
+
+            });
+            currentFile.hidden = true;
+
+            // make a copy of the input
+            currentFile = imageInputCopy.cloneNode(true);
+            currentFile.id = "currentFile";
+            currentFile.name = "files[]"
+            currentFile.hidden = false;
+            imageInputCopy.parentNode.insertBefore(currentFile, imageInputCopy);
+            currentFile.addEventListener("change", handleFiles);
+        }
+
 
         function addUrl(urlInputID, urlListID, hiddenUrlsID) {
 
@@ -176,7 +226,15 @@
             console.log("hiddenUrls")
             var hiddenUrlst = [];
             for (var i = 0; i < urlList.children.length; i++) {
-                hiddenUrlst.push(urlList.children[i].firstChild.nodeValue);
+                if (typeof urlList.children[i].firstChild.nodeValue === 'string')
+                {
+                    console.log(urlList.children[i].firstChild.nodeValue)
+                    hiddenUrlst.push(urlList.children[i].firstChild.nodeValue);
+                }
+                else{
+                    hiddenUrlst.push(urlList.children[i].firstChild.firstChild.src);
+                }
+
             }
 
             hiddenUrls.value =  JSON.stringify(hiddenUrlst);

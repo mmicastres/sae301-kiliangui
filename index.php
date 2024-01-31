@@ -24,6 +24,7 @@ $message = "";
 if (!isset($_SESSION['acces']) ) {
     $_SESSION['acces'] = "non";
     $_SESSION["admin"] = 0;
+    $_SESSION["idMembre"] = 0;
     session_commit();
 }
 

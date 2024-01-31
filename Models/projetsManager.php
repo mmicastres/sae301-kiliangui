@@ -223,7 +223,8 @@ public function unlike($idProjet, $idMembre){
             if ($url->type() == "img") $imgs[] = $url;
             else if ($url->type() == "demo") $demos[] = $url;
             else if ($url->type() == "source") $sources[] = $url;
-            $titre =  parse_url($url->url())["host"];
+            $url_parsed = parse_url($url->url());
+            $titre = $url_parsed["host"] ?? $url->url();
             $url->setTitre($titre);
 
         }
@@ -270,8 +271,17 @@ public function unlike($idProjet, $idMembre){
         // update urls
         $this->_urlsManager->deleteAll($idProjet);
         for ($i=0; $i < count($imgsUrls); $i++) {
-            $url = new Url(array("idProjet"=>$idProjet,"type"=>"img","url"=>$imgsUrls[$i]));
-            $this->_urlsManager->addUrl($url);
+            // check that the $imgsUrls[$i] is a string
+            if (is_string($imgsUrls[$i])) {
+                $url = new Url(array("idProjet"=>$idProjet,"type"=>"img","url"=>$imgsUrls[$i]));
+                $this->_urlsManager->addUrl($url);
+            }else{
+                var_dump($imgsUrls);
+                $url = $imgsUrls[$i];
+
+                $url->setIdProjet($idProjet);
+                $this->_urlsManager->addUrl($url);
+            }
         }
         for ($i=0; $i < count($demosUrls); $i++) {
             $url = new Url(array("idProjet"=>$idProjet,"type"=>"demo","url"=>$demosUrls[$i]));
@@ -294,7 +304,7 @@ public function unlike($idProjet, $idMembre){
                 $this->addParticipant($idProjet, $idMembre );
             }
         }
-        if (!$projet->isParticipant()) $this->addParticipant($projet->idProjet(), $projet->proprietaire());
+        if (!$projet->isParticipant()) $this->addParticipant($projet->idProjet(), $_SESSION["idMembre"]);
 
         return true;
 

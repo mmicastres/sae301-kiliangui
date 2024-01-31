@@ -19,7 +19,7 @@ class Url{
     }
 
     // GETTERS //
-    public function idUrl() { return $this->_idUrl;}
+    public function idUrl() { return $this->_idUrl ?? null;}
     public function url() { return $this->_url;}
     public function type() { return $this->_type;}
     public function idProjet() { return $this->_idProjet;}

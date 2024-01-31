@@ -22,9 +22,12 @@ class UrlsManager
      * @return boolean true si ajout, false sinon
      */
     public function addUrl(Url $url){
-        $req = "INSERT INTO pr_url (url,type,idProjet) VALUES (?,?,?)";
+        if ($url->idUrl() == null){
+            $url->setIdUrl($this->getMaxId()+1);
+        }
+        $req = "INSERT INTO pr_url (idUrl,url,type,idProjet) VALUES (?,?,?,?)";
         $stmt = $this->_db->prepare($req);
-        $res = $stmt->execute(array($url->url(),$url->type(),$url->idProjet()));
+        $res = $stmt->execute(array($url->idUrl(), $url->url(),$url->type(),$url->idProjet()));
 
         // pour debuguer les requêtes SQL
         $errorInfo = $stmt->errorInfo();
@@ -52,6 +55,14 @@ class UrlsManager
         }
 
         return $urls;
+    }
+
+    public function getMaxId(){
+        $req = "SELECT MAX(idUrl) FROM pr_url";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute();
+        $data = $stmt->fetch();
+        return $data[0];
     }
 
     public function deleteAll($idProjet){

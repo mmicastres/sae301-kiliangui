@@ -55,22 +55,7 @@ class ProjetController{
         // Ajout du projet principale
         $ok = $this->projetManager->add($projet);
         if ($ok){
-            # add urls
-            #$extensions = array('jpg', 'png', 'jpeg', 'gif');
-            #if (isset($_FILES["photo"]["name"])) {
-            #    $file_name = explode('.', $_FILES["photo"]["name"]);
-            #    $extension = end($file_name);
-            #    if ( !in_array($extension, $extensions ) ) {
-            #        $message = "Le fichier n'est pas une image";
-            #        echo $this->twig->render('index.html.twig', array('acces' => $_SESSION['acces'], 'message' => $message));
-            #        return;
-            #    }
-
-
-            for ($i=0; $i < count($projet->imgsUrls()); $i++) {
-                $url = new Url(array("idProjet"=>$projet->idProjet(),"type"=>"img","url"=>$projet->imgsUrls()[$i]));
-                $this->urlsManager->addUrl($url);
-            }
+            $this->handleFiles($projet);
             for ($i=0; $i < count($projet->urlsDemos()); $i++) {
                 $url = new Url(array("idProjet"=>$projet->idProjet(),"type"=>"demo","url"=>$projet->urlsDemos()[$i]));
                 $this->urlsManager->addUrl($url);
@@ -90,12 +75,9 @@ class ProjetController{
             }
             // ajout du propriétaire en participant
             $exist = false;
-            var_dump($projet->proprietaire());
             foreach ($projet->participants() as $participant) {
                 if ($participant->idMembre() == $projet->proprietaire()) $exist = true;
             }
-            var_dump("exist : ");
-            var_dump($exist);
             if (!$exist) $this->projetManager->addParticipant($projet->idProjet(), $projet->proprietaire());
 
         }
@@ -103,7 +85,38 @@ class ProjetController{
         echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
     }
 
+    private function handleFiles($projet){
+        # Sauvegarde des fichiers
+        if (isset($_FILES["files"])){
+            $max_urls = $this->urlsManager->getMaxId()+1;
+            $save_dir = "uploads/";
+            $files = $_FILES["files"];
+            $extensions = array('jpg', 'png', 'jpeg', 'gif');
+            foreach ($files["name"] as $key => $name) {
+                // detect if file is empty
 
+                if ($files["size"][$key] == 0 || $files["size"][$key] > 5000000) continue;
+                $tmp_name = $files["tmp_name"][$key];
+                $file_name = explode('.', $name);
+                $extension = end($file_name);
+                if (!in_array($extension, $extensions)) continue;
+                $file_name = $projet->idProjet()."_".$max_urls.".".$extension;
+                $file_url = $save_dir.$file_name;
+                move_uploaded_file($tmp_name, $file_url);
+                $url = new Url(array("idUrl"=>$max_urls, "idProjet"=>$projet->idProjet(),"type"=>"img","url"=>$file_url));
+                $this->urlsManager->addUrl($url);
+                $max_urls++;
+                if (isset($_POST["imgsUrls"])){
+                    $imgsUrls = json_decode($_POST["imgsUrls"]);
+                    $imgsUrls[] = $file_url;
+                    $_POST["imgsUrls"] = json_encode($imgsUrls);
+                }else{
+                    $_POST["imgsUrls"] = [$file_url];
+                }
+            }
+        }
+
+    }
 
 
 
@@ -128,7 +141,6 @@ class ProjetController{
 
     public function rechercheProjet(){
         $recherche = $_GET["s"];
-        var_dump("recherche : ".$recherche);
         $projets = $this->projetManager->rechercheProjet($recherche);
         echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
@@ -147,7 +159,6 @@ class ProjetController{
         $idMembre = $_SESSION["idMembre"];
         // get commentaire
         $commentaire = $this->commentaireManager->get($idCommentaire);
-        var_dump($commentaire);
         if ($commentaire->idMembre() == $idMembre) {
             $ok = $this->commentaireManager->del($idCommentaire);
             $message = $ok ? "Commentaire supprimé" : "probleme lors de la suppression";
@@ -194,8 +205,12 @@ class ProjetController{
 
     public function validerModProjet(){
         $idProjet = $_POST["idProjet"];
+
         $old = $this->projetManager->get($idProjet);
+        $this->handleFiles($old);
         $projet = new Projet($_POST);
+        var_dump($_POST["imgsUrls"]);
+
         $projet->setPublier($old->publier());
         if (isset($_POST["participants"]) ){ $projet->setParticipants($_POST["participants"]);}
         else{ $projet->setParticipants([]);}

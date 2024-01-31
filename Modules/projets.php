@@ -115,6 +115,7 @@ class Projet{
         foreach ($this->_tags as $tag) {
             $tagsstr .= $tag->intitule().", ";
         }
+        $tagsstr = substr($tagsstr, 0, -2);
         return $tagsstr;
     }
     public function commentaires() { return isset($this->_commentaires) ? $this->_commentaires : [];}

@@ -20,6 +20,7 @@ class TagsManager
      */
     public function addTag(Tag $tag)
     {
+        if ($tag->intitule() == "" || $tag->intitule() == " ") return false;
         $req = "INSERT INTO pr_tag (intitule) VALUES (?)";
         $stmt = $this->_db->prepare($req);
         $res = $stmt->execute(array($tag->intitule()));
