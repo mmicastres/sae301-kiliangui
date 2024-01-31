@@ -329,7 +329,12 @@ class ProjetController{
     }
 
     function publierProjet(){
-        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");return;
+        if (!(isset($_SESSION["admin"]) && $_SESSION["admin"] == 1)) {
+            $message = "Vous n'avez pas les droits pour publier ce projet";
+            echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+            return;
+        }
+
         $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
         $projet->setPublier(1);
@@ -338,7 +343,11 @@ class ProjetController{
         echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
     }
     function dePublierProjet(){
-        if (!isset($_SESSION["admin"]) || $_SESSION["admin"] != 1)  header("Location: index.php");return;
+        if (!(isset($_SESSION["admin"]) && $_SESSION["admin"] == 1)) {
+            $message = "Vous n'avez pas les droits pour publier ce projet";
+            echo $this->twig->render('index.html.twig',array('message'=>$message,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
+            return;
+        }
         $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
         $projet->setPublier(0);

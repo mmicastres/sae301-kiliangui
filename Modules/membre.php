@@ -35,7 +35,7 @@ class Membre {
 		public function setIdMembre(int $idmembre) { $this->_idmembre = $idmembre; }
         public function setNom(string $nom) { $this->_nom= $nom; }
 		public function setPrenom(string $prenom) { $this->_prenom = $prenom; }
-	    public function setIdIut(int $id_iut) { $this->_idIut = $id_iut; }
+	    public function setIdIut(string $id_iut) { $this->_idIut = $id_iut; }
         public function setEmail(string $email) { $this->_email = $email; }
 		public function setPasswordHash(string $password_hash) { $this->_password_hash = $password_hash; }
         public function setAdmin(int $admin) { $this->_admin = $admin; }
