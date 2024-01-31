@@ -35,19 +35,7 @@ class CommentaireManager{
         return new Commentaire($data);
     }
 
-    public function del(int $idCommentaire) {
-        $req = 'DELETE FROM pr_commentaire WHERE idCommentaire = :idCommentaire';
-        $stmp = $this->_db->prepare($req);
-        $stmp->execute(array(
-            'idCommentaire' => $idCommentaire
-        ));
-        return $stmp->execute();
-    }
-    public function delList(Projet $projet){
-        $req= 'DELETE FROM pr_commentaire WHERE idProjet = :idProjet';
-        $stmp = $this->_db->prepare($req);
-        $stmp->execute(array('idProjet'=>$projet->idProjet()));
-    }
+
 
     public function getList(Projet $projet) {
         $req = 'SELECT * FROM pr_commentaire WHERE idProjet = :idProjet order by date_commentaire desc limit 25';
@@ -64,14 +52,28 @@ class CommentaireManager{
     }
 
 public function update(Commentaire $commentaire) {
-        $req = $this->_db->prepare('UPDATE commentaires SET contenu = :contenu WHERE idCommentaire = :idCommentaire');
+        $req = $this->_db->prepare('UPDATE pr_commentaire SET contenu = :contenu WHERE idCommentaire = :idCommentaire');
         $stmp = $req->execute(array(
             'contenu' => $commentaire->contenu(),
             'idCommentaire' => $commentaire->idCommentaire()
         ));
-        $stmp->execute();
+        return $stmp;
     }
 
+
+    public function del(int $idCommentaire) {
+        $req = 'DELETE FROM pr_commentaire WHERE idCommentaire = :idCommentaire';
+        $stmp = $this->_db->prepare($req);
+        $stmp->execute(array(
+            'idCommentaire' => $idCommentaire
+        ));
+        return $stmp->execute();
+    }
+    public function delList(Projet $projet){
+        $req= 'DELETE FROM pr_commentaire WHERE idProjet = :idProjet';
+        $stmp = $this->_db->prepare($req);
+        $stmp->execute(array('idProjet'=>$projet->idProjet()));
+    }
 
 
 }

@@ -57,7 +57,11 @@ if (!empty($_POST)) {
         $projetController->supprimerProjet();
     } elseif (isset($_POST["envoie_commentaire"])) {
         $projetController->ajoutCommentaire();
-    } elseif (isset($_POST["del_commentaire"])) {
+    }
+    elseif(isset($_POST["mod_commentaire"])) {
+        $projetController->modCommentaire();
+    }
+    elseif (isset($_POST["del_commentaire"])) {
         $projetController->delCommentaire();
     } elseif (isset($_POST["modifier_membre"])) {
         $membreController->modifierMembre();

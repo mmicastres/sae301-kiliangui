@@ -125,7 +125,7 @@
                             </div>
                             <p>{{ commentaire.contenu }}</p>
                             {% if commentaire.proprietaire or admin==1 %}
-                                <form class="modify-form d-none">
+                                <form method="post" class="modify-form d-none">
                                     <!-- Formulaire de modification -->
                                     <input type="hidden" name="idCommentaire" value="{{ commentaire.idCommentaire }}">
                                     <input type="hidden" name="idProjet" value="{{ projet.idProjet }}">
@@ -134,7 +134,7 @@
                                         <textarea name="contenu" id="contenu">{{ commentaire.contenu }}</textarea>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <input class="btn btn-success" type="submit" name="saisie_modif" value="Edit">
+                                        <input class="btn btn-success" type="submit" name="mod_commentaire" value="Edit">
                                         <input class="btn btn-danger" type="submit" name="del_commentaire" value="Supprimer">
                                     </div>
                                 </form>

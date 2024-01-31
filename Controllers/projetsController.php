@@ -38,6 +38,9 @@ class ProjetController{
         $this->_db = $db;
     }
 
+
+
+    /* CREATE */
     public function ajoutProjet(){
         if (! isset($_SESSION["idMembre"])) return
             $_POST["publier"] =0;
@@ -84,6 +87,30 @@ class ProjetController{
         $message = $ok ? "Projet ajouté" : "probleme lors de l'ajout";
         echo $this->twig->render('index.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'message'=>$message));
     }
+
+
+    public function likeProjet(){
+        $idProjet = $_POST["idProjet"];
+        // sécurité : on ne peut pas liker son propre projet
+        $projet = $this->projetManager->get($idProjet);
+        if ($projet->isProprietaire()) return;
+
+        if (!isset($_SESSION["idMembre"])) return;
+        $idMembre = $_SESSION["idMembre"];
+        if (isset($_POST["liked"])){
+            if ($_POST["liked"] == "1"){
+                $ok = $this->projetManager->unlike($idProjet,$idMembre);}
+            else{
+                $ok = $this->projetManager->like($idProjet,$idMembre);
+            }
+        }else{
+
+            $ok = $this->projetManager->like($idProjet,$idMembre);
+        }
+        $message = $ok ? "Projet liké" : "probleme lors du like";
+        header("Location: index.php?action=projet&id=".$_POST["idProjet"]);
+    }
+
 
     private function handleFiles($projet){
         # Sauvegarde des fichiers
@@ -134,6 +161,9 @@ class ProjetController{
         header("Location: index.php?action=projet&id=".$_POST["idProjet"]);}
 
 
+
+    /* READ */
+
     public function listeProjets(){
         $projets = $this->projetManager->getListPublier();
         echo $this->twig->render('projets_liste.html.twig',array('projets'=>$projets,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"]));
@@ -152,6 +182,41 @@ class ProjetController{
         $categories = $this->categorieManager->getList();
         echo $this->twig->render('projet_ajout.html.twig',array('acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'idMembre'=>$_SESSION['idMembre'], 'contexts'=>$contexts,'categories'=>$categories));
     }
+
+
+
+    /* UPDATE */
+    public function modCommentaire(){
+        $idCommentaire = $_POST["idCommentaire"];
+        $contenu = $_POST["contenu"];
+        $commentaire = new Commentaire(array("idCommentaire"=>$idCommentaire,"contenu"=>$contenu));
+        $ok = $this->commentaireManager->update($commentaire);
+        $message = $ok ? "Commentaire modifié" : "probleme lors de la modification";
+        header("Location: index.php?action=projet&id=".$_POST["idProjet"]);
+    }
+
+
+    public function validerModProjet(){
+        $idProjet = $_POST["idProjet"];
+
+        $old = $this->projetManager->get($idProjet);
+        $this->handleFiles($old);
+        $projet = new Projet($_POST);
+        var_dump($_POST["imgsUrls"]);
+
+        $projet->setPublier($old->publier());
+        if (isset($_POST["participants"]) ){ $projet->setParticipants($_POST["participants"]);}
+        else{ $projet->setParticipants([]);}
+
+
+        $ok = $this->projetManager->update($projet);
+        if ($ok) $message = "Le projet à était éditer";
+        else $message = "probleme lors de l'édition";
+        $projet = $this->projetManager->get($idProjet);
+        echo $this->twig->render('projet.html.twig', array('projet'=>$projet,"admin"=>$_SESSION["admin"],'acces'=>$_SESSION['acces'],'message'=>$message));
+    }
+
+    /* DELETE */
 
     public function delCommentaire(){
         $idCommentaire = $_POST["idCommentaire"];
@@ -173,27 +238,6 @@ class ProjetController{
 
     }
 
-    public function likeProjet(){
-        $idProjet = $_POST["idProjet"];
-        // sécurité : on ne peut pas liker son propre projet
-        $projet = $this->projetManager->get($idProjet);
-        if ($projet->isProprietaire()) return;
-
-        if (!isset($_SESSION["idMembre"])) return;
-        $idMembre = $_SESSION["idMembre"];
-        if (isset($_POST["liked"])){
-            if ($_POST["liked"] == "1"){
-                $ok = $this->projetManager->unlike($idProjet,$idMembre);}
-                else{
-                    $ok = $this->projetManager->like($idProjet,$idMembre);
-                }
-        }else{
-
-            $ok = $this->projetManager->like($idProjet,$idMembre);
-        }
-        $message = $ok ? "Projet liké" : "probleme lors du like";
-        header("Location: index.php?action=projet&id=".$_POST["idProjet"]);
-    }
     public function saisieModProjet(){
         $idProjet = $_POST["idProjet"];
         $projet = $this->projetManager->get($idProjet);
@@ -203,25 +247,6 @@ class ProjetController{
         echo $this->twig->render('projet_ajout.html.twig',array('projet'=>$projet,'acces'=> $_SESSION['acces'],'admin'=>$_SESSION["admin"],'contexts'=>$contexts,'categories'=>$categories));
     }
 
-    public function validerModProjet(){
-        $idProjet = $_POST["idProjet"];
-
-        $old = $this->projetManager->get($idProjet);
-        $this->handleFiles($old);
-        $projet = new Projet($_POST);
-        var_dump($_POST["imgsUrls"]);
-
-        $projet->setPublier($old->publier());
-        if (isset($_POST["participants"]) ){ $projet->setParticipants($_POST["participants"]);}
-        else{ $projet->setParticipants([]);}
-
-
-        $ok = $this->projetManager->update($projet);
-        if ($ok) $message = "Le projet à était éditer";
-        else $message = "probleme lors de l'édition";
-        $projet = $this->projetManager->get($idProjet);
-        echo $this->twig->render('projet.html.twig', array('projet'=>$projet,"admin"=>$_SESSION["admin"],'acces'=>$_SESSION['acces'],'message'=>$message));
-    }
 
 
     public function supprimerProjet(){
